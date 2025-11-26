@@ -16,6 +16,9 @@ async function main() {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
       
+      // Registrar slash commands
+      registerSlashCommands(client);
+      
       const getActivities = () => [
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
         { text: 'use !cmds para ajuda', type: 'LISTENING' },
