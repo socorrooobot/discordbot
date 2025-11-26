@@ -503,9 +503,9 @@ export const commands = {
         .addFields(
           { name: '💬 Conversa & IA', value: '`!ask <pergunta>` - Pergunte algo\n`!ia <pergunta>` - Atalho rápido\n`!search <termo>` - Pesquisar', inline: false },
           { name: '✨ Especial', value: '`!quote` - Frase aleatória\n`!dream` - Sonho da Diva\n`!whisper` - Sussurro misterioso\n`!story` - Uma história', inline: false },
-          { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!perfil` - Seu perfil\n`!clear` - Limpar chat', inline: false }
+          { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK', inline: false }
         )
-        .setFooter({ text: 'Página 1 de 3 - Use !comandos para ver mais' });
+        .setFooter({ text: 'Página 1 de 4 - Use !comandos para ver mais' });
 
       // Embed 2: Moderação
       const embed2 = new EmbedBuilder()
@@ -514,7 +514,7 @@ export const commands = {
         .addFields(
           { name: '⚖️ Controle', value: '`!ban @usuário` - Banir\n`!unban <ID>` - Desbanir\n`!mute @usuário <tempo>` - Mutar\n`!unmute @usuário` - Desmutar\n`!purge <número>` - Deletar mensagens', inline: false }
         )
-        .setFooter({ text: 'Página 2 de 3 - Requer permissões' });
+        .setFooter({ text: 'Página 2 de 4 - Requer permissões' });
 
       // Embed 3: Economia & XP
       const embed3 = new EmbedBuilder()
@@ -523,7 +523,7 @@ export const commands = {
         .addFields(
           { name: '💵 Moeda', value: '`!balance` - Ver saldo\n`!daily` - Ganhar 50/dia\n`!work` - Ganhar 10-40\n`!transfer @usuário <qty>` - Enviar\n`!gamble <qty>` - Apostar 50/50\n`!top` - Ranking', inline: false }
         )
-        .setFooter({ text: 'Página 3 de 3' });
+        .setFooter({ text: 'Página 3 de 4' });
 
       // Embed 4: XP & Perfil
       const embed4 = new EmbedBuilder()
@@ -532,7 +532,7 @@ export const commands = {
         .addFields(
           { name: '🌟 Sistema de XP', value: 'Ganhe 10 XP por mensagem!\nReceba notificação privada ao subir de nível 🖤', inline: false },
           { name: '📊 Comandos', value: '`!perfil` - Ver seu nível e XP\n`!topxp` - Ranking de XP do servidor\n`!rankxp` - Alternativa para !topxp', inline: false },
-          { name: '📝 Roleplay', value: 'Use *asteriscos* para RP\n*você faz algo* → eu respondo 🎭', inline: false }
+          { name: '😴 AFK', value: '`!afk <motivo>` - Fique AFK\nRecebirá DM se alguém mencionar você 🌑', inline: false }
         )
         .setFooter({ text: 'Página 4 de 4' });
 
