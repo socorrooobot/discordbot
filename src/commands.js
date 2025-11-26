@@ -7,6 +7,7 @@ import { executeRP } from './rpCommands.js';
 import { generateProfileCard } from './profileCard.js';
 
 const SPECIAL_USER_ID = '1441445617003139113';
+const lockedUsers = new Set();
 
 const quotes = [
   "*Tentei demonstrar minha profunda compaixão... por que ninguém responde mais?* 🖤",
@@ -2359,6 +2360,54 @@ export const commands = {
         .setFooter({ text: 'Silhueta: A verdade sem disfarce.' });
       await message.reply({ embeds: [silhouetteEmbed] });
     }
+  },
+
+  lock: {
+    name: '!lock',
+    description: 'Bloqueia sua conta',
+    execute: async (message) => {
+      if (lockedUsers.has(message.author.id)) {
+        const alreadyLocked = new EmbedBuilder()
+          .setColor('#ff0000')
+          .setTitle('🔒 Já Bloqueado')
+          .setDescription('Sua conta já está bloqueada. Use `!unlock` para desbloqueá-la.')
+          .setFooter({ text: '*Você já está preso em seu próprio silêncio.* 🖤' });
+        await message.reply({ embeds: [alreadyLocked] });
+        return;
+      }
+      
+      lockedUsers.add(message.author.id);
+      const lockEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🔒 Bloqueado')
+        .setDescription('Sua conta foi bloqueada. Você não pode usar meus comandos agora.\n\nUse `!unlock` para desbloqueá-la.')
+        .setFooter({ text: '*Silêncio. Vazio. Solidão. Perfeito.* 🖤' });
+      await message.reply({ embeds: [lockEmbed] });
+    }
+  },
+
+  unlock: {
+    name: '!unlock',
+    description: 'Desbloqueia sua conta',
+    execute: async (message) => {
+      if (!lockedUsers.has(message.author.id)) {
+        const notLocked = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('🔓 Desbloqueado')
+          .setDescription('Sua conta não está bloqueada.')
+          .setFooter({ text: '*Você sempre esteve livre.* 🖤' });
+        await message.reply({ embeds: [notLocked] });
+        return;
+      }
+      
+      lockedUsers.delete(message.author.id);
+      const unlockEmbed = new EmbedBuilder()
+        .setColor('#00ff00')
+        .setTitle('🔓 Desbloqueado')
+        .setDescription('Sua conta foi desbloqueada! Você pode usar meus comandos novamente.')
+        .setFooter({ text: '*A luz retorna... ou é apenas uma ilusão?* 🖤' });
+      await message.reply({ embeds: [unlockEmbed] });
+    }
   }
 };
 
@@ -2366,6 +2415,16 @@ export async function handleCommand(message, client) {
   const content = message.content.toLowerCase();
   const args = message.content.slice(1).split(/ +/);
   const commandName = args[0];
+
+  if (lockedUsers.has(message.author.id) && commandName !== 'unlock') {
+    const lockedEmbed = new EmbedBuilder()
+      .setColor('#ff0000')
+      .setTitle('🔒 Bloqueado')
+      .setDescription('Sua conta está bloqueada. Use `!unlock` para desbloqueá-la.')
+      .setFooter({ text: '*Silence is golden, but your account is locked.* 🖤' });
+    await message.reply({ embeds: [lockedEmbed] });
+    return true;
+  }
 
   for (const [key, command] of Object.entries(commands)) {
     const matches = command.name === `!${commandName}` || 
