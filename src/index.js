@@ -1,6 +1,7 @@
 import { getDiscordClient } from './discord.js';
 import { chat } from './gemini.js';
 import { handleCommand, shouldAutoRespond, shouldRespondToMention } from './commands.js';
+import { addXP } from './xp.js';
 
 async function main() {
   console.log('Starting Discord bot...');
@@ -16,6 +17,16 @@ async function main() {
 
     client.on('messageCreate', async (message) => {
       if (message.author.bot) return;
+
+      // Sistema de XP
+      const xpResult = addXP(message.author.id);
+      if (xpResult.leveledUp) {
+        try {
+          await message.author.send(`🖤 **Parabéns!** Você subiu para o **nível ${xpResult.newLevel}**!\n\n*Você compreendeu mais sobre você mesma...* 💀`);
+        } catch (error) {
+          console.error('Erro ao enviar DM de level up:', error);
+        }
+      }
 
       // Tentar executar comando
       if (message.content.startsWith('!')) {

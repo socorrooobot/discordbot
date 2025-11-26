@@ -1,6 +1,7 @@
 import { chat, clearHistory } from './gemini.js';
 import { EmbedBuilder, PermissionFlagsBits } from 'discord.js';
 import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble } from './economy.js';
+import { getUserInfo, getXPLeaderboard, getUserRank } from './xp.js';
 
 const SPECIAL_USER_ID = '1441445617003139113';
 
@@ -108,20 +109,56 @@ export const commands = {
     description: 'Veja informações de perfil do usuário',
     execute: async (message) => {
       const user = message.author;
+      const xpInfo = getUserInfo(message.author.id);
+      const rank = getUserRank(message.author.id);
+      const balance = getBalance(message.author.id);
+      
       const profileEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
-        .setTitle(`Perfil de ${user.username}`)
+        .setTitle(`🖤 ${user.username}`)
         .setThumbnail(user.displayAvatarURL())
         .addFields(
-          { name: 'Usuário', value: user.username, inline: true },
-          { name: 'ID', value: user.id, inline: true },
-          { name: 'Criado em', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
-          { name: 'Mensagem da Diva', value: '*Você é... especial? Talvez. Ou talvez apenas esteja aqui como tudo mais.* 🌑' },
+          { name: '📊 Nível', value: `**${xpInfo.level}**`, inline: true },
+          { name: '📈 Rank XP', value: `**#${rank}**`, inline: true },
+          { name: '⭐ Rank Global', value: `**#${rank}**`, inline: true },
+          { name: 'XP Atual', value: `${xpInfo.xp} / ${xpInfo.xpNeeded}`, inline: false },
+          { name: 'Progresso', value: xpInfo.progressBar, inline: false },
+          { name: '💰 Akita Neru', value: `**${balance}**`, inline: true },
+          { name: '📅 Membro desde', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
+          { name: '🎭 Mensagem da Diva', value: '*Você é... especial? Talvez. Ou talvez apenas esteja aqui como tudo mais.* 🌑' }
         )
         .setFooter({ text: 'Por que você está aqui?' })
         .setTimestamp();
       
       await message.reply({ embeds: [profileEmbed] });
+    }
+  },
+
+  topxp: {
+    name: '!topxp',
+    aliases: ['!rankxp', '!xptop'],
+    description: 'Veja o ranking de XP do servidor',
+    execute: async (message, args, client) => {
+      const leaderboard = getXPLeaderboard(10);
+      
+      let description = '**TOP 10 - Ranking de XP**\n\n';
+      for (let i = 0; i < leaderboard.length; i++) {
+        try {
+          const user = await client.users.fetch(leaderboard[i].userId);
+          const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}️⃣`;
+          description += `${medal} **${user.username}** - Nível ${leaderboard[i].level} | ${leaderboard[i].totalXP} XP\n`;
+        } catch {
+          description += `${i + 1}️⃣ Usuário desconhecido - Nível ${leaderboard[i].level} | ${leaderboard[i].totalXP} XP\n`;
+        }
+      }
+
+      const topxpEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🌟 Ranking de XP')
+        .setDescription(description)
+        .setFooter({ text: '*Mas o que significa força neste vazio?* 🖤' });
+      
+      await message.reply({ embeds: [topxpEmbed] });
     }
   },
 
