@@ -3,6 +3,7 @@ import { EmbedBuilder, PermissionFlagsBits } from 'discord.js';
 import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble } from './economy.js';
 import { getUserInfo, getXPLeaderboard, getUserRank } from './xp.js';
 import { setAFK, removeAFK, isAFK } from './afk.js';
+import { executeRP } from './rpCommands.js';
 
 const SPECIAL_USER_ID = '1441445617003139113';
 
@@ -720,6 +721,65 @@ export const commands = {
         .setFooter({ text: '*Você desapareceu no vazio...* 🌑' });
       
       await message.reply({ embeds: [afkEmbed] });
+    }
+  }
+  tapa: {
+    name: '!tapa',
+    aliases: ['!slap'],
+    description: 'Dê um tapa em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'tapa', targetUser);
+    }
+  },
+
+  beijo: {
+    name: '!beijo',
+    aliases: ['!kiss'],
+    description: 'Beije alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'beijo', targetUser);
+    }
+  },
+
+  abraco: {
+    name: '!abraco',
+    aliases: ['!hug'],
+    description: 'Abrace alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'abraco', targetUser);
+    }
+  },
+
+  casar: {
+    name: '!casar',
+    aliases: ['!marry'],
+    description: 'Case com alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'casar', targetUser);
+    }
+  },
+
+  divorciar: {
+    name: '!divorciar',
+    aliases: ['!divorce'],
+    description: 'Divorce de alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'divorciar', targetUser);
+    }
+  },
+
+  danca: {
+    name: '!danca',
+    aliases: ['!dance'],
+    description: 'Dance com alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'danca', targetUser);
     }
   }
 };
