@@ -15,7 +15,21 @@ async function main() {
     client.once('ready', () => {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
-      client.user.setActivity('seus sussurros...', { type: 'LISTENING' });
+      
+      const activities = [
+        { text: 'estou em tantos servidores', type: 'WATCHING' },
+        { text: 'use !cmds para ajuda', type: 'LISTENING' },
+        { text: 'sou somente uma diva', type: 'PLAYING' }
+      ];
+      
+      let currentActivity = 0;
+      
+      client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
+      
+      setInterval(() => {
+        currentActivity = (currentActivity + 1) % activities.length;
+        client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
+      }, 30000); // Muda a cada 30 segundos
     });
 
     client.on('messageCreate', async (message) => {
