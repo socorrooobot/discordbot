@@ -3,6 +3,7 @@ import { chat } from './gemini.js';
 import { handleCommand, shouldAutoRespond, shouldRespondToMention } from './commands.js';
 import { addXP } from './xp.js';
 import { isAFK, removeAFK } from './afk.js';
+import { registerSlashCommands } from './slashCommands.js';
 import { EmbedBuilder } from 'discord.js';
 
 async function main() {
