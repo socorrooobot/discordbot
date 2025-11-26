@@ -6,7 +6,7 @@ async function main() {
   try {
     const client = await getDiscordClient();
     
-    client.once('ready', () => {
+    client.once('clientReady', () => {
       console.log(`Bot is online! Logged in as ${client.user.tag}`);
       console.log(`Bot is in ${client.guilds.cache.size} server(s)`);
     });
