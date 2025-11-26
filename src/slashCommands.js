@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { chat } from './gemini.js';
-import { getBalance, dailyReward, getLeaderboard, transferMoney, gamble } from './economy.js';
+import { getBalance, dailyReward, getLeaderboard } from './economy.js';
 import { getUserInfo, getXPLeaderboard } from './xp.js';
 import { setAFK, isAFK } from './afk.js';
 import { startGiveaway } from './giveaway.js';
