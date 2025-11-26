@@ -1,5 +1,5 @@
 import { getDiscordClient } from './discord.js';
-import { chat, clearHistory } from './openai.js';
+import { chat, clearHistory } from './gemini.js';
 
 async function main() {
   console.log('Starting Discord bot...');
