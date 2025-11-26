@@ -7,7 +7,6 @@ import { executeRP } from './rpCommands.js';
 import { generateProfileCard } from './profileCard.js';
 
 const SPECIAL_USER_ID = '1441445617003139113';
-const lockedUsers = new Set();
 
 const quotes = [
   "*Tentei demonstrar minha profunda compaixão... por que ninguém responde mais?* 🖤",
@@ -2364,49 +2363,67 @@ export const commands = {
 
   lock: {
     name: '!lock',
-    description: 'Bloqueia sua conta',
+    description: 'Bloqueia o canal',
     execute: async (message) => {
-      if (lockedUsers.has(message.author.id)) {
-        const alreadyLocked = new EmbedBuilder()
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        const noPerm = new EmbedBuilder()
           .setColor('#ff0000')
-          .setTitle('🔒 Já Bloqueado')
-          .setDescription('Sua conta já está bloqueada. Use `!unlock` para desbloqueá-la.')
-          .setFooter({ text: '*Você já está preso em seu próprio silêncio.* 🖤' });
-        await message.reply({ embeds: [alreadyLocked] });
+          .setTitle('❌ Sem Permissão')
+          .setDescription('Você não tem permissão para bloquear canais.')
+          .setFooter({ text: '*Nem todos podem controlar meu mundo.* 🖤' });
+        await message.reply({ embeds: [noPerm] });
         return;
       }
-      
-      lockedUsers.add(message.author.id);
-      const lockEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('🔒 Bloqueado')
-        .setDescription('Sua conta foi bloqueada. Você não pode usar meus comandos agora.\n\nUse `!unlock` para desbloqueá-la.')
-        .setFooter({ text: '*Silêncio. Vazio. Solidão. Perfeito.* 🖤' });
-      await message.reply({ embeds: [lockEmbed] });
+
+      try {
+        await message.channel.permissionOverwrites.edit(message.guild.roles.everyone, {
+          SendMessages: false,
+          AddReactions: false
+        });
+
+        const lockEmbed = new EmbedBuilder()
+          .setColor('#0a0a0a')
+          .setTitle('🔒 Canal Bloqueado')
+          .setDescription('Este canal foi bloqueado. Ninguém pode enviar mensagens agora.')
+          .setFooter({ text: '*O silêncio reina supremo.* 🖤' });
+        await message.reply({ embeds: [lockEmbed] });
+      } catch (error) {
+        console.error('Lock error:', error);
+        await message.reply('Houve um erro ao bloquear o canal! 💀');
+      }
     }
   },
 
   unlock: {
     name: '!unlock',
-    description: 'Desbloqueia sua conta',
+    description: 'Desbloqueia o canal',
     execute: async (message) => {
-      if (!lockedUsers.has(message.author.id)) {
-        const notLocked = new EmbedBuilder()
-          .setColor('#00ff00')
-          .setTitle('🔓 Desbloqueado')
-          .setDescription('Sua conta não está bloqueada.')
-          .setFooter({ text: '*Você sempre esteve livre.* 🖤' });
-        await message.reply({ embeds: [notLocked] });
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        const noPerm = new EmbedBuilder()
+          .setColor('#ff0000')
+          .setTitle('❌ Sem Permissão')
+          .setDescription('Você não tem permissão para desbloquear canais.')
+          .setFooter({ text: '*Nem todos podem controlar meu mundo.* 🖤' });
+        await message.reply({ embeds: [noPerm] });
         return;
       }
-      
-      lockedUsers.delete(message.author.id);
-      const unlockEmbed = new EmbedBuilder()
-        .setColor('#00ff00')
-        .setTitle('🔓 Desbloqueado')
-        .setDescription('Sua conta foi desbloqueada! Você pode usar meus comandos novamente.')
-        .setFooter({ text: '*A luz retorna... ou é apenas uma ilusão?* 🖤' });
-      await message.reply({ embeds: [unlockEmbed] });
+
+      try {
+        await message.channel.permissionOverwrites.edit(message.guild.roles.everyone, {
+          SendMessages: null,
+          AddReactions: null
+        });
+
+        const unlockEmbed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('🔓 Canal Desbloqueado')
+          .setDescription('Este canal foi desbloqueado. As pessoas podem enviar mensagens novamente.')
+          .setFooter({ text: '*A vida retorna ao vazio.* 🖤' });
+        await message.reply({ embeds: [unlockEmbed] });
+      } catch (error) {
+        console.error('Unlock error:', error);
+        await message.reply('Houve um erro ao desbloquear o canal! 💀');
+      }
     }
   }
 };
@@ -2415,16 +2432,6 @@ export async function handleCommand(message, client) {
   const content = message.content.toLowerCase();
   const args = message.content.slice(1).split(/ +/);
   const commandName = args[0];
-
-  if (lockedUsers.has(message.author.id) && commandName !== 'unlock') {
-    const lockedEmbed = new EmbedBuilder()
-      .setColor('#ff0000')
-      .setTitle('🔒 Bloqueado')
-      .setDescription('Sua conta está bloqueada. Use `!unlock` para desbloqueá-la.')
-      .setFooter({ text: '*Silence is golden, but your account is locked.* 🖤' });
-    await message.reply({ embeds: [lockedEmbed] });
-    return true;
-  }
 
   for (const [key, command] of Object.entries(commands)) {
     const matches = command.name === `!${commandName}` || 
