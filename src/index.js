@@ -73,6 +73,27 @@ async function main() {
         return;
       }
 
+      // Responder automaticamente para um usuário específico
+      if (message.author.id === '1441445617003139113' && !content.startsWith('!')) {
+        await message.channel.sendTyping();
+        
+        try {
+          const response = await chat(message.author.id, message.content);
+          
+          if (response.length > 2000) {
+            const chunks = response.match(/.{1,2000}/gs);
+            for (const chunk of chunks) {
+              await message.reply(chunk);
+            }
+          } else {
+            await message.reply(response);
+          }
+        } catch (error) {
+          console.error('AI Error:', error);
+        }
+        return;
+      }
+
       if (message.mentions.has(client.user) && !content.startsWith('!')) {
         const question = message.content.replace(/<@!?\d+>/g, '').trim();
         if (!question) {
