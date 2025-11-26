@@ -1,9 +1,10 @@
 import { chat, clearHistory } from './gemini.js';
-import { EmbedBuilder, PermissionFlagsBits } from 'discord.js';
+import { EmbedBuilder, PermissionFlagsBits, AttachmentBuilder } from 'discord.js';
 import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble } from './economy.js';
 import { getUserInfo, getXPLeaderboard, getUserRank } from './xp.js';
 import { setAFK, removeAFK, isAFK } from './afk.js';
 import { executeRP } from './rpCommands.js';
+import { generateProfileCard } from './profileCard.js';
 
 const SPECIAL_USER_ID = '1441445617003139113';
 
