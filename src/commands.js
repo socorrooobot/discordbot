@@ -515,17 +515,27 @@ export const commands = {
         )
         .setFooter({ text: 'Página 2 de 3 - Requer permissões' });
 
-      // Embed 3: Economia
+      // Embed 3: Economia & XP
       const embed3 = new EmbedBuilder()
         .setColor('#ffd700')
         .setTitle('💰 Comandos da Diva - Economia (Akita Neru)')
         .addFields(
-          { name: '💵 Moeda', value: '`!balance` - Ver saldo\n`!daily` - Ganhar 50/dia\n`!work` - Ganhar 10-40\n`!transfer @usuário <qty>` - Enviar\n`!gamble <qty>` - Apostar 50/50\n`!top` - Ranking', inline: false },
-          { name: '📝 Roleplay', value: 'Use *asteriscos* para RP\n*você faz algo* → eu respondo 🎭', inline: false }
+          { name: '💵 Moeda', value: '`!balance` - Ver saldo\n`!daily` - Ganhar 50/dia\n`!work` - Ganhar 10-40\n`!transfer @usuário <qty>` - Enviar\n`!gamble <qty>` - Apostar 50/50\n`!top` - Ranking', inline: false }
         )
         .setFooter({ text: 'Página 3 de 3' });
 
-      await message.reply({ embeds: [embed1, embed2, embed3] });
+      // Embed 4: XP & Perfil
+      const embed4 = new EmbedBuilder()
+        .setColor('#00ffff')
+        .setTitle('⭐ Comandos da Diva - XP & Perfil')
+        .addFields(
+          { name: '🌟 Sistema de XP', value: 'Ganhe 10 XP por mensagem!\nReceba notificação privada ao subir de nível 🖤', inline: false },
+          { name: '📊 Comandos', value: '`!perfil` - Ver seu nível e XP\n`!topxp` - Ranking de XP do servidor\n`!rankxp` - Alternativa para !topxp', inline: false },
+          { name: '📝 Roleplay', value: 'Use *asteriscos* para RP\n*você faz algo* → eu respondo 🎭', inline: false }
+        )
+        .setFooter({ text: 'Página 4 de 4' });
+
+      await message.reply({ embeds: [embed1, embed2, embed3, embed4] });
     }
   },
 
