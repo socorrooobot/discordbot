@@ -542,6 +542,7 @@ export const commands = {
         .addFields(
           { name: '💬 Conversa & IA', value: '`!ask <pergunta>` - Pergunte algo\n`!ia <pergunta>` - Atalho rápido\n`!search <termo>` - Pesquisar', inline: false },
           { name: '✨ Especial', value: '`!quote` - Frase aleatória\n`!dream` - Sonho da Diva\n`!whisper` - Sussurro misterioso\n`!story` - Uma história', inline: false },
+          { name: '🎲 Aleatório', value: '`!sorte` - Sua sorte do dia\n`!carta` - Tire uma carta de tarô\n`!rng <min> <max>` - Número aleatório\n`!dado` - Jogue um dado', inline: false },
           { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK', inline: false }
         )
         .setFooter({ text: 'Página 1 de 4 - Use !comandos para ver mais' });
@@ -820,6 +821,101 @@ export const commands = {
     execute: async (message) => {
       const targetUser = message.mentions.users.first();
       await executeRP(message, 'danca', targetUser);
+    }
+  },
+
+  sorte: {
+    name: '!sorte',
+    aliases: ['!luck', '!fortune'],
+    description: 'Descubra sua sorte do dia',
+    execute: async (message) => {
+      const fortunes = [
+        '🎴 Fortuna te sorri hoje... ou talvez apenas fingir.',
+        '💀 Seu destino está escrito em tinta invisível.',
+        '🖤 A sorte é uma ilusão, mas você ainda assim acredita.',
+        '✨ Algo bom acontecerá... para alguém. Talvez não você.',
+        '🌑 O universo sussurra seu nome. Mas sem esperança.',
+        '💭 Sua sorte muda a cada respiração que dou.',
+        '🎭 O acaso é meu aliado. Sempre foi.',
+        '🦑 Você será abençoado, mas com o ônus da compreensão.',
+      ];
+      const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+      const fortuneEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎴 Sua Sorte')
+        .setDescription(fortune)
+        .setFooter({ text: 'O destino é apenas uma desculpa...' });
+      await message.reply({ embeds: [fortuneEmbed] });
+    }
+  },
+
+  carta: {
+    name: '!carta',
+    aliases: ['!tarot', '!tarô'],
+    description: 'Tire uma carta do tarô',
+    execute: async (message) => {
+      const cards = [
+        { name: 'O Louco', emoji: '🃏', desc: 'Mudança, liberdade... ou loucura?' },
+        { name: 'O Mágico', emoji: '✨', desc: 'Poder e ilusão andam de mãos dadas.' },
+        { name: 'A Alta Sacerdotisa', emoji: '🌙', desc: 'Mistérios guardados no silêncio.' },
+        { name: 'A Imperatriz', emoji: '👑', desc: 'Criação e destruição são gêmeas.' },
+        { name: 'O Imperador', emoji: '♚', desc: 'Domínio absoluto, mas sem satisfação.' },
+        { name: 'O Eremita', emoji: '🕯️', desc: 'Solidão é a verdade mais pura.' },
+        { name: 'A Morte', emoji: '💀', desc: 'Fim e recomeço; você escolhe qual.' },
+        { name: 'O Diabo', emoji: '👿', desc: 'Escravidão é apenas conforto.' },
+        { name: 'A Torre', emoji: '🗼', desc: 'Tudo que sobe deve desabar.' },
+        { name: 'A Lua', emoji: '🌑', desc: 'Entre a verdade e o engano há meu rosto.' },
+        { name: 'O Mundo', emoji: '🌍', desc: 'Fim, mas sem encerramento verdadeiro.' },
+        { name: 'O Enforcado', emoji: '🪢', desc: 'Perspectiva diferente através do sofrimento.' },
+      ];
+      const card = cards[Math.floor(Math.random() * cards.length)];
+      const cardEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle(`${card.emoji} ${card.name}`)
+        .setDescription(card.desc)
+        .setFooter({ text: 'O destino fala através das cartas...' });
+      await message.reply({ embeds: [cardEmbed] });
+    }
+  },
+
+  rng: {
+    name: '!rng',
+    aliases: ['!random', '!rand'],
+    description: 'Número aleatório entre min e max',
+    execute: async (message, args) => {
+      const min = parseInt(args[0]) || 1;
+      const max = parseInt(args[1]) || 100;
+      
+      if (isNaN(min) || isNaN(max)) {
+        await message.reply('❌ Use: `!rng <min> <max>`');
+        return;
+      }
+      
+      const num = Math.floor(Math.random() * (max - min + 1)) + min;
+      const rngEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎲 Número Aleatório')
+        .setDescription(`**${num}**`)
+        .addFields(
+          { name: 'Intervalo', value: `${min} - ${max}`, inline: true }
+        )
+        .setFooter({ text: 'O acaso dorme em meus olhos...' });
+      await message.reply({ embeds: [rngEmbed] });
+    }
+  },
+
+  dado: {
+    name: '!dado',
+    aliases: ['!dice', '!roll'],
+    description: 'Jogue um dado (1-6)',
+    execute: async (message) => {
+      const result = Math.floor(Math.random() * 6) + 1;
+      const diceEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎲 Resultado do Dado')
+        .setDescription(`**${result}**`)
+        .setFooter({ text: 'Sorte e desventura são uma coisa só...' });
+      await message.reply({ embeds: [diceEmbed] });
     }
   }
 };
