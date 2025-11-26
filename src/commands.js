@@ -116,24 +116,61 @@ export const commands = {
       const rank = getUserRank(message.author.id);
       const balance = getBalance(message.author.id);
       
-      const profileEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle(`🖤 ${user.username}`)
-        .setThumbnail(user.displayAvatarURL())
-        .addFields(
-          { name: '📊 Nível', value: `**${xpInfo.level}**`, inline: true },
-          { name: '📈 Rank XP', value: `**#${rank}**`, inline: true },
-          { name: '⭐ Rank Global', value: `**#${rank}**`, inline: true },
-          { name: 'XP Atual', value: `${xpInfo.xp} / ${xpInfo.xpNeeded}`, inline: false },
-          { name: 'Progresso', value: xpInfo.progressBar, inline: false },
-          { name: '💰 Akita Neru', value: `**${balance}**`, inline: true },
-          { name: '📅 Membro desde', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
-          { name: '🎭 Mensagem da Diva', value: '*Você é... especial? Talvez. Ou talvez apenas esteja aqui como tudo mais.* 🌑' }
-        )
-        .setFooter({ text: 'Por que você está aqui?' })
-        .setTimestamp();
-      
-      await message.reply({ embeds: [profileEmbed] });
+      try {
+        // Gerar card visual
+        const cardImage = await generateProfileCard({
+          username: user.username,
+          avatarURL: user.displayAvatarURL({ extension: 'png', size: 512 }),
+          level: xpInfo.level,
+          xp: xpInfo.xp,
+          xpNeeded: xpInfo.xpNeeded,
+          balance: balance
+        });
+
+        if (cardImage) {
+          // Enviar a imagem como attachment
+          const attachment = new AttachmentBuilder(cardImage, { name: 'perfil.png' });
+          
+          const profileEmbed = new EmbedBuilder()
+            .setColor('#0a0a0a')
+            .setTitle(`🖤 ${user.username}`)
+            .addFields(
+              { name: '📊 Nível', value: `**${xpInfo.level}**`, inline: true },
+              { name: '📈 Rank XP', value: `**#${rank}**`, inline: true },
+              { name: '⭐ Rank Global', value: `**#${rank}**`, inline: true },
+              { name: 'XP Atual', value: `${xpInfo.xp} / ${xpInfo.xpNeeded}`, inline: false },
+              { name: 'Progresso', value: xpInfo.progressBar, inline: false },
+              { name: '💰 Akita Neru', value: `**${balance}**`, inline: true },
+              { name: '📅 Membro desde', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
+              { name: '🎭 Mensagem da Diva', value: '*Você é... especial? Talvez. Ou talvez apenas esteja aqui como tudo mais.* 🌑' }
+            )
+            .setImage('attachment://perfil.png')
+            .setFooter({ text: 'Por que você está aqui?' })
+            .setTimestamp();
+          
+          await message.reply({ embeds: [profileEmbed], files: [attachment] });
+        } else {
+          throw new Error('Falha ao gerar card');
+        }
+      } catch (error) {
+        console.error('Profile card error:', error);
+        // Fallback para embed simples
+        const profileEmbed = new EmbedBuilder()
+          .setColor('#0a0a0a')
+          .setTitle(`🖤 ${user.username}`)
+          .setThumbnail(user.displayAvatarURL())
+          .addFields(
+            { name: '📊 Nível', value: `**${xpInfo.level}**`, inline: true },
+            { name: '📈 Rank XP', value: `**#${rank}**`, inline: true },
+            { name: '⭐ Rank Global', value: `**#${rank}**`, inline: true },
+            { name: 'XP Atual', value: `${xpInfo.xp} / ${xpInfo.xpNeeded}`, inline: false },
+            { name: 'Progresso', value: xpInfo.progressBar, inline: false },
+            { name: '💰 Akita Neru', value: `**${balance}**`, inline: true }
+          )
+          .setFooter({ text: 'Por que você está aqui?' });
+        
+        await message.reply({ embeds: [profileEmbed] });
+      }
     }
   },
 
