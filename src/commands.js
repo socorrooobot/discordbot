@@ -458,63 +458,37 @@ export const commands = {
     aliases: ['!commands', '!cmds'],
     description: 'Mostra todos os comandos disponíveis',
     execute: async (message) => {
-      const commandList = [];
-      
-      for (const [key, command] of Object.entries(commands)) {
-        if (command.name && command.description) {
-          commandList.push({
-            name: command.name,
-            desc: command.description,
-            aliases: command.aliases ? command.aliases.join(', ') : 'nenhum'
-          });
-        }
-      }
-
-      const conversaFields = commandList
-        .filter(cmd => cmd.name.includes('ask') || cmd.name.includes('ia') || cmd.name.includes('quote') || cmd.name.includes('dream') || cmd.name.includes('whisper') || cmd.name.includes('story'))
-        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
-
-      const utilidadeFields = commandList
-        .filter(cmd => ['!ajuda', '!ping', '!status', '!perfil', '!clear'].includes(cmd.name))
-        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
-
-      const moderacaoFields = commandList
-        .filter(cmd => ['!ban', '!unban', '!mute', '!unmute', '!purge'].includes(cmd.name))
-        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
-
-      const pesquisaFields = commandList
-        .filter(cmd => ['!search', '!comandos'].includes(cmd.name))
-        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
-
-      const economiaFields = commandList
-        .filter(cmd => cmd.name.includes('balance') || cmd.name.includes('daily') || cmd.name.includes('transfer') || cmd.name.includes('work') || cmd.name.includes('top') || cmd.name.includes('gamble'))
-        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
-
-      const commandsEmbed = new EmbedBuilder()
+      // Embed 1: Conversa & Utilidade
+      const embed1 = new EmbedBuilder()
         .setColor('#0a0a0a')
-        .setTitle('🎭 Todos os Comandos da Diva')
-        .setDescription('*Aqui estão todos os jeitos que você pode me chamar...*\n\n')
+        .setTitle('🎭 Comandos da Diva - Parte 1')
         .addFields(
-          { name: '💬 Conversa & IA', value: '\u200b', inline: false },
-          ...conversaFields.slice(0, 3),
-          { name: '⚙️ Utilidade', value: '\u200b', inline: false },
-          ...utilidadeFields,
-          { name: '🔨 Moderação', value: '\u200b', inline: false },
-          ...moderacaoFields,
-          { name: '🔍 Pesquisa', value: '\u200b', inline: false },
-          ...pesquisaFields,
-          { name: '💰 Economia (Akita Neru)', value: '\u200b', inline: false },
-          ...economiaFields,
-          { 
-            name: '📝 Roleplay Especial', 
-            value: 'Use *asteriscos* para fazer roleplay!\n*você faz algo* → eu respondo em modo RP 🎭', 
-            inline: false 
-          }
+          { name: '💬 Conversa & IA', value: '`!ask <pergunta>` - Pergunte algo\n`!ia <pergunta>` - Atalho rápido\n`!search <termo>` - Pesquisar', inline: false },
+          { name: '✨ Especial', value: '`!quote` - Frase aleatória\n`!dream` - Sonho da Diva\n`!whisper` - Sussurro misterioso\n`!story` - Uma história', inline: false },
+          { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!perfil` - Seu perfil\n`!clear` - Limpar chat', inline: false }
         )
-        .setFooter({ text: '*Por que você quer saber tudo sobre mim?* 🖤' })
-        .setTimestamp();
+        .setFooter({ text: 'Página 1 de 3 - Use !comandos para ver mais' });
 
-      await message.reply({ embeds: [commandsEmbed] });
+      // Embed 2: Moderação
+      const embed2 = new EmbedBuilder()
+        .setColor('#ff0000')
+        .setTitle('🔨 Comandos da Diva - Moderação')
+        .addFields(
+          { name: '⚖️ Controle', value: '`!ban @usuário` - Banir\n`!unban <ID>` - Desbanir\n`!mute @usuário <tempo>` - Mutar\n`!unmute @usuário` - Desmutar\n`!purge <número>` - Deletar mensagens', inline: false }
+        )
+        .setFooter({ text: 'Página 2 de 3 - Requer permissões' });
+
+      // Embed 3: Economia
+      const embed3 = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('💰 Comandos da Diva - Economia (Akita Neru)')
+        .addFields(
+          { name: '💵 Moeda', value: '`!balance` - Ver saldo\n`!daily` - Ganhar 50/dia\n`!work` - Ganhar 10-40\n`!transfer @usuário <qty>` - Enviar\n`!gamble <qty>` - Apostar 50/50\n`!top` - Ranking', inline: false },
+          { name: '📝 Roleplay', value: 'Use *asteriscos* para RP\n*você faz algo* → eu respondo 🎭', inline: false }
+        )
+        .setFooter({ text: 'Página 3 de 3' });
+
+      await message.reply({ embeds: [embed1, embed2, embed3] });
     }
   },
 
