@@ -97,27 +97,6 @@ async function main() {
           console.error('AI Error:', error);
           await message.reply('Desculpa, tive um probleminha para processar isso. Tenta de novo!');
         }
-        return;
-      }
-
-      // Responder automaticamente a mensagens normais (não comandos)
-      if (!content.startsWith('!')) {
-        await message.channel.sendTyping();
-        
-        try {
-          const response = await chat(message.author.id, message.content);
-          
-          if (response.length > 2000) {
-            const chunks = response.match(/.{1,2000}/gs);
-            for (const chunk of chunks) {
-              await message.reply(chunk);
-            }
-          } else {
-            await message.reply(response);
-          }
-        } catch (error) {
-          console.error('AI Error:', error);
-        }
       }
     });
 
