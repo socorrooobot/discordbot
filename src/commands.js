@@ -2,6 +2,7 @@ import { chat, clearHistory } from './gemini.js';
 import { EmbedBuilder, PermissionFlagsBits } from 'discord.js';
 import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble } from './economy.js';
 import { getUserInfo, getXPLeaderboard, getUserRank } from './xp.js';
+import { setAFK, removeAFK, isAFK } from './afk.js';
 
 const SPECIAL_USER_ID = '1441445617003139113';
 
