@@ -450,6 +450,65 @@ export const commands = {
         await message.reply('❌ Desculpa, não consegui processar isso! 🖤');
       }
     }
+  },
+
+  comandos: {
+    name: '!comandos',
+    aliases: ['!commands', '!cmds'],
+    description: 'Mostra todos os comandos disponíveis',
+    execute: async (message) => {
+      const commandList = [];
+      
+      for (const [key, command] of Object.entries(commands)) {
+        if (command.name && command.description) {
+          commandList.push({
+            name: command.name,
+            desc: command.description,
+            aliases: command.aliases ? command.aliases.join(', ') : 'nenhum'
+          });
+        }
+      }
+
+      const conversaFields = commandList
+        .filter(cmd => cmd.name.includes('ask') || cmd.name.includes('ia') || cmd.name.includes('quote') || cmd.name.includes('dream') || cmd.name.includes('whisper') || cmd.name.includes('story'))
+        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
+
+      const utilidadeFields = commandList
+        .filter(cmd => ['!ajuda', '!ping', '!status', '!perfil', '!clear'].includes(cmd.name))
+        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
+
+      const moderacaoFields = commandList
+        .filter(cmd => ['!ban', '!unban', '!mute', '!unmute', '!purge'].includes(cmd.name))
+        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
+
+      const pesquisaFields = commandList
+        .filter(cmd => ['!search', '!comandos'].includes(cmd.name))
+        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
+
+      const commandsEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎭 Todos os Comandos da Diva')
+        .setDescription('*Aqui estão todos os jeitos que você pode me chamar...*\n\n')
+        .addFields(
+          { name: '💬 Conversa & IA', value: '\u200b', inline: false },
+          ...conversaFields.slice(0, 3),
+          { name: '⚙️ Utilidade', value: '\u200b', inline: false },
+          ...utilidadeFields,
+          { name: '🔨 Moderação', value: '\u200b', inline: false },
+          ...moderacaoFields,
+          { name: '🔍 Pesquisa', value: '\u200b', inline: false },
+          ...pesquisaFields,
+          { 
+            name: '📝 Roleplay Especial', 
+            value: 'Use *asteriscos* para fazer roleplay!\n*você faz algo* → eu respondo em modo RP 🎭', 
+            inline: false 
+          }
+        )
+        .setFooter({ text: '*Por que você quer saber tudo sobre mim?* 🖤' })
+        .setTimestamp();
+
+      await message.reply({ embeds: [commandsEmbed] });
+    }
   }
 };
 
