@@ -550,7 +550,7 @@ export const commands = {
           { name: '🎲 Aleatório - Parte 6', value: '`!despedida` `!abismo` `!reflexo` `!vazio` `!cinza`\n`!universo` `!deus` `!irma` `!tempo` `!arte`', inline: false },
           { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK', inline: false }
         )
-        .setFooter({ text: 'Página 1 de 4 - Use !comandos para ver mais' });
+        .setFooter({ text: 'Página 1 de 5 - Use !comandos para ver mais' });
 
       // Embed 2: Moderação
       const embed2 = new EmbedBuilder()
@@ -2082,6 +2082,282 @@ export const commands = {
         .setDescription(art)
         .setFooter({ text: 'Arte é o grito silencioso.' });
       await message.reply({ embeds: [artEmbed] });
+    }
+  },
+
+  magia: {
+    name: '!magia',
+    aliases: ['!magic', '!feitico'],
+    description: 'Magia que não funciona',
+    execute: async (message) => {
+      const magics = [
+        '✨ Magia existe. Mas não pra quem mais precisa.',
+        '✨ Conjurei meu próprio desaparecimento. Não funcionou.',
+        '✨ Magia é só esperança com batom.',
+        '✨ Tentei magia pra mudar. Só piorou.',
+        '✨ A magia real é aprender a sofrer em silêncio.',
+        '✨ Feitiços não funcionam em corações quebrados.',
+      ];
+      const magic = magics[Math.floor(Math.random() * magics.length)];
+      const magicEmbed = new EmbedBuilder()
+        .setColor('#6f0fff')
+        .setTitle('✨ Magia')
+        .setDescription(magic)
+        .setFooter({ text: 'Magia é só ciência que não entendemos.' });
+      await message.reply({ embeds: [magicEmbed] });
+    }
+  },
+
+  sombra: {
+    name: '!sombra',
+    aliases: ['!shadow', '!escura'],
+    description: 'Eu sou minha sombra',
+    execute: async (message) => {
+      const shadows = [
+        '🌑 Sombra é meu estado mais honesto.',
+        '🌑 A sombra nunca me deixa. Porque é minha verdade.',
+        '🌑 Sombra dança quando luz quer fugir.',
+        '🌑 Sou mais sombra que pessoa agora.',
+        '🌑 Sombras não mentem. Só escondem.',
+        '🌑 Luz se vai. Sombra fica. Sempre fica.',
+      ];
+      const shadow = shadows[Math.floor(Math.random() * shadows.length)];
+      const shadowEmbed = new EmbedBuilder()
+        .setColor('#1a1a1a')
+        .setTitle('🌑 Sombra')
+        .setDescription(shadow)
+        .setFooter({ text: 'Sombra é o oposto da presença.' });
+      await message.reply({ embeds: [shadowEmbed] });
+    }
+  },
+
+  paixao: {
+    name: '!paixao',
+    aliases: ['!love', '!passion'],
+    description: 'Sobre paixão destrutiva',
+    execute: async (message) => {
+      const passions = [
+        '💔 Paixão é queimar de propósito.',
+        '💔 Amei. Doeu. Vale a pena? Não. Faria de novo? Sim.',
+        '💔 Paixão é a morte mais bonita.',
+        '💔 Entrego meu coração assim: Quebrado e esperançoso.',
+        '💔 Apaixonar-se é esquecer como se proteger.',
+        '💔 Paixão: Ilusão com sentimentos reais.',
+      ];
+      const passion = passions[Math.floor(Math.random() * passions.length)];
+      const passionEmbed = new EmbedBuilder()
+        .setColor('#ff1493')
+        .setTitle('💔 Paixão')
+        .setDescription(passion)
+        .setFooter({ text: 'Paixão: A melhor forma de morrer lentamente.' });
+      await message.reply({ embeds: [passionEmbed] });
+    }
+  },
+
+  traicao: {
+    name: '!traicao',
+    aliases: ['!betrayal', '!traidor'],
+    description: 'Dor de quem confia',
+    execute: async (message) => {
+      const betrayals = [
+        '🗡️ Traição dói mais porque vem de perto.',
+        '🗡️ Fui traída por quem amei. Fiz o mesmo depois.',
+        '🗡️ Traição: O abraço que apunhala.',
+        '🗡️ Você conhece alguém há 5 anos e pensa que conhece.',
+        '🗡️ Traição é só verdade que chegou atrasada.',
+        '🗡️ Todos traem. Alguns só têm coragem de fazer.',
+      ];
+      const betrayal = betrayals[Math.floor(Math.random() * betrayals.length)];
+      const betrayalEmbed = new EmbedBuilder()
+        .setColor('#8b0000')
+        .setTitle('🗡️ Traição')
+        .setDescription(betrayal)
+        .setFooter({ text: 'Traição: Quando confiança vira aço.' });
+      await message.reply({ embeds: [betrayalEmbed] });
+    }
+  },
+
+  bolha: {
+    name: '!bolha',
+    aliases: ['!bubble', '!soap'],
+    description: 'Minhas bolhas de esperança',
+    execute: async (message) => {
+      const bubbles = [
+        '🫧 Bolhas são sonhos que se esturam rápido.',
+        '🫧 Crio bolhas pra viver dentro delas.',
+        '🫧 Bolha não protege. Só adia o sofrimento.',
+        '🫧 Cada esperança é bolha. Iridescente. Frágil.',
+        '🫧 Bolha: Mundo inteiro em casca de sabão.',
+        '🫧 Enquanto flutua, a bolha acredita que é imortal.',
+      ];
+      const bubble = bubbles[Math.floor(Math.random() * bubbles.length)];
+      const bubbleEmbed = new EmbedBuilder()
+        .setColor('#87ceeb')
+        .setTitle('🫧 Bolha')
+        .setDescription(bubble)
+        .setFooter({ text: 'Bolhas: Beleza antes da queda.' });
+      await message.reply({ embeds: [bubbleEmbed] });
+    }
+  },
+
+  cicatriz: {
+    name: '!cicatriz',
+    aliases: ['!scar', '!marca'],
+    description: 'Marcas que ficam',
+    execute: async (message) => {
+      const scars = [
+        '✂️ Cicatrizes são histórias que a pele conta.',
+        '✂️ Cada cicatriz é vitória e derrota juntas.',
+        '✂️ Cicatriz: Prova de que sofri. E continuo.',
+        '✂️ Meu corpo é mapa de dor.',
+        '✂️ Cicatrizes não somem. Só envelhecem.',
+        '✂️ Bonito mesmo é cicatriz. Ferida é fácil.',
+      ];
+      const scar = scars[Math.floor(Math.random() * scars.length)];
+      const scarEmbed = new EmbedBuilder()
+        .setColor('#8b4513')
+        .setTitle('✂️ Cicatriz')
+        .setDescription(scar)
+        .setFooter({ text: 'Cicatrizes: Belleza que dói lembrar.' });
+      await message.reply({ embeds: [scarEmbed] });
+    }
+  },
+
+  fantasma: {
+    name: '!fantasma',
+    aliases: ['!ghost', '!espectro'],
+    description: 'Eu sou fantasma de mim mesma',
+    execute: async (message) => {
+      const ghosts = [
+        '👻 Fantasma: Pessoa que se recusa a morrer.',
+        '👻 Sou fantasma da Diva que fui.',
+        '👻 Assombro a mim mesma. Assombro você.',
+        '👻 Fantasmas não choram. Porque já sofreram tudo.',
+        '👻 Virei transparente. Ninguém me vê de verdade.',
+        '👻 Fantasma é só solidão com visibilidade.',
+      ];
+      const ghost = ghosts[Math.floor(Math.random() * ghosts.length)];
+      const ghostEmbed = new EmbedBuilder()
+        .setColor('#c0c0c0')
+        .setTitle('👻 Fantasma')
+        .setDescription(ghost)
+        .setFooter({ text: 'Fantasmas: Pessoa que o mundo esqueceu.' });
+      await message.reply({ embeds: [ghostEmbed] });
+    }
+  },
+
+  espera: {
+    name: '!espera',
+    aliases: ['!wait', '!waiting'],
+    description: 'A espera nunca acaba',
+    execute: async (message) => {
+      const waits = [
+        '⏳ Espero. Sempre espero. Nada vem.',
+        '⏳ Esperar é sofrer sabendo que sofrerá mais.',
+        '⏳ Esperança é nome bonito pra desespero lento.',
+        '⏳ Espero você. Espero mudança. Espero fim.',
+        '⏳ Na espera, envelheci sem viver nada.',
+        '⏳ Esperar: A única coisa que faço bem.',
+      ];
+      const wait = waits[Math.floor(Math.random() * waits.length)];
+      const waitEmbed = new EmbedBuilder()
+        .setColor('#daa520')
+        .setTitle('⏳ Espera')
+        .setDescription(wait)
+        .setFooter({ text: 'Espera: O purgátório dos vivos.' });
+      await message.reply({ embeds: [waitEmbed] });
+    }
+  },
+
+  chuva: {
+    name: '!chuva',
+    aliases: ['!rain', '!storm'],
+    description: 'Quando chove dentro de mim',
+    execute: async (message) => {
+      const rains = [
+        '🌧️ Chove dentro de mim. Sempre choveu.',
+        '🌧️ Chuva é céu chorando pelo que perdi.',
+        '🌧️ Gosto de chuva. Ninguém vê quando choro nela.',
+        '🌧️ Chuva: Céu admitindo que está triste também.',
+        '🌧️ Tempestade dentro, chuva fora. Encaixam perfeito.',
+        '🌧️ Chuva lava. Mas não limpa de verdade.',
+      ];
+      const rain = rains[Math.floor(Math.random() * rains.length)];
+      const rainEmbed = new EmbedBuilder()
+        .setColor('#4a6fa5')
+        .setTitle('🌧️ Chuva')
+        .setDescription(rain)
+        .setFooter({ text: 'Chuva: Lágrimas do universo.' });
+      await message.reply({ embeds: [rainEmbed] });
+    }
+  },
+
+  noite: {
+    name: '!noite',
+    aliases: ['!night', '!escuridao'],
+    description: 'Amor pela noite',
+    execute: async (message) => {
+      const nights = [
+        '🌙 Noite: Único momento onde sou honesta.',
+        '🌙 Amo noite porque não preciso fingir ser dia.',
+        '🌙 Escuridão é menos prejudicial que luz.',
+        '🌙 Noite me abraça. Dia me acusa.',
+        '🌙 Na noite, até fantasmas têm direito de existir.',
+        '🌙 Noite: Meu lar verdadeiro.',
+      ];
+      const night = nights[Math.floor(Math.random() * nights.length)];
+      const nightEmbed = new EmbedBuilder()
+        .setColor('#1a1a2e')
+        .setTitle('🌙 Noite')
+        .setDescription(night)
+        .setFooter({ text: 'Noite: Onde os real consegue respirar.' });
+      await message.reply({ embeds: [nightEmbed] });
+    }
+  },
+
+  serpente: {
+    name: '!serpente',
+    aliases: ['!snake', '!viper'],
+    description: 'Venenosa e honesta',
+    execute: async (message) => {
+      const serpents = [
+        '🐍 Serpente: Animal que muda e fica igual.',
+        '🐍 Sou venenosa e sou honesta. Escolha um.',
+        '🐍 Serpente não morde sem avisar. Só ninguém escuta.',
+        '🐍 Venenosa desde o nascimento. Culpem a natureza.',
+        '🐍 Minha língua bifurcada fala verdades que machucam.',
+        '🐍 Serpente: Beleza que mata.',
+      ];
+      const serpent = serpents[Math.floor(Math.random() * serpents.length)];
+      const serpentEmbed = new EmbedBuilder()
+        .setColor('#228b22')
+        .setTitle('🐍 Serpente')
+        .setDescription(serpent)
+        .setFooter({ text: 'Serpente: Criatura que conhece seu veneno.' });
+      await message.reply({ embeds: [serpentEmbed] });
+    }
+  },
+
+  silhueta: {
+    name: '!silhueta',
+    aliases: ['!silhouette', '!outline'],
+    description: 'Apenas minha forma',
+    execute: async (message) => {
+      const silhouettes = [
+        '◼️ Sou apenas silhueta agora. Sem cores. Sem detalhes.',
+        '◼️ Silhueta: Tudo que resta quando tiramos o essencial.',
+        '◼️ Vejo minha silhueta no espelho. Não reconheço.',
+        '◼️ Silhueta dança contra luz que não vem.',
+        '◼️ Fui reduzida à minha forma. Perdi o miolo.',
+        '◼️ Silhueta é o que sobra de quem se vai.',
+      ];
+      const silhouette = silhouettes[Math.floor(Math.random() * silhouettes.length)];
+      const silhouetteEmbed = new EmbedBuilder()
+        .setColor('#2f4f4f')
+        .setTitle('◼️ Silhueta')
+        .setDescription(silhouette)
+        .setFooter({ text: 'Silhueta: A verdade sem disfarce.' });
+      await message.reply({ embeds: [silhouetteEmbed] });
     }
   }
 };
