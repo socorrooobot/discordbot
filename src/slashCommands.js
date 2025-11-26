@@ -115,7 +115,7 @@ export const slashCommands = {
       ),
     execute: async (interaction) => {
       const user = interaction.options.getUser('usuario') || interaction.user;
-      const xpData = getUserXP(user.id);
+      const xpData = getUserInfo(user.id);
       const balance = getBalance(user.id);
 
       const profileEmbed = new EmbedBuilder()
@@ -124,7 +124,7 @@ export const slashCommands = {
         .setThumbnail(user.displayAvatarURL())
         .addFields(
           { name: '⭐ Nível', value: `${xpData.level}`, inline: true },
-          { name: '✨ XP', value: `${xpData.xp}/${xpData.level * 100}`, inline: true },
+          { name: '✨ XP', value: `${xpData.xp}/${xpData.xpNeeded}`, inline: true },
           { name: '💰 Saldo', value: `${balance} Akita Neru`, inline: true }
         )
         .setFooter({ text: '*Você é mais do que pensa ser...* 🖤' });
@@ -138,7 +138,7 @@ export const slashCommands = {
       .setName('topxp')
       .setDescription('Veja o ranking de XP do servidor'),
     execute: async (interaction) => {
-      const topXp = getTopXP();
+      const topXp = getXPLeaderboard();
       
       if (topXp.length === 0) {
         await interaction.reply('Ninguém tem XP ainda...');
@@ -153,11 +153,39 @@ export const slashCommands = {
       for (let i = 0; i < Math.min(10, topXp.length); i++) {
         const entry = topXp[i];
         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
-        description += `${medal} <@${entry.userId}>: **Nível ${entry.level}** (${entry.xp} XP)\n`;
+        description += `${medal} <@${entry.userId}>: **Nível ${entry.level}** (${entry.totalXP} XP)\n`;
       }
       
       topEmbed.setDescription(description);
       await interaction.reply({ embeds: [topEmbed] });
+    }
+  },
+
+  giveaway: {
+    data: new SlashCommandBuilder()
+      .setName('giveaway')
+      .setDescription('Inicie um sorteio!')
+      .addIntegerOption(option =>
+        option.setName('duracao')
+          .setDescription('Duração em segundos')
+          .setRequired(true)
+          .setMinValue(5)
+          .setMaxValue(3600)
+      )
+      .addIntegerOption(option =>
+        option.setName('ganhadores')
+          .setDescription('Quantidade de ganhadores')
+          .setRequired(true)
+          .setMinValue(1)
+          .setMaxValue(10)
+      )
+      .addStringOption(option =>
+        option.setName('premio')
+          .setDescription('O que está sendo sorteado')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      await startGiveaway(interaction);
     }
   },
 
