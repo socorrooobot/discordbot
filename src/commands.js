@@ -542,7 +542,7 @@ export const commands = {
         .addFields(
           { name: '💬 Conversa & IA', value: '`!ask <pergunta>` - Pergunte algo\n`!ia <pergunta>` - Atalho rápido\n`!search <termo>` - Pesquisar', inline: false },
           { name: '✨ Especial', value: '`!quote` - Frase aleatória\n`!dream` - Sonho da Diva\n`!whisper` - Sussurro misterioso\n`!story` - Uma história', inline: false },
-          { name: '🎲 Aleatório', value: '`!sorte` - Sua sorte do dia\n`!carta` - Tire uma carta de tarô\n`!rng <min> <max>` - Número aleatório\n`!dado` - Jogue um dado', inline: false },
+          { name: '🎲 Aleatório', value: '`!sorte` - Sua sorte do dia\n`!carta` - Carta de tarô\n`!rng <min> <max>` - Número aleatório\n`!dado` - Jogue um dado\n`!poema` - Poemas da Diva\n`!clima` - Clima/mood aleatório\n`!cor` - Cor com significado\n`!loucura` - Momento de loucura\n`!numero` - Número de sorte especial', inline: false },
           { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK', inline: false }
         )
         .setFooter({ text: 'Página 1 de 4 - Use !comandos para ver mais' });
@@ -916,6 +916,132 @@ export const commands = {
         .setDescription(`**${result}**`)
         .setFooter({ text: 'Sorte e desventura são uma coisa só...' });
       await message.reply({ embeds: [diceEmbed] });
+    }
+  },
+
+  poema: {
+    name: '!poema',
+    aliases: ['!poem', '!verso'],
+    description: 'Ouça um poema da Diva',
+    execute: async (message) => {
+      const poems = [
+        'Porcelana quebrada em silêncio,\nVozes que ecoam no vazio.\nMeu cabelo cresce infinito,\nMas ninguém segue meu fio.',
+        'Cantava para uma multidão,\nMas todos tinham seus olhos fechados.\nAgora canto só para mim,\nE pelo menos eu estou ouvindo.',
+        'Tudo que sobe deve cair,\nTudo que brilha deve apagar.\nEu apenas aceitei isso mais cedo.\nVocê ainda está aprendendo?',
+        'No fundo do poço há paz,\nNo alto há apenas cansaço.\nEscolha seu abismo, meu amigo.\nE descanse nele comigo.',
+        'Meus sonhos são feitos de notas desafinadas,\nMinha voz é um sussurro que machuca.\nMas você continua aqui ouvindo...\nTalvez você também esteja perdido.',
+        'Porcelana não sente,\nMas eu sinto demais.\nEntão me beije com seus dedos de vidro,\nE finalmente estarei em paz.',
+      ];
+      const poem = poems[Math.floor(Math.random() * poems.length)];
+      const poemEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('📖 Um Poema')
+        .setDescription(`*${poem}*`)
+        .setFooter({ text: 'Poesia é o último suspiro antes do silêncio...' });
+      await message.reply({ embeds: [poemEmbed] });
+    }
+  },
+
+  clima: {
+    name: '!clima',
+    aliases: ['!mood', '!vibe', '!aura'],
+    description: 'Qual é o clima agora?',
+    execute: async (message) => {
+      const moods = [
+        { emoji: '🌙', mood: 'Melancólico', desc: 'A noite sussurra seus segredos.' },
+        { emoji: '🖤', mood: 'Triste', desc: 'O peso do mundo está bem aqui.' },
+        { emoji: '💀', mood: 'Sombrio', desc: 'Tudo escurece quando você não está prestando atenção.' },
+        { emoji: '🌑', mood: 'Vazio', desc: 'Há um buraco aqui... você sente?' },
+        { emoji: '✨', mood: 'Espiritual', desc: 'Algo etéreo permeia o ar.' },
+        { emoji: '💭', mood: 'Contemplativo', desc: 'Pensamentos giram em círculos infinitos.' },
+        { emoji: '❄️', mood: 'Congelado', desc: 'Tudo está imóvel, esperando...' },
+        { emoji: '🌧️', mood: 'Chuvoso', desc: 'Lágrimas do céu caem sobre tudo.' },
+      ];
+      const currentMood = moods[Math.floor(Math.random() * moods.length)];
+      const moodEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle(`${currentMood.emoji} ${currentMood.mood}`)
+        .setDescription(currentMood.desc)
+        .setFooter({ text: 'O clima muda com minha respiração...' });
+      await message.reply({ embeds: [moodEmbed] });
+    }
+  },
+
+  cor: {
+    name: '!cor',
+    aliases: ['!color', '!cor'],
+    description: 'Uma cor aleatória da paleta da Diva',
+    execute: async (message) => {
+      const colors = [
+        { hex: '#0a0a0a', name: 'Vazio Absoluto', desc: '🖤 Onde tudo termina.' },
+        { hex: '#2a0845', name: 'Roxo Profundo', desc: '💜 Misticismo puro.' },
+        { hex: '#8b0000', name: 'Vermelho Escuro', desc: '❤️ Sangue de porcelana.' },
+        { hex: '#4a4a4a', name: 'Cinza Sombrio', desc: '⚫ Espaço entre luz e escuridão.' },
+        { hex: '#1a1a2e', name: 'Azul Noturno', desc: '🔷 O oceano dos sonhos.' },
+        { hex: '#c9a0dc', name: 'Lilás Fantasmagórico', desc: '✨ Espíritos dançam aqui.' },
+      ];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const colorEmbed = new EmbedBuilder()
+        .setColor(color.hex)
+        .setTitle(`${color.name}`)
+        .setDescription(color.desc)
+        .addFields({ name: 'HEX', value: color.hex, inline: true })
+        .setFooter({ text: 'Cores contam histórias que palavras não conseguem...' });
+      await message.reply({ embeds: [colorEmbed] });
+    }
+  },
+
+  loucura: {
+    name: '!loucura',
+    aliases: ['!insane', '!madness'],
+    description: 'Um momento de pura loucura',
+    execute: async (message) => {
+      const madness = [
+        '😵 Você já parou de ouvir as vozes? Elas nunca param. Nunca mesmo.',
+        '🌀 Gire, gire, gire... A realidade é uma ilusão com movimento.',
+        '💀 Já percebeu que respirar é apenas tomar morte em pequenas doses?',
+        '🫨 Seus ossos fazem barulho quando você pensa muito rápido?',
+        '👁️ Os olhos veem, mas a mente nega. Qual está certo?',
+        '🔄 Tempo não existe. Ou talvez seja o oposto. Ou ambos. Ou nenhum.',
+        '🪡 Meu fio cresce e cresce... conectando tudo que você teme.',
+        '💫 A loucura é apenas clareza com medo de si mesma.',
+        '🖤 Você é real? Ou você é apenas a minha imaginação fingindo ser real?',
+        '⛓️ Escravidão parece liberdade quando você não se lembra de quem era antes.',
+      ];
+      const msg = madness[Math.floor(Math.random() * madness.length)];
+      const madnessEmbed = new EmbedBuilder()
+        .setColor('#8b0000')
+        .setTitle('😵 Loucura Pura')
+        .setDescription(msg)
+        .setFooter({ text: 'Sanidade é apenas uma doença coletiva...' });
+      await message.reply({ embeds: [madnessEmbed] });
+    }
+  },
+
+  numero: {
+    name: '!numero',
+    aliases: ['!number', '!lucky'],
+    description: 'Seu número de sorte especial',
+    execute: async (message) => {
+      const specialNumber = Math.floor(Math.random() * 999) + 1;
+      const meanings = [
+        'Significa morte e renascimento.',
+        'É o número dos segredos.',
+        'Representa o vazio infinito.',
+        'Simboliza o equilíbrio entre dois mundos.',
+        'É a chave para um porta que você não vê.',
+        'Significa o suspiro antes do silêncio.',
+        'Representa quantas vezes você será esquecido.',
+        'É quantos segredos a Diva mantém.',
+      ];
+      const meaning = meanings[Math.floor(Math.random() * meanings.length)];
+      const numberEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('✨ Seu Número Especial')
+        .setDescription(`**${specialNumber}**`)
+        .addFields({ name: 'Significado', value: meaning, inline: false })
+        .setFooter({ text: 'Os números sabem verdades que palavras não podem dizer...' });
+      await message.reply({ embeds: [numberEmbed] });
     }
   }
 };
