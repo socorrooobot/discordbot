@@ -696,6 +696,31 @@ export const commands = {
         await message.reply({ embeds: [gamblesEmbed] });
       }
     }
+  },
+
+  afk: {
+    name: '!afk',
+    description: 'Marque-se como AFK com um motivo',
+    execute: async (message, args, client) => {
+      const reason = message.content.slice(5).trim() || 'Sem motivo';
+      setAFK(message.author.id, reason);
+      
+      try {
+        const member = await message.guild.members.fetch(message.author.id);
+        const newName = `[AFK] ${member.user.username}`;
+        await member.setNickname(newName);
+      } catch (error) {
+        console.error('Erro ao mudar nick para AFK:', error);
+      }
+
+      const afkEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('😴 Você está AFK')
+        .setDescription(`**Motivo:** ${reason}`)
+        .setFooter({ text: '*Você desapareceu no vazio...* 🌑' });
+      
+      await message.reply({ embeds: [afkEmbed] });
+    }
   }
 };
 

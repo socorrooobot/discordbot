@@ -2,6 +2,8 @@ import { getDiscordClient } from './discord.js';
 import { chat } from './gemini.js';
 import { handleCommand, shouldAutoRespond, shouldRespondToMention } from './commands.js';
 import { addXP } from './xp.js';
+import { isAFK, removeAFK } from './afk.js';
+import { EmbedBuilder } from 'discord.js';
 
 async function main() {
   console.log('Starting Discord bot...');
@@ -17,6 +19,37 @@ async function main() {
 
     client.on('messageCreate', async (message) => {
       if (message.author.bot) return;
+
+      // Verificar se pessoa AFK escreveu algo
+      const userAFK = isAFK(message.author.id);
+      if (userAFK && !message.content.startsWith('!')) {
+        removeAFK(message.author.id);
+        
+        try {
+          const member = await message.guild.members.fetch(message.author.id);
+          await member.setNickname(null);
+        } catch (error) {
+          console.error('Erro ao remover nick AFK:', error);
+        }
+
+        const afkRemoveEmbed = new EmbedBuilder()
+          .setColor('#0a0a0a')
+          .setTitle('🎭 Você voltou!')
+          .setDescription('*Saiu do vazio...*')
+          .setFooter({ text: 'Bem-vindo de volta ao mundo das vivas. 🖤' });
+        
+        await message.reply({ embeds: [afkRemoveEmbed] });
+      }
+
+      // Verificar se mencionou alguém AFK
+      const mentions = message.mentions.users;
+      for (const [userId, user] of mentions) {
+        const afkData = isAFK(userId);
+        if (afkData && message.author.id !== client.user.id) {
+          await message.reply(`🌑 **${user.username} está AFK!**\n\n**Motivo:** ${afkData.reason}`);
+          break;
+        }
+      }
 
       // Sistema de XP
       const xpResult = addXP(message.author.id);
