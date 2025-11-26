@@ -15,37 +15,39 @@ async function main() {
     client.on('messageCreate', async (message) => {
       if (message.author.bot) return;
 
-      if (message.content.toLowerCase() === '!ping') {
+      const content = message.content.toLowerCase();
+
+      if (content === '!ping') {
         await message.reply('Pong!');
         return;
       }
 
-      if (message.content.toLowerCase() === '!hello') {
-        await message.reply(`Hello, ${message.author.username}!`);
+      if (content === '!hello' || content === '!ola' || content === '!olá') {
+        await message.reply(`Olá, ${message.author.username}! Tudo bem?`);
         return;
       }
 
-      if (message.content.toLowerCase() === '!clear') {
+      if (content === '!clear' || content === '!limpar') {
         clearHistory(message.author.id);
         await message.reply('Seu histórico de conversa foi limpo!');
         return;
       }
 
-      if (message.content.toLowerCase() === '!help') {
+      if (content === '!help' || content === '!ajuda') {
         await message.reply(
           '**Comandos Disponíveis:**\n' +
           '`!ask <pergunta>` - Pergunte qualquer coisa para a IA\n' +
-          '`!clear` - Limpar seu histórico de conversa\n' +
+          '`!limpar` - Limpar seu histórico de conversa\n' +
           '`!ping` - Verificar se o bot está respondendo\n' +
-          '`!hello` - Receber uma saudação\n' +
-          '`!help` - Mostrar esta mensagem de ajuda\n\n' +
+          '`!ola` - Receber uma saudação\n' +
+          '`!ajuda` - Mostrar esta mensagem\n\n' +
           '*Você também pode me mencionar para conversar!*'
         );
         return;
       }
 
-      if (message.content.toLowerCase().startsWith('!ask ')) {
-        const question = message.content.slice(5).trim();
+      if (content.startsWith('!ask ') || content.startsWith('!pergunte ')) {
+        const question = message.content.slice(content.startsWith('!ask ') ? 5 : 10).trim();
         if (!question) {
           await message.reply('Por favor, faça uma pergunta! Use: `!ask <sua pergunta>`');
           return;
@@ -71,10 +73,10 @@ async function main() {
         return;
       }
 
-      if (message.mentions.has(client.user)) {
+      if (message.mentions.has(client.user) && !content.startsWith('!')) {
         const question = message.content.replace(/<@!?\d+>/g, '').trim();
         if (!question) {
-          await message.reply('Oi! Me pergunte qualquer coisa ou use `!help` para ver meus comandos.');
+          await message.reply('Oi! Me pergunte qualquer coisa ou use `!ajuda` para ver meus comandos.');
           return;
         }
 
