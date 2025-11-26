@@ -570,10 +570,11 @@ export const commands = {
         .setTitle('⭐ Comandos da Diva - XP & Perfil')
         .addFields(
           { name: '🌟 Sistema de XP', value: 'Ganhe 10 XP por mensagem!\nReceba notificação privada ao subir de nível 🖤', inline: false },
-          { name: '📊 Comandos', value: '`!perfil` - Ver seu nível e XP\n`!topxp` - Ranking de XP do servidor\n`!rankxp` - Alternativa para !topxp', inline: false },
-          { name: '😴 AFK', value: '`!afk <motivo>` - Fique AFK\nRecebirá DM se alguém mencionar você 🌑', inline: false }
+          { name: '📊 Comandos', value: '`!perfil` - Gera card visual com suas info!\n`!topxp` - Ranking de XP do servidor\n`!rankxp` - Alternativa para !topxp', inline: false },
+          { name: '😴 AFK', value: '`!afk <motivo>` - Fique AFK\nRecebirá DM se alguém mencionar você 🌑', inline: false },
+          { name: '💕 Roleplay', value: '`!tapa` `!beijo` `!abraço` `!casar` `!divorciar` `!dança` - Com gifs! 🎭', inline: false }
         )
-        .setFooter({ text: 'Página 4 de 4' });
+        .setFooter({ text: 'Página 4 de 4 - Use / para slash commands!' });
 
       await message.reply({ embeds: [embed1, embed2, embed3, embed4] });
     }
