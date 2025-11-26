@@ -6,7 +6,6 @@ import { setAFK, removeAFK, isAFK } from './afk.js';
 import { executeRP } from './rpCommands.js';
 import { generateProfileCard } from './profileCard.js';
 
-const SPECIAL_USER_ID = '1441445617003139113';
 
 const quotes = [
   "*Tentei demonstrar minha profunda compaixão... por que ninguém responde mais?* 🖤",
@@ -2450,10 +2449,6 @@ export async function handleCommand(message, client) {
   }
   
   return false;
-}
-
-export function shouldAutoRespond(message) {
-  return message.author.id === SPECIAL_USER_ID && !message.content.toLowerCase().startsWith('!');
 }
 
 export function shouldRespondToMention(message, client) {

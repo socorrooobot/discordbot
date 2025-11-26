@@ -1,6 +1,6 @@
 import { getDiscordClient } from './discord.js';
 import { chat } from './gemini.js';
-import { handleCommand, shouldAutoRespond, shouldRespondToMention } from './commands.js';
+import { handleCommand, shouldRespondToMention } from './commands.js';
 import { addXP } from './xp.js';
 import { isAFK, removeAFK } from './afk.js';
 import { registerSlashCommands } from './slashCommands.js';
@@ -87,26 +87,6 @@ async function main() {
       if (message.content.startsWith('!')) {
         const wasHandled = await handleCommand(message, client);
         if (wasHandled) return;
-      }
-
-      // Responder automaticamente para usuário específico
-      if (shouldAutoRespond(message)) {
-        await message.channel.sendTyping();
-        try {
-          const response = await chat(message.author.id, message.content);
-          
-          if (response.length > 2000) {
-            const chunks = response.match(/.{1,2000}/gs);
-            for (const chunk of chunks) {
-              await message.reply(chunk);
-            }
-          } else {
-            await message.reply(response);
-          }
-        } catch (error) {
-          console.error('AI Error:', error);
-        }
-        return;
       }
 
       // Responder quando mencionado
