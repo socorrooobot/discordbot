@@ -23,14 +23,17 @@ async function main() {
       ];
       
       let currentActivity = 0;
-      const activities = getActivities();
       
+      // Atualizar atividade imediatamente
+      let activities = getActivities();
       client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
       
+      // Mudar atividade a cada 30 segundos (recalculando para pegar servidores atualizados)
       setInterval(() => {
-        currentActivity = (currentActivity + 1) % activities.length;
+        currentActivity = (currentActivity + 1) % 3;
+        activities = getActivities(); // Recalcula para pegar número de servidores atualizado
         client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
-      }, 30000); // Muda a cada 30 segundos
+      }, 30000);
     });
 
     client.on('messageCreate', async (message) => {
