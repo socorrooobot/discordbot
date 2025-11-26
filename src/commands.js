@@ -722,7 +722,8 @@ export const commands = {
       
       await message.reply({ embeds: [afkEmbed] });
     }
-  }
+  },
+
   tapa: {
     name: '!tapa',
     aliases: ['!slap'],

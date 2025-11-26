@@ -236,6 +236,90 @@ export const slashCommands = {
     }
   },
 
+  tapa: {
+    data: new SlashCommandBuilder()
+      .setName('tapa')
+      .setDescription('Dê um tapa em alguém')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Quem você quer tapar')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      await executeRPSlash(interaction, 'tapa');
+    }
+  },
+
+  beijo: {
+    data: new SlashCommandBuilder()
+      .setName('beijo')
+      .setDescription('Beije alguém')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Quem você quer beijar')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      await executeRPSlash(interaction, 'beijo');
+    }
+  },
+
+  abraco: {
+    data: new SlashCommandBuilder()
+      .setName('abraco')
+      .setDescription('Abrace alguém')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Quem você quer abraçar')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      await executeRPSlash(interaction, 'abraco');
+    }
+  },
+
+  casar: {
+    data: new SlashCommandBuilder()
+      .setName('casar')
+      .setDescription('Case com alguém')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Quem você quer casar')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      await executeRPSlash(interaction, 'casar');
+    }
+  },
+
+  divorciar: {
+    data: new SlashCommandBuilder()
+      .setName('divorciar')
+      .setDescription('Divorce de alguém')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('De quem você quer se divorciar')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      await executeRPSlash(interaction, 'divorciar');
+    }
+  },
+
+  danca: {
+    data: new SlashCommandBuilder()
+      .setName('danca')
+      .setDescription('Dance com alguém')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Com quem você quer dançar')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      await executeRPSlash(interaction, 'danca');
+    }
+  },
+
   cmds: {
     data: new SlashCommandBuilder()
       .setName('cmds')
@@ -248,7 +332,7 @@ export const slashCommands = {
           { name: '💬 Conversa', value: '`/ask` - Pergunte algo à Diva', inline: false },
           { name: '⚙️ Utilidade', value: '`/ping` - Latência do bot\n`/afk` - Marque-se como AFK', inline: false }
         )
-        .setFooter({ text: 'Página 1 de 2' });
+        .setFooter({ text: 'Página 1 de 3' });
 
       const embed2 = new EmbedBuilder()
         .setColor('#ffd700')
@@ -257,9 +341,17 @@ export const slashCommands = {
           { name: '💵 Moeda', value: '`/balance` - Ver saldo\n`/daily` - Recompensa diária\n`/top` - Ranking', inline: false },
           { name: '⭐ XP', value: '`/perfil` - Seu perfil\n`/topxp` - Ranking de XP', inline: false }
         )
-        .setFooter({ text: 'Página 2 de 2 - Use ! para comandos com prefixo' });
+        .setFooter({ text: 'Página 2 de 3' });
 
-      await interaction.reply({ embeds: [embed1, embed2] });
+      const embed3 = new EmbedBuilder()
+        .setColor('#ff69b4')
+        .setTitle('🎭 Slash Commands - Roleplay')
+        .addFields(
+          { name: '💕 RP com Gifs', value: '`/tapa` - Dê um tapa\n`/beijo` - Beije alguém\n`/abraco` - Abrace\n`/casar` - Case\n`/divorciar` - Divorce\n`/danca` - Dance', inline: false }
+        )
+        .setFooter({ text: 'Página 3 de 3 - Use ! para comandos com prefixo' });
+
+      await interaction.reply({ embeds: [embed1, embed2, embed3] });
     }
   }
 };
