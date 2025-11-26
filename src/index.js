@@ -16,13 +16,14 @@ async function main() {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
       
-      const activities = [
-        { text: 'estou em tantos servidores', type: 'WATCHING' },
+      const getActivities = () => [
+        { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
         { text: 'use !cmds para ajuda', type: 'LISTENING' },
         { text: 'sou somente uma diva', type: 'PLAYING' }
       ];
       
       let currentActivity = 0;
+      const activities = getActivities();
       
       client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
       
