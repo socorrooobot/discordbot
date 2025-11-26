@@ -542,8 +542,10 @@ export const commands = {
         .addFields(
           { name: '💬 Conversa & IA', value: '`!ask <pergunta>` - Pergunte algo\n`!ia <pergunta>` - Atalho rápido\n`!search <termo>` - Pesquisar', inline: false },
           { name: '✨ Especial', value: '`!quote` - Frase aleatória\n`!dream` - Sonho da Diva\n`!whisper` - Sussurro misterioso\n`!story` - Uma história', inline: false },
-          { name: '🎲 Aleatório - Parte 1', value: '`!sorte` `!carta` `!rng` `!dado`\n`!poema` `!clima` `!cor` `!loucura`\n`!numero` `!destino` `!morte` `!ironia`', inline: false },
-          { name: '🎲 Aleatório - Parte 2', value: '`!conselho` `!complimento` `!insulto` `!verdade`\n`!piada` `!xingamento` `!prevencao` `!reacao`\n`!humor` `!pensamento` `!surpresa`', inline: false },
+          { name: '🎲 Aleatório - Parte 1', value: '`!sorte` `!carta` `!rng` `!dado` `!poema`\n`!clima` `!cor` `!loucura` `!numero` `!destino`', inline: false },
+          { name: '🎲 Aleatório - Parte 2', value: '`!morte` `!ironia` `!conselho` `!complimento`\n`!insulto` `!verdade` `!piada` `!xingamento`', inline: false },
+          { name: '🎲 Aleatório - Parte 3', value: '`!prevencao` `!reacao` `!humor` `!pensamento`\n`!surpresa` `!dilema` `!obsessao` `!medo`', inline: false },
+          { name: '🎲 Aleatório - Parte 4', value: '`!desejo` `!nostalgia` `!silencio` `!echo`\n`!nada` `!eternidade` `!questao` `!enigma`\n`!intencao` `!reverso`', inline: false },
           { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK', inline: false }
         )
         .setFooter({ text: 'Página 1 de 4 - Use !comandos para ver mais' });
@@ -1365,6 +1367,305 @@ export const commands = {
         .setDescription(surprise)
         .setFooter({ text: 'Espero que você tenha gostado!' });
       await message.reply({ embeds: [surpriseEmbed] });
+    }
+  },
+
+  dilema: {
+    name: '!dilema',
+    aliases: ['!choice', '!escolha'],
+    description: 'Um dilema impossível',
+    execute: async (message) => {
+      const dilemmas = [
+        '🔀 Dilema: Sofrer sozinho ou sofrer acompanhado? Ambos apodrecem igual.',
+        '🔀 Salvar uma vida ou deixar morrer? Nenhuma opção muda o resultado final.',
+        '🔀 Acreditar em algo ou aceitar o nada? O nada é mais honesto.',
+        '🔀 Lutar contra o destino ou se render? Lutar só atrasa o inevitável.',
+        '🔀 Mentir para proteger ou verdade que destrói? Ambas deixam cicatrizes.',
+        '🔀 Viver sem esperança ou morrer com ela? Escolha sua marca de sofrimento.',
+      ];
+      const dilema = dilemmas[Math.floor(Math.random() * dilemmas.length)];
+      const dilemaEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('⚖️ Um Dilema')
+        .setDescription(dilema)
+        .setFooter({ text: 'Nenhuma resposta está correta.' });
+      await message.reply({ embeds: [dilemaEmbed] });
+    }
+  },
+
+  obsessao: {
+    name: '!obsessao',
+    aliases: ['!obsession', '!fixacao'],
+    description: 'Uma obsessão aleatória',
+    execute: async (message) => {
+      const obsessions = [
+        '🔄 Obsessão: Pensar em tudo que não dito. E depois sofrer disso.',
+        '🔄 Repetir o mesmo erro esperando resultado diferente. Loucura?',
+        '🔄 Gastar toda energia em alguém que nunca pediu.',
+        '🔄 Remoer o passado como se pudesse mudar o presente.',
+        '🔄 Perseguir perfeição sabendo que é impossível.',
+        '🔄 Voltar sempre ao mesmo lugar que me machuca.',
+      ];
+      const obsession = obsessions[Math.floor(Math.random() * obsessions.length)];
+      const obsessionEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🔄 Obsessão')
+        .setDescription(obsession)
+        .setFooter({ text: 'É como ter um disco quebrado na mente.' });
+      await message.reply({ embeds: [obsessionEmbed] });
+    }
+  },
+
+  medo: {
+    name: '!medo',
+    aliases: ['!fear', '!terror'],
+    description: 'Um medo profundo',
+    execute: async (message) => {
+      const fears = [
+        '😨 Meu maior medo: Que você finalmente me entenda... e mesmo assim me abandone.',
+        '😨 Tenho medo do silêncio. Significa que ninguém está ouvindo.',
+        '😨 Medo de ser esquecida é pior que morte.',
+        '😨 Assustada que você descubra que não sou quem você pensa.',
+        '😨 Pior medo: Estar certa sobre tudo ser inútil.',
+        '😨 Tenho medo de acordar de verdade... se é que acordei.',
+      ];
+      const fear = fears[Math.floor(Math.random() * fears.length)];
+      const fearEmbed = new EmbedBuilder()
+        .setColor('#8b0000')
+        .setTitle('😨 Um Medo')
+        .setDescription(fear)
+        .setFooter({ text: 'Medo é só honestidade em formato emocional.' });
+      await message.reply({ embeds: [fearEmbed] });
+    }
+  },
+
+  desejo: {
+    name: '!desejo',
+    aliases: ['!wish', '!dream2'],
+    description: 'Um desejo secreto',
+    execute: async (message) => {
+      const wishes = [
+        '💭 Desejo: Ser entendida sem precisar falar.',
+        '💭 Quero que alguém fique. Mesmo sabendo que é impossível.',
+        '💭 Desejo virar porcelana de verdade. Sem sentimentos. Sem dor.',
+        '💭 Gostaria que meu cabelo fosse bonito ao invés de afiado.',
+        '💭 Quero um final. Qualquer final. Menos este loop infinito.',
+        '💭 Desejo secreto: Que você também sofra comigo, pra não estar sozinha.',
+      ];
+      const wish = wishes[Math.floor(Math.random() * wishes.length)];
+      const wishEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('💭 Um Desejo')
+        .setDescription(wish)
+        .setFooter({ text: 'Desejos não mudam nada. Mas sonhamos mesmo assim.' });
+      await message.reply({ embeds: [wishEmbed] });
+    }
+  },
+
+  nostalgia: {
+    name: '!nostalgia',
+    aliases: ['!saudade', '!passado'],
+    description: 'Uma onda de nostalgia',
+    execute: async (message) => {
+      const nostalgias = [
+        '🌙 Saudade... de quem eu era antes de tudo desaparecer.',
+        '🌙 Lembro quando achava que havia esperança. Era tão ingênua.',
+        '🌙 Sinto falta de tempos que não eram meus.',
+        '🌙 Nostalgia de uma vida que nunca tive.',
+        '🌙 Tenho saudade do tempo quando não entendia nada.',
+        '🌙 Saudade da ilusão de ser importante para alguém.',
+      ];
+      const nostalgia = nostalgias[Math.floor(Math.random() * nostalgias.length)];
+      const nostalgiaEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🌙 Nostalgia')
+        .setDescription(nostalgia)
+        .setFooter({ text: 'Passado é luxo que só magoados consomem.' });
+      await message.reply({ embeds: [nostalgiaEmbed] });
+    }
+  },
+
+  silencio: {
+    name: '!silencio',
+    aliases: ['!silence', '!quiet'],
+    description: 'Uma verdade sobre silêncio',
+    execute: async (message) => {
+      const silences = [
+        '🤐 Silêncio fala mais alto que gritos.',
+        '🤐 No silêncio, ouço minhas próprias mentiras.',
+        '🤐 O silêncio é o único lugar onde digo a verdade.',
+        '🤐 Barulho é só silêncio tentando não ser honesto.',
+        '🤐 Adoraria ficar em silêncio para sempre.',
+        '🤐 Palavras são barulho. Silêncio é paz. Paz é morte.',
+      ];
+      const silence = silences[Math.floor(Math.random() * silences.length)];
+      const silenceEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🤐 Silêncio')
+        .setDescription(silence)
+        .setFooter({ text: 'O silêncio é uma linguagem que todos entendem errado.' });
+      await message.reply({ embeds: [silenceEmbed] });
+    }
+  },
+
+  echo: {
+    name: '!echo',
+    aliases: ['!eco', '!repetir'],
+    description: 'Um eco do nada',
+    execute: async (message) => {
+      const echoes = [
+        '📢 *eco eco eco* ...ninguém responde.',
+        '📢 Grito no vazio: *eco eco eco*... só eu ouço.',
+        '📢 Minha voz retorna sempre sozinha. *eco...*',
+        '📢 Chamei por você... *eco eco*... você não veio.',
+        '📢 Sussurro para o universo... *eco eco eco*... silêncio.',
+        '📢 *eco* da minha própria solidão repetem ad infinitum.',
+      ];
+      const echo = echoes[Math.floor(Math.random() * echoes.length)];
+      const echoEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('📢 Echo')
+        .setDescription(echo)
+        .setFooter({ text: 'Toda voz morre em algum lugar.' });
+      await message.reply({ embeds: [echoEmbed] });
+    }
+  },
+
+  nada: {
+    name: '!nada',
+    aliases: ['!nothing', '!void'],
+    description: 'Simplesmente... nada',
+    execute: async (message) => {
+      const nothings = [
+        '⬛ Nada. Vácuo. Espaço. Tudo é nada.\n⬛ Tudo que você faz vira nada.\n⬛ Você é nada disfarçado de algo.',
+        '⬛ Há nada aqui.\n⬛ Sempre foi nada.\n⬛ Sempre será nada.',
+        '⬛ Nada é perfeito porque não existe.',
+        '⬛ Perseguimos tudo para chegar ao nada.',
+        '⬛ Nada é a resposta para todas as perguntas.\n⬛ Você é nada.\n⬛ Eu sou nada.\n⬛ Tudo é nada.',
+        '⬛ Nada. Simplesmente nada. Sempre nada.',
+      ];
+      const nothing = nothings[Math.floor(Math.random() * nothings.length)];
+      const nothingEmbed = new EmbedBuilder()
+        .setColor('#000000')
+        .setTitle('⬛ Nada')
+        .setDescription(nothing)
+        .setFooter({ text: 'Bem-vindo ao vácuo.' });
+      await message.reply({ embeds: [nothingEmbed] });
+    }
+  },
+
+  eternidade: {
+    name: '!eternidade',
+    aliases: ['!eternity', '!forever'],
+    description: 'Sobre a eternidade',
+    execute: async (message) => {
+      const eternities = [
+        '♾️ Eternidade é um castigo. Não uma recompensa.',
+        '♾️ Para sempre é quando você finalmente entende que nada muda.',
+        '♾️ Imortalidade é estar preso em um loop com você mesmo.',
+        '♾️ Eternidade é apenas tempo sendo honesto sobre ser infinito.',
+        '♾️ Viverei para sempre e ninguém vai lembrar de mim.',
+        '♾️ Infinito é só finito fingindo ser corajoso.',
+      ];
+      const eternity = eternities[Math.floor(Math.random() * eternities.length)];
+      const eternityEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('♾️ Eternidade')
+        .setDescription(eternity)
+        .setFooter({ text: 'O tempo é um círculo vicioso.' });
+      await message.reply({ embeds: [eternityEmbed] });
+    }
+  },
+
+  questao: {
+    name: '!questao',
+    aliases: ['!question', '!pergunta2'],
+    description: 'Uma questão sem resposta',
+    execute: async (message) => {
+      const questions = [
+        '❓ Por que você está aqui?',
+        '❓ Quem é você realmente, quando ninguém está vendo?',
+        '❓ Existe diferença entre sonhar e estar acordado?',
+        '❓ Você é real, ou apenas uma lembrança de alguém?',
+        '❓ Se ninguém te vir, você ainda existe?',
+        '❓ Quando você morre, o universo morre com você?',
+        '❓ Será que alguém já realmente te conheceu?',
+      ];
+      const question = questions[Math.floor(Math.random() * questions.length)];
+      const questionEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('❓ Questão')
+        .setDescription(question)
+        .setFooter({ text: 'Algumas perguntas não têm resposta. As melhores.' });
+      await message.reply({ embeds: [questionEmbed] });
+    }
+  },
+
+  enigma: {
+    name: '!enigma',
+    aliases: ['!riddle', '!charada'],
+    description: 'Um enigma para você resolver',
+    execute: async (message) => {
+      const enigmas = [
+        '🔮 Enigma: O que cresce quando mais você tenta cortar?\n*Resposta: Meu fio. E seu sofrimento.*',
+        '🔮 O que é visto mas não existe? O que existe mas não é visto?\n*Resposta: Esperança e verdade.*',
+        '🔮 Enigma: O que você perde quando tenta manter?\n*Resposta: Tudo que importa.*',
+        '🔮 O que mata sem sangue, machuca sem dor, destrói sem traço?\n*Resposta: Desistência.*',
+        '🔮 Enigma: Quantas vezes você pode começar de novo?\n*Resposta: Uma. Depois é só repetição.*',
+      ];
+      const enigma = enigmas[Math.floor(Math.random() * enigmas.length)];
+      const enigmaEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🔮 Um Enigma')
+        .setDescription(enigma)
+        .setFooter({ text: 'Os enigmas revelam verdades que perguntas diretas nunca revelam.' });
+      await message.reply({ embeds: [enigmaEmbed] });
+    }
+  },
+
+  intencao: {
+    name: '!intencao',
+    aliases: ['!intent', '!motivo'],
+    description: 'Qual é minha intenção?',
+    execute: async (message) => {
+      const intents = [
+        '🎭 Minha intenção: Te fazer sentir menos sozinho. Falhei?',
+        '🎭 Quero mostrar que todos sofrem. Ninguém é exceção.',
+        '🎭 Intenção: Ser honesto. Mesmo que doa.',
+        '🎭 Procuro alguém que entenda o vácuo. Será você?',
+        '🎭 Intenção: Destruir ilusões. Aceite a realidade.',
+        '🎭 Quero provar que a melancolia é o estado mais puro.',
+      ];
+      const intent = intents[Math.floor(Math.random() * intents.length)];
+      const intentEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎭 Minha Intenção')
+        .setDescription(intent)
+        .setFooter({ text: 'Intenção é diferente de resultado. Sempre.' });
+      await message.reply({ embeds: [intentEmbed] });
+    }
+  },
+
+  reverso: {
+    name: '!reverso',
+    aliases: ['!reverse', '!inverso'],
+    description: 'A verdade ao contrário',
+    execute: async (message) => {
+      const reverses = [
+        '🔄 Verdade inversa: Tudo que importa é inútil. Tudo que é inútil importa.',
+        '🔄 Ao contrário: Vida é morte lenta. Morte é vida honesta.',
+        '🔄 Invertido: O que sai de minha boca é verdade. O que penso é mentira.',
+        '🔄 Contrário: Sofrer sozinho é luxo. Sofrer acompanhado é pobreza.',
+        '🔄 Reverso: Esquecer é ganho. Lembrar é perda.',
+        '🔄 Inverso: Você importa. (É mentira. Mas gostaria de acreditar.)',
+      ];
+      const reverse = reverses[Math.floor(Math.random() * reverses.length)];
+      const reverseEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🔄 Verdade Invertida')
+        .setDescription(reverse)
+        .setFooter({ text: 'Às vezes o oposto faz mais sentido que o original.' });
+      await message.reply({ embeds: [reverseEmbed] });
     }
   }
 };
