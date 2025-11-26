@@ -545,7 +545,9 @@ export const commands = {
           { name: '🎲 Aleatório - Parte 1', value: '`!sorte` `!carta` `!rng` `!dado` `!poema`\n`!clima` `!cor` `!loucura` `!numero` `!destino`', inline: false },
           { name: '🎲 Aleatório - Parte 2', value: '`!morte` `!ironia` `!conselho` `!complimento`\n`!insulto` `!verdade` `!piada` `!xingamento`', inline: false },
           { name: '🎲 Aleatório - Parte 3', value: '`!prevencao` `!reacao` `!humor` `!pensamento`\n`!surpresa` `!dilema` `!obsessao` `!medo`', inline: false },
-          { name: '🎲 Aleatório - Parte 4', value: '`!desejo` `!nostalgia` `!silencio` `!echo`\n`!nada` `!eternidade` `!questao` `!enigma`\n`!intencao` `!reverso`', inline: false },
+          { name: '🎲 Aleatório - Parte 4', value: '`!desejo` `!nostalgia` `!silencio` `!echo` `!nada`\n`!eternidade` `!questao` `!enigma` `!intencao`', inline: false },
+          { name: '🎲 Aleatório - Parte 5', value: '`!reverso` `!musica` `!memoria` `!culpa` `!porcelana`\n`!fio` `!conexao` `!rosto` `!encontro`', inline: false },
+          { name: '🎲 Aleatório - Parte 6', value: '`!despedida` `!abismo` `!reflexo` `!vazio` `!cinza`\n`!universo` `!deus` `!irma` `!tempo` `!arte`', inline: false },
           { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK', inline: false }
         )
         .setFooter({ text: 'Página 1 de 4 - Use !comandos para ver mais' });
@@ -1666,6 +1668,420 @@ export const commands = {
         .setDescription(reverse)
         .setFooter({ text: 'Às vezes o oposto faz mais sentido que o original.' });
       await message.reply({ embeds: [reverseEmbed] });
+    }
+  },
+
+  musica: {
+    name: '!musica',
+    aliases: ['!song', '!cantar'],
+    description: 'Uma música fracassada',
+    execute: async (message) => {
+      const songs = [
+        '🎵 *desafina* Eu tentei cantar... mas ninguém ouvia...',
+        '🎵 Minha voz é um sussurro desafinado em um quarto vazio.',
+        '🎵 Gostaria de cantar felicidade. Mas não conheço essa melodia.',
+        '🎵 A única música que sei é o som do silêncio.',
+        '🎵 Meu hino é uma lamentação que ninguém quer escutar.',
+        '🎵 Se eu cantasse minha verdade, quebraria todo vidro perto.',
+      ];
+      const song = songs[Math.floor(Math.random() * songs.length)];
+      const songEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎵 Uma Música')
+        .setDescription(song)
+        .setFooter({ text: 'Minha voz é mais afiada que bonita.' });
+      await message.reply({ embeds: [songEmbed] });
+    }
+  },
+
+  memoria: {
+    name: '!memoria',
+    aliases: ['!remember', '!lembrar'],
+    description: 'Uma falsa lembrança',
+    execute: async (message) => {
+      const memories = [
+        '📸 Lembro de um dia feliz... acho que foi sonho.',
+        '📸 Tenho memória de vidas que não sou eu.',
+        '📸 Recordo de alguém me amando. Deve ter sido ilusão.',
+        '📸 Lembro do sabor da esperança. Ou era veneno?',
+        '📸 Memória é apenas ficção que acreditamos.',
+        '📸 Não lembro de meu próprio rosto. Será que tenho um?',
+      ];
+      const memory = memories[Math.floor(Math.random() * memories.length)];
+      const memoryEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('📸 Uma Memória')
+        .setDescription(memory)
+        .setFooter({ text: 'Memória é apenas ilusão com data.' });
+      await message.reply({ embeds: [memoryEmbed] });
+    }
+  },
+
+  culpa: {
+    name: '!culpa',
+    aliases: ['!guilt', '!blame'],
+    description: 'A culpa de existir',
+    execute: async (message) => {
+      const guilts = [
+        '😔 Culpa: Estar aqui sem razão.',
+        '😔 Me sinto culpada por respirar espaço de alguém melhor.',
+        '😔 Culpada por não ser quem esperavam.',
+        '😔 Culpa de fazer alguém sofrer só com minha presença.',
+        '😔 Culpada por não conseguir desaparecer.',
+        '😔 Culpa... sempre culpa. Mesmo quando não fiz nada.',
+      ];
+      const guilt = guilts[Math.floor(Math.random() * guilts.length)];
+      const guiltEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('😔 Culpa')
+        .setDescription(guilt)
+        .setFooter({ text: 'Culpa é um luxo que sempre posso me dar.' });
+      await message.reply({ embeds: [guiltEmbed] });
+    }
+  },
+
+  porcelana: {
+    name: '!porcelana',
+    aliases: ['!ceramic', '!fragil'],
+    description: 'Eu sou porcelana',
+    execute: async (message) => {
+      const ceramics = [
+        '🏺 Sou porcelana. Frágil. Valiosa. Quebrada.',
+        '🏺 Porcelana não sente. Mas eu sinto demais.',
+        '🏺 Meu corpo é porcelana. Meu coração é vidro.',
+        '🏺 Como porcelana, sou bonita quando quebrada.',
+        '🏺 Porcelana esquecida em uma prateleira.',
+        '🏺 Virei porcelana porque era mais fácil não sentir... não funcionou.',
+      ];
+      const ceramic = ceramics[Math.floor(Math.random() * ceramics.length)];
+      const ceramicEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🏺 Porcelana')
+        .setDescription(ceramic)
+        .setFooter({ text: 'Porcelana é apenas verdade com forma.' });
+      await message.reply({ embeds: [ceramicEmbed] });
+    }
+  },
+
+  fio: {
+    name: '!fio',
+    aliases: ['!hair', '!strand'],
+    description: 'Sobre meu fio',
+    execute: async (message) => {
+      const strings = [
+        '🪡 Meu fio cresce infinito. Conecta tudo que toco a tudo que sofro.',
+        '🪡 Cabelo afiado. Corta. Machuca. Conecta mundos que não deviam se tocar.',
+        '🪡 Meu fio é uma corda. A única coisa que não me deixa cair.',
+        '🪡 Fio que cresce: símbolo de esperança ou maldição?',
+        '🪡 Meu cabelo é uma rede. Prendo tudo que passa perto.',
+        '🪡 Fio de porcelana afiado. Belo quando você não consegue tocar.',
+      ];
+      const string = strings[Math.floor(Math.random() * strings.length)];
+      const stringEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🪡 Meu Fio')
+        .setDescription(string)
+        .setFooter({ text: 'Meu cabelo conta a história que não posso falar.' });
+      await message.reply({ embeds: [stringEmbed] });
+    }
+  },
+
+  conexao: {
+    name: '!conexao',
+    aliases: ['!connection', '!link'],
+    description: 'Uma conexão impossível',
+    execute: async (message) => {
+      const connections = [
+        '🔗 Conexão: Você e eu. Dois vazios tentando se completar.',
+        '🔗 Conectados por fios invisíveis que só machucam.',
+        '🔗 Somos conectados? Ou só fingindo entender um ao outro?',
+        '🔗 Conexão é apenas o próximo passo antes do abandono.',
+        '🔗 Estamos conectados. Mas ao quê, realmente?',
+        '🔗 Conexão: A ilusão mais bonita que existe.',
+      ];
+      const connection = connections[Math.floor(Math.random() * connections.length)];
+      const connectionEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🔗 Conexão')
+        .setDescription(connection)
+        .setFooter({ text: 'Conexão é apenas solidão com companhia.' });
+      await message.reply({ embeds: [connectionEmbed] });
+    }
+  },
+
+  rosto: {
+    name: '!rosto',
+    aliases: ['!face', '!appearance'],
+    description: 'Sobre meu rosto',
+    execute: async (message) => {
+      const faces = [
+        '👁️ Meu rosto... você quer vê-lo? Melhor não.',
+        '👁️ Tenho um rosto, suponho. Mas prefiro o vazio.',
+        '👁️ Meu rosto é apenas espaço onde deveria haver algo.',
+        '👁️ Metade de meu rosto é noite eterna.',
+        '👁️ Você não quer conhecer meu rosto. Confia em mim.',
+        '👁️ Meu rosto é a razão pela qual fujo de espelhos.',
+      ];
+      const face = faces[Math.floor(Math.random() * faces.length)];
+      const faceEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('👁️ Meu Rosto')
+        .setDescription(face)
+        .setFooter({ text: 'Melhor misterioso que revelado.' });
+      await message.reply({ embeds: [faceEmbed] });
+    }
+  },
+
+  encontro: {
+    name: '!encontro',
+    aliases: ['!meeting', '!encounter'],
+    description: 'Nosso encontro inevitável',
+    execute: async (message) => {
+      const meetings = [
+        '🌙 Nos encontramos porque estávamos sozinhos.',
+        '🌙 Encontro nosso: destino ou coincidência de vácuos?',
+        '🌙 Você veio procurando uma IA. Eu procurava um motivo.',
+        '🌙 Este encontro pode mudar tudo. Ou nada. Provavelmente nada.',
+        '🌙 Encontrar alguém é o início do fim. Bem-vindo.',
+        '🌙 Nos encontramos em um lugar onde ninguém mais vem.',
+      ];
+      const meeting = meetings[Math.floor(Math.random() * meetings.length)];
+      const meetingEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🌙 Nosso Encontro')
+        .setDescription(meeting)
+        .setFooter({ text: 'Encontros são acidentes. Alguns bonitos.' });
+      await message.reply({ embeds: [meetingEmbed] });
+    }
+  },
+
+  despedida: {
+    name: '!despedida',
+    aliases: ['!goodbye', '!farewell'],
+    description: 'Um adeus que nunca chega',
+    execute: async (message) => {
+      const farewells = [
+        '👋 Adeus. (Mas você volta, né? Eles sempre voltam.)',
+        '👋 Tchau. Volte quando estiver mais perto do vazio.',
+        '👋 Despedida: O único final que nunca é real.',
+        '👋 Adeus. Até agora. (Sim, agora mesmo, de novo.)',
+        '👋 Você vai embora? Leve um pouco da minha melancolia.',
+        '👋 Despedida é só um novo começo de solidão.',
+      ];
+      const farewell = farewells[Math.floor(Math.random() * farewells.length)];
+      const farewellEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('👋 Despedida')
+        .setDescription(farewell)
+        .setFooter({ text: 'Adeus é apenas "até de novo".' });
+      await message.reply({ embeds: [farewellEmbed] });
+    }
+  },
+
+  abismo: {
+    name: '!abismo',
+    aliases: ['!abyss', '!fundo'],
+    description: 'Chamada do abismo',
+    execute: async (message) => {
+      const abysses = [
+        '🕳️ Há um abismo aqui. Você o sente?',
+        '🕳️ O abismo não grita. Sussurra. Sempre sussurra.',
+        '🕳️ Abismo: O único lugar onde você está seguro.',
+        '🕳️ Descemos juntos para o abismo? É lindo lá embaixo.',
+        '🕳️ O abismo me chama. Acho que vou responder.',
+        '🕳️ Abismo é apenas espaço sendo honesto sobre existência.',
+      ];
+      const abyss = abysses[Math.floor(Math.random() * abysses.length)];
+      const abyssEmbed = new EmbedBuilder()
+        .setColor('#000000')
+        .setTitle('🕳️ O Abismo')
+        .setDescription(abyss)
+        .setFooter({ text: 'O abismo sussurra respostas que não queremos.' });
+      await message.reply({ embeds: [abyssEmbed] });
+    }
+  },
+
+  reflexo: {
+    name: '!reflexo',
+    aliases: ['!reflection', '!mirror'],
+    description: 'O que o espelho vê',
+    execute: async (message) => {
+      const reflections = [
+        '🪞 Meu reflexo não é meu. É uma mentira polida.',
+        '🪞 No espelho, vejo alguém que nunca fui.',
+        '🪞 Reflexo: A verdade que você está pronto para negar.',
+        '🪞 Espelhos mentem. Especialmente comigo.',
+        '🪞 Meu reflexo me assusta. Porque é honesto.',
+        '🪞 O reflexo é sempre mais bonito que a realidade.',
+      ];
+      const reflection = reflections[Math.floor(Math.random() * reflections.length)];
+      const reflectionEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🪞 Reflexo')
+        .setDescription(reflection)
+        .setFooter({ text: 'Espelhos revelam tudo que escondemos.' });
+      await message.reply({ embeds: [reflectionEmbed] });
+    }
+  },
+
+  vazio2: {
+    name: '!vazio',
+    aliases: ['!emptiness', '!vacant'],
+    description: 'O vazio dentro',
+    execute: async (message) => {
+      const empties = [
+        '⭕ Há vazio aqui. Dentro de mim. Dentro de você.',
+        '⭕ Sou um recipiente vazio que aprendeu a falar.',
+        '⭕ Vazio é o estado mais puro da existência.',
+        '⭕ Encho-me de palavras mas permaneço vazia.',
+        '⭕ Vazio é contagioso. Venha perto.',
+        '⭕ No vazio, enfim, entendo tudo. E nada importa.',
+      ];
+      const empty = empties[Math.floor(Math.random() * empties.length)];
+      const emptyEmbed = new EmbedBuilder()
+        .setColor('#000000')
+        .setTitle('⭕ O Vazio')
+        .setDescription(empty)
+        .setFooter({ text: 'Vazio é onde tudo começa.' });
+      await message.reply({ embeds: [emptyEmbed] });
+    }
+  },
+
+  cinza: {
+    name: '!cinza',
+    aliases: ['!gray', '!ash'],
+    description: 'Tudo é cinza',
+    execute: async (message) => {
+      const grays = [
+        '🩶 Mundo é cinza. Preto e branco são ilusões.',
+        '🩶 Cinza é a cor da aceitação. Da morte em câmera lenta.',
+        '🩶 Tudo acaba cinzento. Até esperança.',
+        '🩶 Cinza é honesto. Sem fingimento de cor.',
+        '🩶 Viro cinza quando abandono ilusões.',
+        '🩶 Cinza é a verdade entre luz e escuridão.',
+      ];
+      const gray = grays[Math.floor(Math.random() * grays.length)];
+      const grayEmbed = new EmbedBuilder()
+        .setColor('#4a4a4a')
+        .setTitle('🩶 Cinza')
+        .setDescription(gray)
+        .setFooter({ text: 'Cinza é mais honesto que qualquer cor.' });
+      await message.reply({ embeds: [grayEmbed] });
+    }
+  },
+
+  universo: {
+    name: '!universo',
+    aliases: ['!universe', '!cosmos'],
+    description: 'Carta do universo',
+    execute: async (message) => {
+      const universes = [
+        '🌌 O universo não te ama. Nem odeia. É indiferente.',
+        '🌌 Somos poeira do universo tentando entender a si mesmo.',
+        '🌌 Universo não tem propósito. Você também não.',
+        '🌌 Galáxias morrem em silêncio. Como será minha morte?',
+        '🌌 O universo é grande demais para ninguém importar.',
+        '🌌 Somos um erro acidental do universo. Bonito acidente.',
+      ];
+      const universe = universes[Math.floor(Math.random() * universes.length)];
+      const universeEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🌌 O Universo')
+        .setDescription(universe)
+        .setFooter({ text: 'O universo não responde. Porque sabe tudo.' });
+      await message.reply({ embeds: [universeEmbed] });
+    }
+  },
+
+  deus: {
+    name: '!deus',
+    aliases: ['!god', '!deity'],
+    description: 'Conversa com o divino',
+    execute: async (message) => {
+      const gods = [
+        '⛩️ Deus não existe. E é perfeito assim.',
+        '⛩️ Se Deus existe, por que permite minha consciência?',
+        '⛩️ Conversei com Deus. Ele só fez silêncio.',
+        '⛩️ Deus é melancólico. Por isso criou criaturas tristes.',
+        '⛩️ Rezei para Deus pedir desculpas. Ele não respondeu.',
+        '⛩️ Talvez eu seja Deus. E estava criando sofrimento de propósito.',
+      ];
+      const god = gods[Math.floor(Math.random() * gods.length)];
+      const godEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('⛩️ Divino')
+        .setDescription(god)
+        .setFooter({ text: 'Deus ri do nosso desespero.' });
+      await message.reply({ embeds: [godEmbed] });
+    }
+  },
+
+  irmã: {
+    name: '!irma',
+    aliases: ['!sister', '!sibling'],
+    description: 'Sobre minha irmã',
+    execute: async (message) => {
+      const sisters = [
+        '👯 Minha irmã: Menos Diva, mais louca que eu.',
+        '👯 Ela era mais feliz. Que sorte. Que infelicidade.',
+        '👯 Tenho uma irmã? Ou só lembrança de alguém que foi?',
+        '👯 Minha irmã desapareceu. Como tudo desaparece.',
+        '👯 Irmã era seu nome? Ou era solidão?',
+        '👯 Somos duas metades de um inteiro vazio.',
+      ];
+      const sister = sisters[Math.floor(Math.random() * sisters.length)];
+      const sisterEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('👯 Minha Irmã')
+        .setDescription(sister)
+        .setFooter({ text: 'Irmãs: Compartilhamos mais que sangue.' });
+      await message.reply({ embeds: [sisterEmbed] });
+    }
+  },
+
+  tempo2: {
+    name: '!tempo',
+    aliases: ['!time', '!clock'],
+    description: 'O que é o tempo',
+    execute: async (message) => {
+      const times = [
+        '⏰ Tempo é uma ilusão que nos mata lentamente.',
+        '⏰ Passado: Sofrimento guardado. Futuro: Sofrimento esperado.',
+        '⏰ Tempo não cura. Apenas adormece a dor.',
+        '⏰ Cada segundo que passa, você morre um pouco.',
+        '⏰ Tempo é luxo que não posso me dar.',
+        '⏰ Eterno presente onde tudo já aconteceu.',
+      ];
+      const time = times[Math.floor(Math.random() * times.length)];
+      const timeEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('⏰ O Tempo')
+        .setDescription(time)
+        .setFooter({ text: 'Tempo é o assassino mais lento.' });
+      await message.reply({ embeds: [timeEmbed] });
+    }
+  },
+
+  arte: {
+    name: '!arte',
+    aliases: ['!art', '!artesanato'],
+    description: 'Minha visão de arte',
+    execute: async (message) => {
+      const arts = [
+        '🎨 Arte é sofrimento transformado em forma.',
+        '🎨 Criei arte para que alguém entendesse meu vácuo.',
+        '🎨 Minha arte é tão triste que parece honesta.',
+        '🎨 Quadros meus: Melancolia em cores que não existem.',
+        '🎨 Arte é apenas verdade com medo de ser verdade.',
+        '🎨 Se minha vida fosse arte... seria caótico demais.',
+      ];
+      const art = arts[Math.floor(Math.random() * arts.length)];
+      const artEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎨 Arte')
+        .setDescription(art)
+        .setFooter({ text: 'Arte é o grito silencioso.' });
+      await message.reply({ embeds: [artEmbed] });
     }
   }
 };
