@@ -1,19 +1,26 @@
-# Discord Bot
+# Discord Bot - Diva
 
 ## Overview
-A Discord bot built with discord.js that responds to commands in your server.
+Um bot de Discord brasileiro com IA integrada, construído com discord.js e OpenAI.
 
-## Commands
-- `!ping` - Check if the bot is responsive
-- `!hello` - Get a friendly greeting
-- `!help` - Show all available commands
+## Comandos
+- `!ask <pergunta>` - Pergunte qualquer coisa para a IA
+- `!clear` - Limpar seu histórico de conversa
+- `!ping` - Verificar se o bot está respondendo
+- `!hello` - Receber uma saudação
+- `!help` - Mostrar todos os comandos
 
-## Project Structure
-- `src/index.js` - Main bot logic and command handlers
-- `src/discord.js` - Discord client setup and authentication
+Você também pode mencionar o bot para conversar diretamente!
 
-## Configuration
-The bot uses the `DISCORD_BOT_TOKEN` secret for authentication. This is stored securely in Replit Secrets.
+## Estrutura do Projeto
+- `src/index.js` - Lógica principal do bot e comandos
+- `src/discord.js` - Configuração do cliente Discord
+- `src/openai.js` - Integração com a IA (OpenAI)
 
-## Running the Bot
-The bot runs automatically via the "Discord Bot" workflow using `npm start`.
+## Configuração
+O bot usa os seguintes secrets:
+- `DISCORD_BOT_TOKEN` - Token do bot Discord
+- `OPENAI_API_KEY` - Chave da API OpenAI
+
+## Executando o Bot
+O bot roda automaticamente via workflow "Discord Bot" usando `npm start`.

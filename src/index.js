@@ -1,4 +1,5 @@
 import { getDiscordClient } from './discord.js';
+import { chat, clearHistory } from './openai.js';
 
 async function main() {
   console.log('Starting Discord bot...');
@@ -16,19 +17,84 @@ async function main() {
 
       if (message.content.toLowerCase() === '!ping') {
         await message.reply('Pong!');
+        return;
       }
 
       if (message.content.toLowerCase() === '!hello') {
         await message.reply(`Hello, ${message.author.username}!`);
+        return;
+      }
+
+      if (message.content.toLowerCase() === '!clear') {
+        clearHistory(message.author.id);
+        await message.reply('Seu histórico de conversa foi limpo!');
+        return;
       }
 
       if (message.content.toLowerCase() === '!help') {
         await message.reply(
-          '**Available Commands:**\n' +
-          '`!ping` - Check if the bot is responsive\n' +
-          '`!hello` - Get a friendly greeting\n' +
-          '`!help` - Show this help message'
+          '**Comandos Disponíveis:**\n' +
+          '`!ask <pergunta>` - Pergunte qualquer coisa para a IA\n' +
+          '`!clear` - Limpar seu histórico de conversa\n' +
+          '`!ping` - Verificar se o bot está respondendo\n' +
+          '`!hello` - Receber uma saudação\n' +
+          '`!help` - Mostrar esta mensagem de ajuda\n\n' +
+          '*Você também pode me mencionar para conversar!*'
         );
+        return;
+      }
+
+      if (message.content.toLowerCase().startsWith('!ask ')) {
+        const question = message.content.slice(5).trim();
+        if (!question) {
+          await message.reply('Por favor, faça uma pergunta! Use: `!ask <sua pergunta>`');
+          return;
+        }
+
+        await message.channel.sendTyping();
+        
+        try {
+          const response = await chat(message.author.id, question);
+          
+          if (response.length > 2000) {
+            const chunks = response.match(/.{1,2000}/gs);
+            for (const chunk of chunks) {
+              await message.reply(chunk);
+            }
+          } else {
+            await message.reply(response);
+          }
+        } catch (error) {
+          console.error('AI Error:', error);
+          await message.reply('Desculpa, tive um probleminha para processar isso. Tenta de novo!');
+        }
+        return;
+      }
+
+      if (message.mentions.has(client.user)) {
+        const question = message.content.replace(/<@!?\d+>/g, '').trim();
+        if (!question) {
+          await message.reply('Oi! Me pergunte qualquer coisa ou use `!help` para ver meus comandos.');
+          return;
+        }
+
+        await message.channel.sendTyping();
+        
+        try {
+          const response = await chat(message.author.id, question);
+          
+          if (response.length > 2000) {
+            const chunks = response.match(/.{1,2000}/gs);
+            for (const chunk of chunks) {
+              await message.reply(chunk);
+            }
+          } else {
+            await message.reply(response);
+          }
+        } catch (error) {
+          console.error('AI Error:', error);
+          await message.reply('Desculpa, tive um probleminha para processar isso. Tenta de novo!');
+        }
       }
     });
 
