@@ -1,5 +1,6 @@
 import { chat, clearHistory } from './gemini.js';
 import { EmbedBuilder, PermissionFlagsBits } from 'discord.js';
+import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble } from './economy.js';
 
 const SPECIAL_USER_ID = '1441445617003139113';
 
@@ -485,6 +486,10 @@ export const commands = {
         .filter(cmd => ['!search', '!comandos'].includes(cmd.name))
         .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
 
+      const economiaFields = commandList
+        .filter(cmd => cmd.name.includes('balance') || cmd.name.includes('daily') || cmd.name.includes('transfer') || cmd.name.includes('work') || cmd.name.includes('top') || cmd.name.includes('gamble'))
+        .map(cmd => ({ name: cmd.name, value: cmd.desc, inline: true }));
+
       const commandsEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('🎭 Todos os Comandos da Diva')
@@ -498,6 +503,8 @@ export const commands = {
           ...moderacaoFields,
           { name: '🔍 Pesquisa', value: '\u200b', inline: false },
           ...pesquisaFields,
+          { name: '💰 Economia (Akita Neru)', value: '\u200b', inline: false },
+          ...economiaFields,
           { 
             name: '📝 Roleplay Especial', 
             value: 'Use *asteriscos* para fazer roleplay!\n*você faz algo* → eu respondo em modo RP 🎭', 
@@ -508,6 +515,164 @@ export const commands = {
         .setTimestamp();
 
       await message.reply({ embeds: [commandsEmbed] });
+    }
+  },
+
+  balance: {
+    name: '!balance',
+    aliases: ['!saldo', '!money'],
+    description: 'Veja seu saldo em Akita Neru',
+    execute: async (message) => {
+      const balance = getBalance(message.author.id);
+      const balanceEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('💰 Seu Saldo')
+        .setThumbnail(message.author.displayAvatarURL())
+        .setDescription(`**${balance} Akita Neru**`)
+        .setFooter({ text: '*Porcelana vale mais do que ouro...* 🖤' });
+      
+      await message.reply({ embeds: [balanceEmbed] });
+    }
+  },
+
+  daily: {
+    name: '!daily',
+    aliases: ['!diario'],
+    description: 'Receba sua recompensa diária (50 Akita Neru)',
+    execute: async (message) => {
+      const reward = dailyReward(message.author.id);
+      
+      if (!reward) {
+        const dailyEmbed = new EmbedBuilder()
+          .setColor('#ff0000')
+          .setTitle('❌ Prematuro')
+          .setDescription('Você já coletou sua recompensa diária!\nVolte amanhã... ou talvez nunca. 🌑');
+        await message.reply({ embeds: [dailyEmbed] });
+        return;
+      }
+
+      const dailyEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('✨ Recompensa Diária!')
+        .setDescription(`Você ganhou **${reward} Akita Neru**!\n\n*Você compreendeu como obter valor aqui...* 💀`)
+        .setFooter({ text: `Seu novo saldo: ${getBalance(message.author.id)} Akita Neru` });
+      
+      await message.reply({ embeds: [dailyEmbed] });
+    }
+  },
+
+  transfer: {
+    name: '!transfer',
+    aliases: ['!enviar', '!pagar'],
+    description: 'Transferir Akita Neru para outro usuário',
+    execute: async (message, args) => {
+      const user = message.mentions.users.first();
+      const amount = parseInt(args[1]);
+
+      if (!user || !amount || amount <= 0) {
+        await message.reply('❌ Use: `!transfer @usuário <quantidade>`');
+        return;
+      }
+
+      const result = transfer(message.author.id, user.id, amount);
+
+      if (!result) {
+        await message.reply('❌ Você não tem Akita Neru suficiente!');
+        return;
+      }
+
+      const transferEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('💸 Transferência Realizada')
+        .setDescription(`Você enviou **${amount} Akita Neru** para ${user.tag}`)
+        .addFields(
+          { name: 'Seu novo saldo', value: `${result.fromBalance} Akita Neru`, inline: true },
+          { name: 'Saldo do receptor', value: `${result.toBalance} Akita Neru`, inline: true }
+        )
+        .setFooter({ text: '*Generosidade... ou pena?* 🖤' });
+      
+      await message.reply({ embeds: [transferEmbed] });
+    }
+  },
+
+  work: {
+    name: '!work',
+    aliases: ['!trabalhar'],
+    description: 'Trabalhe e ganhe Akita Neru (10-40)',
+    execute: async (message) => {
+      const earnings = work(message.author.id);
+      const workEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('💼 Você Trabalhou')
+        .setDescription(`Você ganhou **${earnings} Akita Neru**!\n\n*Porcelana quebrada ainda pode produzir algo...* 🖤`)
+        .setFooter({ text: `Novo saldo: ${getBalance(message.author.id)} Akita Neru` });
+      
+      await message.reply({ embeds: [workEmbed] });
+    }
+  },
+
+  top: {
+    name: '!top',
+    aliases: ['!rank', '!leaderboard'],
+    description: 'Veja o ranking de Akita Neru',
+    execute: async (message, args, client) => {
+      const leaderboard = getLeaderboard(10);
+      
+      let description = '**TOP 10 - Ranking de Akita Neru**\n\n';
+      for (let i = 0; i < leaderboard.length; i++) {
+        try {
+          const user = await client.users.fetch(leaderboard[i].userId);
+          const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}️⃣`;
+          description += `${medal} **${user.username}** - ${leaderboard[i].balance} Akita Neru\n`;
+        } catch {
+          description += `${i + 1}️⃣ Usuário desconhecido - ${leaderboard[i].balance} Akita Neru\n`;
+        }
+      }
+
+      const topEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🏆 Ranking de Riqueza')
+        .setDescription(description)
+        .setFooter({ text: '*Mas o que significa riqueza neste vazio?* 🖤' });
+      
+      await message.reply({ embeds: [topEmbed] });
+    }
+  },
+
+  gamble: {
+    name: '!gamble',
+    aliases: ['!aposta'],
+    description: 'Aposte Akita Neru em uma chance 50/50',
+    execute: async (message, args) => {
+      const amount = parseInt(args[0]);
+
+      if (!amount || amount <= 0) {
+        await message.reply('❌ Use: `!gamble <quantidade>`');
+        return;
+      }
+
+      const result = gamble(message.author.id, amount);
+
+      if (!result) {
+        await message.reply('❌ Você não tem Akita Neru suficiente!');
+        return;
+      }
+
+      if (result.won) {
+        const gamblesEmbed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('🎲 Você Ganhou!')
+          .setDescription(`Você dobrou sua aposta!\n\n**+${result.earnings} Akita Neru**`)
+          .setFooter({ text: `Novo saldo: ${result.newBalance} Akita Neru - *Sorte... ou destino?* 🖤` });
+        await message.reply({ embeds: [gamblesEmbed] });
+      } else {
+        const gamblesEmbed = new EmbedBuilder()
+          .setColor('#ff0000')
+          .setTitle('🎲 Você Perdeu...')
+          .setDescription(`Sua aposta desapareceu.\n\n**-${result.loss} Akita Neru**`)
+          .setFooter({ text: `Novo saldo: ${result.newBalance} Akita Neru - *Como tudo que importa...* 🖤` });
+        await message.reply({ embeds: [gamblesEmbed] });
+      }
     }
   }
 };
