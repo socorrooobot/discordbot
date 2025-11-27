@@ -105,6 +105,26 @@ export function dailyReward(userId) {
   return reward;
 }
 
+// Calcular quando o próximo daily estará disponível
+export function getTimeUntilDaily(userId) {
+  const user = getUser(userId);
+  const now = Date.now();
+  const lastDaily = user.lastDaily || 0;
+  const timeElapsed = now - lastDaily;
+  const dailyCooldown = 86400000; // 24 horas em ms
+  
+  if (timeElapsed >= dailyCooldown) {
+    return 0; // Daily está disponível agora
+  }
+  
+  return dailyCooldown - timeElapsed; // Tempo restante em ms
+}
+
+// Obter todos os usuários
+export function getAllUsers() {
+  return loadEconomy();
+}
+
 // Leaderboard
 export function getLeaderboard(limit = 10) {
   const data = loadEconomy();

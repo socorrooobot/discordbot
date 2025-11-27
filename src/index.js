@@ -4,6 +4,7 @@ import { handleCommand, shouldRespondToMention } from './commands.js';
 import { addXP } from './xp.js';
 import { isAFK, removeAFK } from './afk.js';
 import { registerSlashCommands } from './slashCommands.js';
+import { getTimeUntilDaily, getAllUsers } from './economy.js';
 import { EmbedBuilder } from 'discord.js';
 
 async function main() {
@@ -37,6 +38,43 @@ async function main() {
         activities = getActivities(); // Recalcula para pegar número de servidores atualizado
         client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
       }, 30000);
+
+      // Sistema de notificação de daily disponível
+      const notifiedUsers = new Set();
+      
+      setInterval(async () => {
+        try {
+          const users = getAllUsers();
+          
+          for (const [userId, userData] of Object.entries(users)) {
+            const timeUntil = getTimeUntilDaily(userId);
+            
+            // Se daily está disponível e ainda não notificou
+            if (timeUntil === 0 && !notifiedUsers.has(userId)) {
+              try {
+                const user = await client.users.fetch(userId);
+                const dailyNotifyEmbed = new EmbedBuilder()
+                  .setColor('#00ff00')
+                  .setTitle('✨ Seu Daily está Disponível!')
+                  .setDescription('*Você recebeu energia... ou seria apenas uma ilusão?*\n\nUse `/daily` ou `!daily` para receber seus **50 Akita Neru**!')
+                  .setFooter({ text: '*A vida oferece pequenas oportunidades... às vezes.* 🖤' });
+                
+                await user.send({ embeds: [dailyNotifyEmbed] });
+                notifiedUsers.add(userId);
+              } catch (error) {
+                console.error(`Erro ao enviar DM para ${userId}:`, error);
+              }
+            }
+            
+            // Remover do set se daily não está mais disponível
+            if (timeUntil > 0) {
+              notifiedUsers.delete(userId);
+            }
+          }
+        } catch (error) {
+          console.error('Erro no sistema de daily notification:', error);
+        }
+      }, 3600000); // Verifica a cada hora (3600000 ms)
     });
 
     client.on('messageCreate', async (message) => {
