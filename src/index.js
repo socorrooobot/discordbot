@@ -13,12 +13,12 @@ async function main() {
   try {
     const client = await getDiscordClient();
     
-    client.once('ready', () => {
+    client.once('ready', async () => {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
       
       // Registrar slash commands
-      registerSlashCommands(client);
+      await registerSlashCommands(client);
       
       const getActivities = () => [
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
