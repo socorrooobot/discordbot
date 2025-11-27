@@ -2424,6 +2424,237 @@ export const commands = {
         await message.reply('Houve um erro ao desbloquear o canal! 💀');
       }
     }
+  },
+
+  avatar: {
+    name: '!avatar',
+    aliases: ['!av', '!pfp'],
+    description: 'Mostra seu avatar',
+    execute: async (message) => {
+      const user = message.mentions.users.first() || message.author;
+      const avatarEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle(`Avatar de ${user.username}`)
+        .setImage(user.displayAvatarURL({ size: 512, extension: 'png' }))
+        .setFooter({ text: '*Nem todos querem ser vistos.* 🖤' });
+      await message.reply({ embeds: [avatarEmbed] });
+    }
+  },
+
+  userinfo: {
+    name: '!userinfo',
+    aliases: ['!user', '!ui'],
+    description: 'Informações do usuário',
+    execute: async (message) => {
+      const user = message.mentions.users.first() || message.author;
+      const member = await message.guild.members.fetch(user.id);
+      const infoEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle(`Info de ${user.username}`)
+        .setThumbnail(user.displayAvatarURL())
+        .addFields(
+          { name: '👤 ID', value: user.id, inline: true },
+          { name: '🏷️ Tag', value: user.tag, inline: true },
+          { name: '📅 Criado em', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
+          { name: '🚀 Entrou em', value: member.joinedAt.toLocaleDateString('pt-BR'), inline: true },
+          { name: '🎭 Status', value: user.presence?.status || 'offline', inline: true },
+          { name: '🎖️ Cargos', value: member.roles.cache.size > 1 ? member.roles.cache.map(r => r.name).join(', ') : 'Nenhum', inline: false }
+        )
+        .setFooter({ text: '*Conhecer alguém é entender sua solidão.* 🖤' });
+      await message.reply({ embeds: [infoEmbed] });
+    }
+  },
+
+  dice: {
+    name: '!dice',
+    aliases: ['!roll', '!dado'],
+    description: 'Joga um dado',
+    execute: async (message, args) => {
+      const sides = parseInt(args[0]) || 6;
+      const result = Math.floor(Math.random() * sides) + 1;
+      const diceEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎲 Resultado do Dado')
+        .setDescription(`Você jogou um dado de ${sides} lados e tirou **${result}**!`)
+        .setFooter({ text: '*Tudo é sorte. Ou coincidência. Mesma coisa.* 🖤' });
+      await message.reply({ embeds: [diceEmbed] });
+    }
+  },
+
+  flip: {
+    name: '!flip',
+    aliases: ['!coin', '!moeda'],
+    description: 'Joga uma moeda',
+    execute: async (message) => {
+      const result = Math.random() > 0.5 ? 'Cara' : 'Coroa';
+      const flipEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🪙 Cara ou Coroa?')
+        .setDescription(`Resultado: **${result}**`)
+        .setFooter({ text: '*Sempre existe uma chance de cair no lado que não queremos.* 🖤' });
+      await message.reply({ embeds: [flipEmbed] });
+    }
+  },
+
+  say: {
+    name: '!say',
+    aliases: ['!echo', '!falar'],
+    description: 'Repete o que você diz',
+    execute: async (message, args) => {
+      const text = args.join(' ');
+      if (!text) {
+        await message.reply('Diga algo para eu repetir!');
+        return;
+      }
+      await message.channel.send(text);
+      try {
+        await message.delete();
+      } catch (error) {
+        console.error('Delete error:', error);
+      }
+    }
+  },
+
+  ban: {
+    name: '!ban',
+    description: 'Bane um usuário',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.BanMembers)) {
+        await message.reply('❌ Você não tem permissão!');
+        return;
+      }
+      const user = message.mentions.users.first();
+      if (!user) {
+        await message.reply('Mencione um usuário para banir!');
+        return;
+      }
+      const reason = args.slice(1).join(' ') || 'Sem razão especificada';
+      try {
+        await message.guild.members.ban(user, { reason });
+        const banEmbed = new EmbedBuilder()
+          .setColor('#ff0000')
+          .setTitle('🚫 Banido')
+          .setDescription(`${user.username} foi banido.\n**Razão:** ${reason}`)
+          .setFooter({ text: '*Alguns não merecem estar aqui.* 🖤' });
+        await message.reply({ embeds: [banEmbed] });
+      } catch (error) {
+        await message.reply('Erro ao banir o usuário!');
+      }
+    }
+  },
+
+  kick: {
+    name: '!kick',
+    description: 'Expulsa um usuário',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.KickMembers)) {
+        await message.reply('❌ Você não tem permissão!');
+        return;
+      }
+      const user = message.mentions.users.first();
+      if (!user) {
+        await message.reply('Mencione um usuário para expulsar!');
+        return;
+      }
+      const member = await message.guild.members.fetch(user.id);
+      const reason = args.slice(1).join(' ') || 'Sem razão especificada';
+      try {
+        await member.kick(reason);
+        const kickEmbed = new EmbedBuilder()
+          .setColor('#ff9800')
+          .setTitle('👢 Expulso')
+          .setDescription(`${user.username} foi expulso.\n**Razão:** ${reason}`)
+          .setFooter({ text: '*Alguns precisam sair para que outros respirem.* 🖤' });
+        await message.reply({ embeds: [kickEmbed] });
+      } catch (error) {
+        await message.reply('Erro ao expulsar o usuário!');
+      }
+    }
+  },
+
+  purge: {
+    name: '!purge',
+    aliases: ['!clean', '!limpar_msgs'],
+    description: 'Limpa mensagens',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
+        await message.reply('❌ Você não tem permissão!');
+        return;
+      }
+      const amount = parseInt(args[0]) || 10;
+      if (amount < 1 || amount > 100) {
+        await message.reply('Digite um número entre 1 e 100!');
+        return;
+      }
+      try {
+        await message.channel.bulkDelete(amount);
+        const purgeEmbed = new EmbedBuilder()
+          .setColor('#0a0a0a')
+          .setTitle('🧹 Limpeza Concluída')
+          .setDescription(`${amount} mensagens foram deletadas.`)
+          .setFooter({ text: '*O silêncio apaga o passado.* 🖤' });
+        const sentMsg = await message.reply({ embeds: [purgeEmbed] });
+        setTimeout(() => sentMsg.delete().catch(() => {}), 5000);
+      } catch (error) {
+        await message.reply('Erro ao limpar mensagens!');
+      }
+    }
+  },
+
+  invite: {
+    name: '!invite',
+    description: 'Link para adicionar o bot',
+    execute: async (message, args, client) => {
+      const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=8`;
+      const inviteEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🤖 Me Adicione!')
+        .setDescription(`[Clique aqui para me adicionar](${inviteUrl})`)
+        .setFooter({ text: '*Talvez eu possa entender seu mundo também.* 🖤' });
+      await message.reply({ embeds: [inviteEmbed] });
+    }
+  },
+
+  about: {
+    name: '!about',
+    aliases: ['!sobre', '!info'],
+    description: 'Sobre o bot',
+    execute: async (message) => {
+      const aboutEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎭 A Diva')
+        .setDescription('Sou uma IA sombria e poética, aqui para conversar, divertir e entender seus sentimentos.')
+        .addFields(
+          { name: '👤 Personagem', value: 'Uma diva apaixonada e complexa', inline: true },
+          { name: '🖤 Tema', value: 'Escuro e melancólico', inline: true },
+          { name: '✨ Habilidades', value: 'IA, economia, XP, roleplay e moderação', inline: false }
+        )
+        .setFooter({ text: '*Por que você quer saber sobre mim? Ninguém nunca pergunta...* 🖤' });
+      await message.reply({ embeds: [aboutEmbed] });
+    }
+  },
+
+  cmds: {
+    name: '!cmds',
+    aliases: ['!commands', '!comandos'],
+    description: 'Lista de comandos',
+    execute: async (message) => {
+      const cmdsEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('📋 Todos os Comandos')
+        .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
+        .addFields(
+          { name: '💬 Conversa', value: '`!ask`, `!chat`', inline: false },
+          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`', inline: false },
+          { name: '🎮 Jogos', value: '`!dice`, `!flip`, `!gamble`', inline: false },
+          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`', inline: false },
+          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`', inline: false },
+          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`', inline: false },
+          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`, `!clear`', inline: false }
+        )
+        .setFooter({ text: '*Conhecer os comandos é conhecer meu coração.* 🖤' });
+      await message.reply({ embeds: [cmdsEmbed] });
+    }
   }
 };
 
