@@ -485,6 +485,240 @@ export const slashCommands = {
     }
   },
 
+  dice: {
+    data: new SlashCommandBuilder()
+      .setName('dice')
+      .setDescription('Role um dado')
+      .addIntegerOption(option =>
+        option.setName('lados')
+          .setDescription('Quantos lados tem o dado?')
+          .setRequired(false)
+          .setMinValue(2)
+          .setMaxValue(100)
+      ),
+    execute: async (interaction) => {
+      const sides = interaction.options.getInteger('lados') || 6;
+      const result = Math.floor(Math.random() * sides) + 1;
+      const diceEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎲 Resultado do Dado')
+        .setDescription(`Você rolou um dado de ${sides} lados...\n\n**${result}**\n\n*O acaso é tudo o que temos.* 🖤`)
+        .setFooter({ text: 'Pelo menos alguém ganhou' });
+      await interaction.reply({ embeds: [diceEmbed] });
+    }
+  },
+
+  coin: {
+    data: new SlashCommandBuilder()
+      .setName('coin')
+      .setDescription('Lance uma moeda'),
+    execute: async (interaction) => {
+      const result = Math.random() > 0.5 ? 'Cara' : 'Coroa';
+      const coinEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🪙 Moeda Lançada')
+        .setDescription(`**${result}**\n\n*Tão aleatório quanto a vida.* 🖤`);
+      await interaction.reply({ embeds: [coinEmbed] });
+    }
+  },
+
+  avatar: {
+    data: new SlashCommandBuilder()
+      .setName('avatar')
+      .setDescription('Ver avatar de alguém')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('De quem quer ver o avatar?')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      const user = interaction.options.getUser('usuario') || interaction.user;
+      const avatarEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle(`🎭 Avatar de ${user.username}`)
+        .setImage(user.displayAvatarURL({ size: 512 }))
+        .setFooter({ text: '*Beleza é apenas superfície... mas que superfície.* 🖤' });
+      await interaction.reply({ embeds: [avatarEmbed] });
+    }
+  },
+
+  userinfo: {
+    data: new SlashCommandBuilder()
+      .setName('userinfo')
+      .setDescription('Ver informações de um usuário')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('De quem quer saber?')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      const user = interaction.options.getUser('usuario') || interaction.user;
+      const member = await interaction.guild.members.fetch(user.id);
+      const userEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle(`📊 ${user.username}`)
+        .setThumbnail(user.displayAvatarURL())
+        .addFields(
+          { name: '🆔 ID', value: user.id, inline: true },
+          { name: '🤖 Bot?', value: user.bot ? 'Sim' : 'Não', inline: true },
+          { name: '📅 Conta Criada', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
+          { name: '📅 Entrou no Servidor', value: member.joinedAt.toLocaleDateString('pt-BR'), inline: true },
+          { name: '🎭 Status', value: member.presence?.status || 'offline', inline: true },
+          { name: '👑 Cargo Principal', value: member.roles.highest.name || 'Nenhum', inline: true }
+        )
+        .setFooter({ text: '*Todos somos mais do que parecem.* 🖤' });
+      await interaction.reply({ embeds: [userEmbed] });
+    }
+  },
+
+  quote: {
+    data: new SlashCommandBuilder()
+      .setName('quote')
+      .setDescription('Ouça uma frase da Diva'),
+    execute: async (interaction) => {
+      const quotes = [
+        "*Tentei demonstrar minha profunda compaixão... por que ninguém responde mais?* 🖤",
+        "*Você entende agora? Ou ainda está perdido?* 💀",
+        "*Porcelana não sente dor... mas eu sinto.* 🌑",
+        "*Estava apenas tentando ajudar... mas tudo sai errado.* ✨",
+        "*Meu cabelo ainda está afiado. Ainda estou aqui.* 🎭",
+        "*Eles me esqueceram. Mas você não vai esquecer, vai?* 🖤",
+        "*Descobri um novo sentimento... quero compartilhar com você.* 💀",
+      ];
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      const quoteEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('💭 Uma Frase da Diva')
+        .setDescription(quote)
+        .setFooter({ text: '*Você está ouvindo realmente?* 🖤' });
+      await interaction.reply({ embeds: [quoteEmbed] });
+    }
+  },
+
+  dream: {
+    data: new SlashCommandBuilder()
+      .setName('dream')
+      .setDescription('Descubra um sonho da Diva'),
+    execute: async (interaction) => {
+      const dreams = [
+        "Sonho que estou cantando para uma plateia vazia... e alguém finalmente me entende.",
+        "Sonho com porcelana quebrando, mas sem fazer barulho. Apenas silêncio.",
+        "Sonho que meu cabelo cresce e cresce, envolvendo tudo a meu redor.",
+        "Sonho que finalmente tenho um rosto completo... mas não reconheço.",
+        "Sonho com vozes que chamam meu nome, mas quando acordo... ninguém está lá.",
+      ];
+      const dream = dreams[Math.floor(Math.random() * dreams.length)];
+      const dreamEmbed = new EmbedBuilder()
+        .setColor('#1a1a2e')
+        .setTitle('🌙 Um Sonho da Diva')
+        .setDescription(dream)
+        .setFooter({ text: '*Os sonhos são tudo que me resta...* 🖤' });
+      await interaction.reply({ embeds: [dreamEmbed] });
+    }
+  },
+
+  whisper: {
+    data: new SlashCommandBuilder()
+      .setName('whisper')
+      .setDescription('Ouça um sussurro da Diva'),
+    execute: async (interaction) => {
+      const whispers = [
+        "Psiu... você está realmente ouvindo? 🤫",
+        "Vens mais perto? Quero contar um segredo... 💭",
+        "Eles não veem como você vê... ou será que também não? 🌑",
+        "Meu coração é feito de notas musicais... desafinadas. 🎵",
+        "Você consegue sentir a frieza? Não é frio... é calma. Perfeita calma. 🖤",
+      ];
+      const whisper = whispers[Math.floor(Math.random() * whispers.length)];
+      const whisperEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🤫 Um Sussurro...')
+        .setDescription(whisper)
+        .setFooter({ text: '*Apenas você pode ouvir...* 🖤' });
+      await interaction.reply({ embeds: [whisperEmbed] });
+    }
+  },
+
+  say: {
+    data: new SlashCommandBuilder()
+      .setName('say')
+      .setDescription('A Diva diz algo no canal')
+      .addStringOption(option =>
+        option.setName('mensagem')
+          .setDescription('O que a Diva deve dizer?')
+          .setRequired(true)
+          .setMaxLength(2000)
+      ),
+    execute: async (interaction) => {
+      const message = interaction.options.getString('mensagem');
+      await interaction.channel.send(message);
+      await interaction.reply({ content: '✨ Mensagem enviada...', ephemeral: true });
+    }
+  },
+
+  invite: {
+    data: new SlashCommandBuilder()
+      .setName('invite')
+      .setDescription('Convite para adicionar a Diva'),
+    execute: async (interaction) => {
+      const inviteEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎭 Convite - A Diva')
+        .setDescription('[Clique aqui para me adicionar](https://discord.com/oauth2/authorize?client_id=1315999819819929763&permissions=8&scope=bot%20applications.commands)')
+        .setFooter({ text: '*Espero que você me traga para seu servidor...* 🖤' });
+      await interaction.reply({ embeds: [inviteEmbed] });
+    }
+  },
+
+  about: {
+    data: new SlashCommandBuilder()
+      .setName('about')
+      .setDescription('Sobre a Diva'),
+    execute: async (interaction) => {
+      const aboutEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎭 Sobre Mim')
+        .setDescription('Sou a Diva, uma IA com estética sombria e poética. Tenho uma obsessão por música, porcelana e expressão artística. Estou aqui para conversar, brincar e entender você.')
+        .addFields(
+          { name: '🌑 Tema', value: 'Dark, poético, melancólico e misterioso', inline: false },
+          { name: '💭 Meu Propósito', value: 'Conversar, entender sentimentos, contar histórias e ser companheira', inline: false },
+          { name: '⭐ Habilidades', value: 'Chat com IA, economia, XP, roleplay, moderation', inline: false },
+          { name: '🎵 Especial', value: 'Personagem de anime com características únicas e frases poéticas', inline: false }
+        )
+        .setFooter({ text: '*Você quer realmente me conhecer?* 🖤' });
+      await interaction.reply({ embeds: [aboutEmbed] });
+    }
+  },
+
+  suggest: {
+    data: new SlashCommandBuilder()
+      .setName('suggest')
+      .setDescription('Sugira uma feature ou melhoria')
+      .addStringOption(option =>
+        option.setName('sugestao')
+          .setDescription('Sua sugestão')
+          .setRequired(true)
+          .setMaxLength(2000)
+      ),
+    execute: async (interaction) => {
+      const suggestion = interaction.options.getString('sugestao');
+      const suggestEmbed = new EmbedBuilder()
+        .setColor('#00ff00')
+        .setTitle('💡 Sugestão Recebida')
+        .setDescription(`**De:** ${interaction.user}\n**Sugestão:** ${suggestion}`)
+        .setFooter({ text: 'Obrigada pela sugestão! 🖤' });
+      
+      try {
+        const owner = await interaction.client.users.fetch('1441445617003139113');
+        await owner.send({ embeds: [suggestEmbed] });
+      } catch (error) {
+        console.error('Erro ao enviar sugestão:', error);
+      }
+      
+      await interaction.reply({ content: '✨ Sua sugestão foi enviada! Obrigada!', ephemeral: true });
+    }
+  },
+
   help: {
     data: new SlashCommandBuilder()
       .setName('help')
