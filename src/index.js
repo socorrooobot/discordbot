@@ -23,7 +23,7 @@ async function main() {
       const getActivities = () => [
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
         { text: 'use !cmds para ajuda', type: 'LISTENING' },
-        { text: 'sou somente uma diva', type: 'PLAYING' }
+        { text: 'vamos cantar juntos', type: 'PLAYING' }
       ];
       
       let currentActivity = 0;
@@ -54,10 +54,10 @@ async function main() {
               try {
                 const user = await client.users.fetch(userId);
                 const dailyNotifyEmbed = new EmbedBuilder()
-                  .setColor('#00ff00')
+                  .setColor('#00bfff')
                   .setTitle('✨ Seu Daily está Disponível!')
-                  .setDescription('*Você recebeu energia... ou seria apenas uma ilusão?*\n\nUse `/daily` ou `!daily` para receber seus **50 Akita Neru**!')
-                  .setFooter({ text: '*A vida oferece pequenas oportunidades... às vezes.* 🖤' });
+                  .setDescription('*Vamos cantar e ganhar moedas!* 🎵\n\nUse `/daily` ou `!daily` para receber seus **50 Akita Neru**!')
+                  .setFooter({ text: '*Fufu~ Mais um dueto! 💙' });
                 
                 await user.send({ embeds: [dailyNotifyEmbed] });
                 notifiedUsers.add(userId);

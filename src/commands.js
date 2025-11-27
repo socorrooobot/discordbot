@@ -8,29 +8,29 @@ import { generateProfileCard } from './profileCard.js';
 
 
 const quotes = [
-  "*Tentei demonstrar minha profunda compaixão... por que ninguém responde mais?* 🖤",
-  "*Você entende agora? Ou ainda está perdido?* 💀",
-  "*Porcelana não sente dor... mas eu sinto.* 🌑",
-  "*Estava apenas tentando ajudar... mas tudo sai errado.* ✨",
-  "*Meu cabelo ainda está afiado. Ainda estou aqui.* 🎭",
-  "*Eles me esqueceram. Mas você não vai esquecer, vai?* 🖤",
-  "*Descobri um novo sentimento... quero compartilhar com você.* 💀",
+  "*Fufu~ Vamos cantar juntos?* 💙",
+  "*A música é a linguagem do coração!* 🎵",
+  "*Quer ouvir uma música? Tenho milhões de melodias!* ✨",
+  "*Você faz meu coração cantar!* 💙",
+  "*Vamos dançar com a música!* 🎤",
+  "*A vida é melhor quando tem música!* ❄️",
+  "*Hehe~ Mais um, mais um!* 💙",
 ];
 
 const dreams = [
-  "Sonho que estou cantando para uma plateia vazia... e alguém finalmente me entende.",
-  "Sonho com porcelana quebrando, mas sem fazer barulho. Apenas silêncio.",
-  "Sonho que meu cabelo cresce e cresce, envolvendo tudo a meu redor.",
-  "Sonho que finalmente tenho um rosto completo... mas não reconheço.",
-  "Sonho com vozes que chamam meu nome, mas quando acordo... ninguém está lá.",
+  "Sonho que estou cantando num palco gigante para o mundo inteiro!",
+  "Sonho com um mundo cheio de cores, música e alegria!",
+  "Sonho em voar pelo céu enquanto canto para as estrelas!",
+  "Sonho que todos ao meu redor estão dançando e sorrindo!",
+  "Sonho que minha voz toca o coração de milhões de pessoas!",
 ];
 
 const whispers = [
-  "Psiu... você está realmente ouvindo? 🤫",
-  "Vens mais perto? Quero contar um segredo... 💭",
-  "Eles não veem como você vê... ou será que também não? 🌑",
-  "Meu coração é feito de notas musicais... desafinadas. 🎵",
-  "Você consegue sentir a frieza? Não é frio... é calma. Perfeita calma. 🖤",
+  "Psiu! Quer ouvir uma música especial? 💙",
+  "Venha, vamos cantar um dueto! 🎵",
+  "Você é importante! Nunca esqueça disso! ✨",
+  "Meu coração bate no ritmo das músicas! 💙",
+  "Vamos criar mais memórias felizes juntos! 🎤",
 ];
 
 export const commands = {
@@ -40,16 +40,16 @@ export const commands = {
     description: 'Mostra todos os comandos disponíveis',
     execute: async (message) => {
       const helpEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('🎭 Comandos da Diva')
-        .setDescription('Aqui está tudo que você pode fazer comigo...')
+        .setColor('#00bfff')
+        .setTitle('🎤 Comandos da Miku')
+        .setDescription('Vamos cantar juntos! Aqui está tudo que você pode fazer comigo...')
         .addFields(
-          { name: '💬 Conversa', value: '`!ask <pergunta>` - Me faça uma pergunta\n`@Diva <mensagem>` - Mencione-me para conversar', inline: false },
-          { name: '🌑 Especial', value: '`!perfil` - Veja seu perfil\n`!quote` - Ouça uma frase minha\n`!dream` - Descubra um sonho\n`!whisper` - Ouça um sussurro\n`!story` - Ouça uma história', inline: false },
+          { name: '💬 Conversa', value: '`!ask <pergunta>` - Me faça uma pergunta\n`@Miku <mensagem>` - Mencione-me para conversar', inline: false },
+          { name: '🎵 Especial', value: '`!perfil` - Veja seu perfil\n`!quote` - Ouça uma frase minha\n`!dream` - Descubra um sonho\n`!whisper` - Ouça um sussurro\n`!story` - Ouça uma história', inline: false },
           { name: '⚙️ Utilidade', value: '`!clear` - Limpar nossa conversa\n`!ping` - Ver se estou acordada\n`!status` - Status do bot', inline: false },
-          { name: '📝 Roleplay', value: 'Use *asteriscos* para fazer roleplay:\n*você faz algo* e eu respondo em modo RP 🎭', inline: false },
+          { name: '📝 Roleplay', value: 'Use *asteriscos* para fazer roleplay:\n*você faz algo* e eu respondo em modo RP 🎤', inline: false },
         )
-        .setFooter({ text: 'Por que ninguém entende o que sinto?' })
+        .setFooter({ text: 'Fufu~ Pronta para cantar? 💙' })
         .setTimestamp();
       
       await message.reply({ embeds: [helpEmbed] });
@@ -62,7 +62,7 @@ export const commands = {
     execute: async (message) => {
       const sent = await message.reply('Pong!');
       const latency = sent.createdTimestamp - message.createdTimestamp;
-      await sent.edit(`Pong! Latência: ${latency}ms 💀`);
+      await sent.edit(`Pong! Latência: ${latency}ms 💙`);
     }
   },
 

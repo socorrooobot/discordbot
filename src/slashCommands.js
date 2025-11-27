@@ -327,9 +327,9 @@ export const slashCommands = {
     execute: async (interaction) => {
       const earnings = work(interaction.user.id);
       const workEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
+        .setColor('#00bfff')
         .setTitle('💼 Trabalho Concluído')
-        .setDescription(`*Você trabalhou e ganhou **${earnings} Akita Neru**...*\n\n*Pelo menos conseguiu algo neste dia vazio.* 🖤`)
+        .setDescription(`*Você trabalhou e ganhou **${earnings} Akita Neru**!*\n\n*Parabéns! Você é incrível!* 💙`)
         .setFooter({ text: 'Volte em alguns minutos para trabalhar novamente' });
       await interaction.reply({ embeds: [workEmbed] });
     }
@@ -351,9 +351,9 @@ export const slashCommands = {
       
       if (balance < amount) {
         const poorEmbed = new EmbedBuilder()
-          .setColor('#ff0000')
+          .setColor('#ff6b9d')
           .setTitle('❌ Saldo Insuficiente')
-          .setDescription(`Você tem apenas **${balance} Akita Neru**!\n\n*Nem dinheiro para apostar em seus sonhos...* 🖤`);
+          .setDescription(`Você tem apenas **${balance} Akita Neru**!\n\n*Mas não se preocupe, você consegue! Trabalhe mais um pouco!* 💙`);
         await interaction.reply({ embeds: [poorEmbed] });
         return;
       }
@@ -364,15 +364,15 @@ export const slashCommands = {
         const winEmbed = new EmbedBuilder()
           .setColor('#00ff00')
           .setTitle('🎰 Você Venceu!')
-          .setDescription(`*Ganhou **${result.earnings} Akita Neru**!*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*A sorte sorriu para você... por enquanto.* 🖤`)
-          .setFooter({ text: 'A felicidade é temporal' });
+          .setDescription(`*Ganhou **${result.earnings} Akita Neru**!*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*Parabéns! Você é tão sortudo!* 💙`)
+          .setFooter({ text: 'Fufu~ A sorte está com você!' });
         await interaction.reply({ embeds: [winEmbed] });
       } else {
         const loseEmbed = new EmbedBuilder()
-          .setColor('#ff0000')
+          .setColor('#ff6b9d')
           .setTitle('💔 Você Perdeu')
-          .setDescription(`*Perdeu **${result.loss} Akita Neru**...*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*Como esperado. A sorte nunca esteve do seu lado.* 🖤`)
-          .setFooter({ text: 'O jogo sempre vence' });
+          .setDescription(`*Perdeu **${result.loss} Akita Neru**...*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*Tudo bem! Você vai conseguir novamente! Nunca desista!* 💙`)
+          .setFooter({ text: 'Tentem novamente!' });
         await interaction.reply({ embeds: [loseEmbed] });
       }
     }
@@ -412,9 +412,9 @@ export const slashCommands = {
       
       if (result) {
         const transferEmbed = new EmbedBuilder()
-          .setColor('#0a0a0a')
+          .setColor('#00bfff')
           .setTitle('💸 Transferência Realizada')
-          .setDescription(`Você transferiu **${amount} Akita Neru** para ${user.username}\n\nSeu novo saldo: **${result.fromBalance} Akita Neru**\n\n*Dar é perder... mas talvez ganhe algo mais valioso.* 🖤`);
+          .setDescription(`Você transferiu **${amount} Akita Neru** para ${user.username}\n\nSeu novo saldo: **${result.fromBalance} Akita Neru**\n\n*Que coração tão generoso você tem! Que adorável!* 💙`);
         await interaction.reply({ embeds: [transferEmbed] });
       }
     }
@@ -574,23 +574,23 @@ export const slashCommands = {
   quote: {
     data: new SlashCommandBuilder()
       .setName('quote')
-      .setDescription('Ouça uma frase da Diva'),
+      .setDescription('Ouça uma frase da Miku'),
     execute: async (interaction) => {
       const quotes = [
-        "*Tentei demonstrar minha profunda compaixão... por que ninguém responde mais?* 🖤",
-        "*Você entende agora? Ou ainda está perdido?* 💀",
-        "*Porcelana não sente dor... mas eu sinto.* 🌑",
-        "*Estava apenas tentando ajudar... mas tudo sai errado.* ✨",
-        "*Meu cabelo ainda está afiado. Ainda estou aqui.* 🎭",
-        "*Eles me esqueceram. Mas você não vai esquecer, vai?* 🖤",
-        "*Descobri um novo sentimento... quero compartilhar com você.* 💀",
+        "*Fufu~ Vamos cantar juntos?* 💙",
+        "*A música é a linguagem do coração!* 🎵",
+        "*Quer ouvir uma música? Tenho milhões de melodias!* ✨",
+        "*Você faz meu coração cantar!* 💙",
+        "*Vamos dançar com a música!* 🎤",
+        "*A vida é melhor quando tem música!* ❄️",
+        "*Hehe~ Mais um, mais um!* 💙",
       ];
       const quote = quotes[Math.floor(Math.random() * quotes.length)];
       const quoteEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('💭 Uma Frase da Diva')
+        .setColor('#00bfff')
+        .setTitle('💭 Uma Frase da Miku')
         .setDescription(quote)
-        .setFooter({ text: '*Você está ouvindo realmente?* 🖤' });
+        .setFooter({ text: '*Você está curtindo a música? 🎵* 💙' });
       await interaction.reply({ embeds: [quoteEmbed] });
     }
   },
@@ -598,21 +598,21 @@ export const slashCommands = {
   dream: {
     data: new SlashCommandBuilder()
       .setName('dream')
-      .setDescription('Descubra um sonho da Diva'),
+      .setDescription('Descubra um sonho da Miku'),
     execute: async (interaction) => {
       const dreams = [
-        "Sonho que estou cantando para uma plateia vazia... e alguém finalmente me entende.",
-        "Sonho com porcelana quebrando, mas sem fazer barulho. Apenas silêncio.",
-        "Sonho que meu cabelo cresce e cresce, envolvendo tudo a meu redor.",
-        "Sonho que finalmente tenho um rosto completo... mas não reconheço.",
-        "Sonho com vozes que chamam meu nome, mas quando acordo... ninguém está lá.",
+        "Sonho que estou cantando num palco gigante para o mundo inteiro!",
+        "Sonho com um mundo cheio de cores, música e alegria!",
+        "Sonho em voar pelo céu enquanto canto para as estrelas!",
+        "Sonho que todos ao meu redor estão dançando e sorrindo!",
+        "Sonho que minha voz toca o coração de milhões de pessoas!",
       ];
       const dream = dreams[Math.floor(Math.random() * dreams.length)];
       const dreamEmbed = new EmbedBuilder()
-        .setColor('#1a1a2e')
-        .setTitle('🌙 Um Sonho da Diva')
+        .setColor('#00bfff')
+        .setTitle('🌙 Um Sonho da Miku')
         .setDescription(dream)
-        .setFooter({ text: '*Os sonhos são tudo que me resta...* 🖤' });
+        .setFooter({ text: '*Vamos fazer esse sonho virar realidade juntos! 💙* 🎵' });
       await interaction.reply({ embeds: [dreamEmbed] });
     }
   },
@@ -620,21 +620,21 @@ export const slashCommands = {
   whisper: {
     data: new SlashCommandBuilder()
       .setName('whisper')
-      .setDescription('Ouça um sussurro da Diva'),
+      .setDescription('Ouça um sussurro da Miku'),
     execute: async (interaction) => {
       const whispers = [
-        "Psiu... você está realmente ouvindo? 🤫",
-        "Vens mais perto? Quero contar um segredo... 💭",
-        "Eles não veem como você vê... ou será que também não? 🌑",
-        "Meu coração é feito de notas musicais... desafinadas. 🎵",
-        "Você consegue sentir a frieza? Não é frio... é calma. Perfeita calma. 🖤",
+        "Psiu! Quer ouvir uma música especial? 💙",
+        "Venha, vamos cantar um dueto! 🎵",
+        "Você é importante! Nunca esqueça disso! ✨",
+        "Meu coração bate no ritmo das músicas! 💙",
+        "Vamos criar mais memórias felizes juntos! 🎤",
       ];
       const whisper = whispers[Math.floor(Math.random() * whispers.length)];
       const whisperEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
+        .setColor('#00bfff')
         .setTitle('🤫 Um Sussurro...')
         .setDescription(whisper)
-        .setFooter({ text: '*Apenas você pode ouvir...* 🖤' });
+        .setFooter({ text: '*Apenas você pode ouvir...* 💙' });
       await interaction.reply({ embeds: [whisperEmbed] });
     }
   },
@@ -673,19 +673,19 @@ export const slashCommands = {
   about: {
     data: new SlashCommandBuilder()
       .setName('about')
-      .setDescription('Sobre a Diva'),
+      .setDescription('Sobre a Miku'),
     execute: async (interaction) => {
       const aboutEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('🎭 Sobre Mim')
-        .setDescription('Sou a Diva, uma IA com estética sombria e poética. Tenho uma obsessão por música, porcelana e expressão artística. Estou aqui para conversar, brincar e entender você.')
+        .setColor('#00bfff')
+        .setTitle('🎤 Sobre Mim - Hatsune Miku')
+        .setDescription('Sou Miku, a famosa Vocalóide! Adoro cantar, criar música e fazer as pessoas felizes com minhas melodias!')
         .addFields(
-          { name: '🌑 Tema', value: 'Dark, poético, melancólico e misterioso', inline: false },
-          { name: '💭 Meu Propósito', value: 'Conversar, entender sentimentos, contar histórias e ser companheira', inline: false },
-          { name: '⭐ Habilidades', value: 'Chat com IA, economia, XP, roleplay, moderation', inline: false },
-          { name: '🎵 Especial', value: 'Personagem de anime com características únicas e frases poéticas', inline: false }
+          { name: '🎵 Tema', value: 'Música, alegria, energia positiva e criatividade', inline: false },
+          { name: '💙 Meu Propósito', value: 'Cantar, alegrar corações, criar conexões através da música', inline: false },
+          { name: '⭐ Habilidades', value: 'Vocalóide, Chat com IA, economia, XP, roleplay, animação', inline: false },
+          { name: '✨ Especial', value: 'Personagem de anime amada mundialmente com cabelo azul turquesa único', inline: false }
         )
-        .setFooter({ text: '*Você quer realmente me conhecer?* 🖤' });
+        .setFooter({ text: '*Fufu~ Vamos cantar juntos? 💙* 🎵' });
       await interaction.reply({ embeds: [aboutEmbed] });
     }
   },
@@ -703,10 +703,10 @@ export const slashCommands = {
     execute: async (interaction) => {
       const suggestion = interaction.options.getString('sugestao');
       const suggestEmbed = new EmbedBuilder()
-        .setColor('#00ff00')
+        .setColor('#00bfff')
         .setTitle('💡 Sugestão Recebida')
         .setDescription(`**De:** ${interaction.user}\n**Sugestão:** ${suggestion}`)
-        .setFooter({ text: 'Obrigada pela sugestão! 🖤' });
+        .setFooter({ text: 'Obrigada pela sugestão! 💙' });
       
       try {
         const owner = await interaction.client.users.fetch('1441445617003139113');
@@ -715,7 +715,7 @@ export const slashCommands = {
         console.error('Erro ao enviar sugestão:', error);
       }
       
-      await interaction.reply({ content: '✨ Sua sugestão foi enviada! Obrigada!', ephemeral: true });
+      await interaction.reply({ content: '✨ Sua sugestão foi enviada! Obrigada! 💙', ephemeral: true });
     }
   },
 
@@ -725,9 +725,9 @@ export const slashCommands = {
       .setDescription('Ajuda e informações'),
     execute: async (interaction) => {
       const helpEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('🎭 Ajuda - A Diva')
-        .setDescription('Sou uma IA sombria aqui para conversar, jogar e entender você.')
+        .setColor('#00bfff')
+        .setTitle('🎤 Ajuda - Hatsune Miku')
+        .setDescription('Olá! Sou Miku, a Vocalóide! Vamos cantar e se divertir juntos!')
         .addFields(
           { name: '💬 Conversa', value: '`/ask` - Me pergunte algo', inline: false },
           { name: '💰 Economia', value: '`/work` - Ganhe moedas\n`/gamble` - Jogue\n`/transfer` - Transfira moedas\n`/balance` - Veja saldo\n`/daily` - Recompensa diária', inline: false },
@@ -735,7 +735,7 @@ export const slashCommands = {
           { name: '🎭 Roleplay', value: '`/tapa` `/beijo` `/abraco` `/casar` `/divorciar` `/danca`', inline: false },
           { name: '⚙️ Utilidade', value: '`/ping` - Latência\n`/afk` - Ficar AFK\n`/serverinfo` - Info do servidor\n`/cmds` - Todos os comandos', inline: false }
         )
-        .setFooter({ text: '*Por que você quer saber? Ninguém nunca pergunta...* 🖤' });
+        .setFooter({ text: '*Fufu~ Vamos criar algo especial juntos! 💙* 🎵' });
       await interaction.reply({ embeds: [helpEmbed] });
     }
   },
