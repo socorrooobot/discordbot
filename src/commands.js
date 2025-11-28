@@ -5,6 +5,8 @@ import { getUserInfo, getXPLeaderboard, getUserRank } from './xp.js';
 import { setAFK, removeAFK, isAFK } from './afk.js';
 import { executeRP } from './rpCommands.js';
 import { generateProfileCard } from './profileCard.js';
+import { isAdmin } from './admin.js';
+import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
 
 
 const quotes = [
@@ -2654,6 +2656,99 @@ export const commands = {
         )
         .setFooter({ text: '*Conhecer os comandos é conhecer meu coração.* 🖤' });
       await message.reply({ embeds: [cmdsEmbed] });
+    }
+  },
+
+  addneru: {
+    name: '!addneru',
+    aliases: ['!givemoney', '!addmoney'],
+    description: '[ADMIN] Adicionar Akita Neru para um usuário',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      const amount = parseInt(args[1]);
+
+      if (!mentioned || isNaN(amount) || amount <= 0) {
+        await message.reply('❌ Uso: `!addneru <@usuario> <quantia>`');
+        return;
+      }
+
+      addBalance(mentioned.id, amount);
+      const addnruEmbed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('💰 Akita Neru Adicionado')
+        .setDescription(`✨ **${amount} Akita Neru** foi adicionado para <@${mentioned.id}>!`)
+        .setFooter({ text: '*A generosidade também é uma forma de arte.* 🖤' });
+      
+      await message.reply({ embeds: [addnruEmbed] });
+    }
+  },
+
+  blacklist: {
+    name: '!blacklist',
+    aliases: ['!ban-user', '!banusr'],
+    description: '[ADMIN] Adicionar usuário na blacklist',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      if (!mentioned) {
+        await message.reply('❌ Uso: `!blacklist <@usuario>`');
+        return;
+      }
+
+      if (isBlacklisted(mentioned.id)) {
+        await message.reply(`⚠️ <@${mentioned.id}> já está na blacklist!`);
+        return;
+      }
+
+      addToBlacklist(mentioned.id);
+      const blacklistEmbed = new EmbedBuilder()
+        .setColor('#ff0000')
+        .setTitle('🚫 Usuário Bloqueado')
+        .setDescription(`<@${mentioned.id}> foi adicionado à blacklist!\n\n*Nem todos conseguem entender minha arte.* 🖤`)
+        .setFooter({ text: `Admin: ${message.author.username}` });
+      
+      await message.reply({ embeds: [blacklistEmbed] });
+    }
+  },
+
+  unblacklist: {
+    name: '!unblacklist',
+    aliases: ['!unban-user', '!unbanuser'],
+    description: '[ADMIN] Remover usuário da blacklist',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      if (!mentioned) {
+        await message.reply('❌ Uso: `!unblacklist <@usuario>`');
+        return;
+      }
+
+      if (!isBlacklisted(mentioned.id)) {
+        await message.reply(`⚠️ <@${mentioned.id}> não está na blacklist!`);
+        return;
+      }
+
+      removeFromBlacklist(mentioned.id);
+      const unblacklistEmbed = new EmbedBuilder()
+        .setColor('#00ff00')
+        .setTitle('✨ Usuário Desbloqueado')
+        .setDescription(`<@${mentioned.id}> foi removido da blacklist!\n\n*Talvez você mereça uma segunda chance.* 💙`)
+        .setFooter({ text: `Admin: ${message.author.username}` });
+      
+      await message.reply({ embeds: [unblacklistEmbed] });
     }
   }
 };

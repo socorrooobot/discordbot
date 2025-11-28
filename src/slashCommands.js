@@ -1,11 +1,12 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { chat } from './gemini.js';
-import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer } from './economy.js';
+import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer, addBalance } from './economy.js';
 import { getUserInfo, getXPLeaderboard } from './xp.js';
 import { setAFK, isAFK, removeAFK } from './afk.js';
 import { startGiveaway } from './giveaway.js';
 import { executeRPSlash } from './rpCommands.js';
-import { isBlacklisted } from './blacklist.js';
+import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
+import { isAdmin } from './admin.js';
 
 export const slashCommands = {
   ask: {
@@ -773,6 +774,107 @@ export const slashCommands = {
         .setFooter({ text: 'Página 3 de 3 - Use ! para comandos com prefixo' });
 
       await interaction.reply({ embeds: [embed1, embed2, embed3] });
+    }
+  },
+
+  addneru: {
+    data: new SlashCommandBuilder()
+      .setName('addneru')
+      .setDescription('[ADMIN] Adicionar Akita Neru para um usuário')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Usuário que receberá')
+          .setRequired(true)
+      )
+      .addIntegerOption(option =>
+        option.setName('quantidade')
+          .setDescription('Quantidade de Akita Neru')
+          .setRequired(true)
+          .setMinValue(1)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Você não tem permissão! Apenas admins.', ephemeral: true });
+        return;
+      }
+
+      const user = interaction.options.getUser('usuario');
+      const amount = interaction.options.getInteger('quantidade');
+
+      addBalance(user.id, amount);
+      const addnruEmbed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('💰 Akita Neru Adicionado')
+        .setDescription(`✨ **${amount} Akita Neru** foi adicionado para <@${user.id}>!`)
+        .setFooter({ text: '*A generosidade também é uma forma de arte.* 🖤' });
+      
+      await interaction.reply({ embeds: [addnruEmbed] });
+    }
+  },
+
+  blacklist: {
+    data: new SlashCommandBuilder()
+      .setName('blacklist')
+      .setDescription('[ADMIN] Adicionar usuário na blacklist')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Usuário a bloquear')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Você não tem permissão! Apenas admins.', ephemeral: true });
+        return;
+      }
+
+      const user = interaction.options.getUser('usuario');
+
+      if (isBlacklisted(user.id)) {
+        await interaction.reply({ content: `⚠️ <@${user.id}> já está na blacklist!`, ephemeral: true });
+        return;
+      }
+
+      addToBlacklist(user.id);
+      const blacklistEmbed = new EmbedBuilder()
+        .setColor('#ff0000')
+        .setTitle('🚫 Usuário Bloqueado')
+        .setDescription(`<@${user.id}> foi adicionado à blacklist!\n\n*Nem todos conseguem entender minha arte.* 🖤`)
+        .setFooter({ text: `Admin: ${interaction.user.username}` });
+      
+      await interaction.reply({ embeds: [blacklistEmbed] });
+    }
+  },
+
+  unblacklist: {
+    data: new SlashCommandBuilder()
+      .setName('unblacklist')
+      .setDescription('[ADMIN] Remover usuário da blacklist')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Usuário a desbloquear')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Você não tem permissão! Apenas admins.', ephemeral: true });
+        return;
+      }
+
+      const user = interaction.options.getUser('usuario');
+
+      if (!isBlacklisted(user.id)) {
+        await interaction.reply({ content: `⚠️ <@${user.id}> não está na blacklist!`, ephemeral: true });
+        return;
+      }
+
+      removeFromBlacklist(user.id);
+      const unblacklistEmbed = new EmbedBuilder()
+        .setColor('#00ff00')
+        .setTitle('✨ Usuário Desbloqueado')
+        .setDescription(`<@${user.id}> foi removido da blacklist!\n\n*Talvez você mereça uma segunda chance.* 💙`)
+        .setFooter({ text: `Admin: ${interaction.user.username}` });
+      
+      await interaction.reply({ embeds: [unblacklistEmbed] });
     }
   }
 };
