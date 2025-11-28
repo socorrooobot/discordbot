@@ -41,3 +41,13 @@ export function removeAdmin(userId) {
     return false;
   }
 }
+
+export function getAdmins() {
+  try {
+    const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
+    return data.adminUsers || [];
+  } catch (error) {
+    console.error('Erro ao obter admins:', error);
+    return [];
+  }
+}

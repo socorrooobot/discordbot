@@ -70,6 +70,14 @@ export function removeBalance(userId, amount) {
   return user.balance;
 }
 
+// Definir saldo direto (admin)
+export function setBalance(userId, amount) {
+  const user = getUser(userId);
+  user.balance = amount;
+  updateUser(userId, user);
+  return user.balance;
+}
+
 // Transferir moeda
 export function transfer(fromId, toId, amount) {
   const fromUser = getUser(fromId);

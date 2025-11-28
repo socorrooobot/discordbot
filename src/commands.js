@@ -1,11 +1,11 @@
 import { chat, clearHistory } from './gemini.js';
 import { EmbedBuilder, PermissionFlagsBits, AttachmentBuilder } from 'discord.js';
-import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble } from './economy.js';
-import { getUserInfo, getXPLeaderboard, getUserRank } from './xp.js';
+import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble, setBalance } from './economy.js';
+import { getUserInfo, getXPLeaderboard, getUserRank, addXPDirect, removeXPDirect } from './xp.js';
 import { setAFK, removeAFK, isAFK } from './afk.js';
 import { executeRP } from './rpCommands.js';
 import { generateProfileCard } from './profileCard.js';
-import { isAdmin } from './admin.js';
+import { isAdmin, addAdmin, removeAdmin, getAdmins } from './admin.js';
 import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
 
 
@@ -2749,6 +2749,211 @@ export const commands = {
         .setFooter({ text: `Admin: ${message.author.username}` });
       
       await message.reply({ embeds: [unblacklistEmbed] });
+    }
+  },
+
+  removeneru: {
+    name: '!removeneru',
+    aliases: ['!removemoney'],
+    description: '[ADMIN] Remover Akita Neru de um usuário',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      const amount = parseInt(args[1]);
+
+      if (!mentioned || isNaN(amount) || amount <= 0) {
+        await message.reply('❌ Uso: `!removeneru <@usuario> <quantia>`');
+        return;
+      }
+
+      const result = removeBalance(mentioned.id, amount);
+      if (result === null) {
+        await message.reply(`❌ <@${mentioned.id}> não tem saldo suficiente!`);
+        return;
+      }
+
+      const embed = new EmbedBuilder()
+        .setColor('#ff6b6b')
+        .setTitle('💔 Akita Neru Removido')
+        .setDescription(`✨ **${amount} Akita Neru** foi removido de <@${mentioned.id}>!\n\nSaldo restante: **${result}**`)
+        .setFooter({ text: '*A vida é frágil...* 🖤' });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  setneru: {
+    name: '!setneru',
+    aliases: ['!setmoney'],
+    description: '[ADMIN] Definir Akita Neru de um usuário',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      const amount = parseInt(args[1]);
+
+      if (!mentioned || isNaN(amount) || amount < 0) {
+        await message.reply('❌ Uso: `!setneru <@usuario> <quantia>`');
+        return;
+      }
+
+      setBalance(mentioned.id, amount);
+      const embed = new EmbedBuilder()
+        .setColor('#0099ff')
+        .setTitle('⚡ Akita Neru Definido')
+        .setDescription(`✨ Saldo de <@${mentioned.id}> foi definido para **${amount}**!`)
+        .setFooter({ text: '*Realidade é o que eu digo que é.* 🖤' });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  addxp: {
+    name: '!addxp',
+    description: '[ADMIN] Adicionar XP para um usuário',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      const amount = parseInt(args[1]);
+
+      if (!mentioned || isNaN(amount) || amount <= 0) {
+        await message.reply('❌ Uso: `!addxp <@usuario> <quantidade>`');
+        return;
+      }
+
+      const user = addXPDirect(mentioned.id, amount);
+      const embed = new EmbedBuilder()
+        .setColor('#9966ff')
+        .setTitle('⭐ XP Adicionado')
+        .setDescription(`✨ **${amount} XP** foi adicionado para <@${mentioned.id}>!\n\nNível: **${user.level}** | Total XP: **${user.totalXP}**`)
+        .setFooter({ text: '*Crescimento é inevitável.* 🖤' });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  removexp: {
+    name: '!removexp',
+    description: '[ADMIN] Remover XP de um usuário',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      const amount = parseInt(args[1]);
+
+      if (!mentioned || isNaN(amount) || amount <= 0) {
+        await message.reply('❌ Uso: `!removexp <@usuario> <quantidade>`');
+        return;
+      }
+
+      const result = removeXPDirect(mentioned.id, amount);
+      if (result === null) {
+        await message.reply(`❌ <@${mentioned.id}> não tem XP suficiente!`);
+        return;
+      }
+
+      const embed = new EmbedBuilder()
+        .setColor('#ff9966')
+        .setTitle('💫 XP Removido')
+        .setDescription(`✨ **${amount} XP** foi removido de <@${mentioned.id}>!\n\nNível: **${result.level}** | Total XP: **${result.totalXP}**`)
+        .setFooter({ text: '*Retrocesso é possível.* 🖤' });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  addadmin: {
+    name: '!addadmin',
+    description: '[ADMIN] Promover usuário a admin',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      if (!mentioned) {
+        await message.reply('❌ Uso: `!addadmin <@usuario>`');
+        return;
+      }
+
+      if (isAdmin(mentioned.id)) {
+        await message.reply(`⚠️ <@${mentioned.id}> já é admin!`);
+        return;
+      }
+
+      addAdmin(mentioned.id);
+      const embed = new EmbedBuilder()
+        .setColor('#00ff00')
+        .setTitle('👑 Novo Admin')
+        .setDescription(`<@${mentioned.id}> foi promovido a admin!\n\n*Bem-vindo ao círculo de poder.* 🖤`)
+        .setFooter({ text: `Promovido por: ${message.author.username}` });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  removeadmin: {
+    name: '!removeadmin',
+    description: '[ADMIN] Remover admin',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const mentioned = message.mentions.users.first();
+      if (!mentioned) {
+        await message.reply('❌ Uso: `!removeadmin <@usuario>`');
+        return;
+      }
+
+      if (!isAdmin(mentioned.id)) {
+        await message.reply(`⚠️ <@${mentioned.id}> não é admin!`);
+        return;
+      }
+
+      removeAdmin(mentioned.id);
+      const embed = new EmbedBuilder()
+        .setColor('#ff0000')
+        .setTitle('🔴 Admin Removido')
+        .setDescription(`<@${mentioned.id}> não é mais admin.\n\n*Tudo que sobe deve descer.* 🖤`)
+        .setFooter({ text: `Removido por: ${message.author.username}` });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  admins: {
+    name: '!admins',
+    aliases: ['!admin-list'],
+    description: '[ADMIN] Listar todos os admins',
+    execute: async (message) => {
+      const adminsList = getAdmins();
+      
+      const embed = new EmbedBuilder()
+        .setColor('#ffff00')
+        .setTitle('👑 Lista de Admins')
+        .setDescription(adminsList.length > 0 
+          ? adminsList.map((id, i) => `${i + 1}. <@${id}> (\`${id}\`)`).join('\n')
+          : 'Nenhum admin configurado!')
+        .setFooter({ text: `Total: ${adminsList.length}` });
+      
+      await message.reply({ embeds: [embed] });
     }
   }
 };

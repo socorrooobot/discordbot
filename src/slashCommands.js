@@ -1,12 +1,12 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { chat } from './gemini.js';
-import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer, addBalance } from './economy.js';
-import { getUserInfo, getXPLeaderboard } from './xp.js';
+import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer, addBalance, removeBalance, setBalance } from './economy.js';
+import { getUserInfo, getXPLeaderboard, addXPDirect, removeXPDirect } from './xp.js';
 import { setAFK, isAFK, removeAFK } from './afk.js';
 import { startGiveaway } from './giveaway.js';
 import { executeRPSlash } from './rpCommands.js';
 import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
-import { isAdmin } from './admin.js';
+import { isAdmin, addAdmin, removeAdmin, getAdmins } from './admin.js';
 
 export const slashCommands = {
   ask: {
@@ -875,6 +875,147 @@ export const slashCommands = {
         .setFooter({ text: `Admin: ${interaction.user.username}` });
       
       await interaction.reply({ embeds: [unblacklistEmbed] });
+    }
+  },
+
+  removeneru: {
+    data: new SlashCommandBuilder()
+      .setName('removeneru')
+      .setDescription('[ADMIN] Remover Akita Neru')
+      .addUserOption(option => option.setName('usuario').setDescription('Usuário').setRequired(true))
+      .addIntegerOption(option => option.setName('quantidade').setDescription('Quantidade').setRequired(true).setMinValue(1)),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      const amount = interaction.options.getInteger('quantidade');
+      const result = removeBalance(user.id, amount);
+      if (result === null) {
+        await interaction.reply({ content: `❌ Saldo insuficiente!`, ephemeral: true });
+        return;
+      }
+      const embed = new EmbedBuilder().setColor('#ff6b6b').setTitle('💔 Removido').setDescription(`${amount} Akita Neru removido de <@${user.id}>! Saldo: **${result}**`);
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
+
+  setneru: {
+    data: new SlashCommandBuilder()
+      .setName('setneru')
+      .setDescription('[ADMIN] Definir Akita Neru')
+      .addUserOption(option => option.setName('usuario').setDescription('Usuário').setRequired(true))
+      .addIntegerOption(option => option.setName('quantidade').setDescription('Quantidade').setRequired(true).setMinValue(0)),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      const amount = interaction.options.getInteger('quantidade');
+      setBalance(user.id, amount);
+      const embed = new EmbedBuilder().setColor('#0099ff').setTitle('⚡ Definido').setDescription(`Saldo de <@${user.id}> definido para **${amount}**!`);
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
+
+  addxp: {
+    data: new SlashCommandBuilder()
+      .setName('addxp')
+      .setDescription('[ADMIN] Adicionar XP')
+      .addUserOption(option => option.setName('usuario').setDescription('Usuário').setRequired(true))
+      .addIntegerOption(option => option.setName('quantidade').setDescription('XP').setRequired(true).setMinValue(1)),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      const amount = interaction.options.getInteger('quantidade');
+      const result = addXPDirect(user.id, amount);
+      const embed = new EmbedBuilder().setColor('#9966ff').setTitle('⭐ XP Adicionado').setDescription(`${amount} XP para <@${user.id}>! Nível: **${result.level}**`);
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
+
+  removexp: {
+    data: new SlashCommandBuilder()
+      .setName('removexp')
+      .setDescription('[ADMIN] Remover XP')
+      .addUserOption(option => option.setName('usuario').setDescription('Usuário').setRequired(true))
+      .addIntegerOption(option => option.setName('quantidade').setDescription('XP').setRequired(true).setMinValue(1)),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      const amount = interaction.options.getInteger('quantidade');
+      const result = removeXPDirect(user.id, amount);
+      if (result === null) {
+        await interaction.reply({ content: '❌ XP insuficiente!', ephemeral: true });
+        return;
+      }
+      const embed = new EmbedBuilder().setColor('#ff9966').setTitle('💫 XP Removido').setDescription(`${amount} XP removido de <@${user.id}>! Nível: **${result.level}**`);
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
+
+  addadmin: {
+    data: new SlashCommandBuilder()
+      .setName('addadmin')
+      .setDescription('[ADMIN] Promover a admin')
+      .addUserOption(option => option.setName('usuario').setDescription('Usuário').setRequired(true)),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      if (isAdmin(user.id)) {
+        await interaction.reply({ content: `⚠️ Já é admin!`, ephemeral: true });
+        return;
+      }
+      addAdmin(user.id);
+      const embed = new EmbedBuilder().setColor('#00ff00').setTitle('👑 Novo Admin').setDescription(`<@${user.id}> foi promovido!`);
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
+
+  removeadmin: {
+    data: new SlashCommandBuilder()
+      .setName('removeadmin')
+      .setDescription('[ADMIN] Remover admin')
+      .addUserOption(option => option.setName('usuario').setDescription('Usuário').setRequired(true)),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      if (!isAdmin(user.id)) {
+        await interaction.reply({ content: `⚠️ Não é admin!`, ephemeral: true });
+        return;
+      }
+      removeAdmin(user.id);
+      const embed = new EmbedBuilder().setColor('#ff0000').setTitle('🔴 Admin Removido').setDescription(`<@${user.id}> não é mais admin.`);
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
+
+  admins: {
+    data: new SlashCommandBuilder()
+      .setName('admins')
+      .setDescription('[ADMIN] Lista de admins'),
+    execute: async (interaction) => {
+      const adminsList = getAdmins();
+      const embed = new EmbedBuilder()
+        .setColor('#ffff00')
+        .setTitle('👑 Admins')
+        .setDescription(adminsList.length > 0 ? adminsList.map((id, i) => `${i + 1}. <@${id}>`).join('\n') : 'Nenhum admin!')
+        .setFooter({ text: `Total: ${adminsList.length}` });
+      await interaction.reply({ embeds: [embed] });
     }
   }
 };

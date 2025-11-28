@@ -120,6 +120,25 @@ export function getXPLeaderboard(limit = 10) {
     .slice(0, limit);
 }
 
+// Adicionar XP direto (admin)
+export function addXPDirect(userId, amount) {
+  const user = getUser(userId);
+  user.totalXP += amount;
+  user.level = calculateLevel(user.totalXP);
+  updateUser(userId, user);
+  return user;
+}
+
+// Remover XP direto (admin)
+export function removeXPDirect(userId, amount) {
+  const user = getUser(userId);
+  if (user.totalXP < amount) return null;
+  user.totalXP -= amount;
+  user.level = calculateLevel(user.totalXP);
+  updateUser(userId, user);
+  return user;
+}
+
 // Obter rank de um usuário
 export function getUserRank(userId) {
   const leaderboard = getXPLeaderboard(1000);
