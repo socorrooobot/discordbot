@@ -2955,6 +2955,124 @@ export const commands = {
       
       await message.reply({ embeds: [embed] });
     }
+  },
+
+  createsuporte: {
+    name: '!createsuporte',
+    aliases: ['!create-support', '!criar-suporte'],
+    description: '[ADMIN] Criar um servidor de suporte pro bot',
+    execute: async (message, args, client) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const nomeSuporte = args.join(' ') || 'Suporte - Miku Diva';
+
+      await message.channel.sendTyping();
+      
+      try {
+        // Criar o servidor
+        const guild = await client.guilds.create({
+          name: nomeSuporte,
+          icon: message.client.user.displayAvatarURL({ extension: 'png' })
+        });
+
+        // Esperar um pouco para garantir que o servidor foi criado
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Deletar canal padrão
+        const defaultChannel = guild.channels.cache.find(ch => ch.isTextBased() && ch.name === 'general');
+        if (defaultChannel) await defaultChannel.delete();
+
+        // Criar canais
+        const channels = {};
+        
+        // Canal de bem-vindo
+        channels.welcome = await guild.channels.create({
+          name: '👋-bem-vindo',
+          type: 0,
+          topic: 'Bem-vindo ao servidor de suporte da Miku!'
+        });
+
+        // Canal de suporte
+        channels.support = await guild.channels.create({
+          name: '🆘-suporte',
+          type: 0,
+          topic: 'Aqui você pode tirar dúvidas e pedir ajuda'
+        });
+
+        // Canal de bugs
+        channels.bugs = await guild.channels.create({
+          name: '🐛-bugs',
+          type: 0,
+          topic: 'Reporte bugs e problemas encontrados'
+        });
+
+        // Canal de sugestões
+        channels.suggestions = await guild.channels.create({
+          name: '💡-sugestões',
+          type: 0,
+          topic: 'Compartilhe suas ideias e sugestões'
+        });
+
+        // Canal de staff
+        channels.staff = await guild.channels.create({
+          name: '👑-staff',
+          type: 0,
+          topic: 'Canal privado para staff'
+        });
+
+        // Criar convite
+        const invite = await channels.welcome.createInvite({
+          maxAge: 0, // Sem expiração
+          maxUses: 0 // Usos ilimitados
+        });
+
+        // Enviar mensagem de boas-vindas no canal welcome
+        await channels.welcome.send({
+          embeds: [new EmbedBuilder()
+            .setColor('#00bfff')
+            .setTitle('🎤 Bem-vindo ao Suporte da Miku!')
+            .setDescription('*Fufu~ Que alegria em tê-lo aqui!* 💙\n\nEste é um espaço seguro para:\n🆘 Tirar dúvidas sobre o bot\n🐛 Reportar bugs e problemas\n💡 Sugerir novas funcionalidades\n👑 Conversar com a equipe')
+            .setFooter({ text: 'Miku Diva - Suporte' })
+          ]
+        });
+
+        // Enviar embed de confirmação ao admin
+        const successEmbed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✨ Servidor de Suporte Criado!')
+          .setDescription(`**${nomeSuporte}** foi criado com sucesso!\n\n🎉 Canais criados automaticamente:\n✅ #bem-vindo\n✅ #suporte\n✅ #bugs\n✅ #sugestões\n✅ #staff`)
+          .addFields(
+            { name: '🔗 Link de Convite', value: invite.url, inline: false }
+          )
+          .setFooter({ text: '*Agora todos podem encontrar ajuda comigo!* 🖤' });
+
+        await message.reply({ embeds: [successEmbed] });
+
+        // Também enviar DM ao admin
+        try {
+          const dmEmbed = new EmbedBuilder()
+            .setColor('#00bfff')
+            .setTitle('🎭 Seu Servidor de Suporte está Pronto!')
+            .setDescription(`Servidor: **${nomeSuporte}**`)
+            .addFields(
+              { name: '📍 ID do Servidor', value: `\`${guild.id}\``, inline: false },
+              { name: '🔗 Link de Convite', value: `[Clique aqui](${invite.url})`, inline: false }
+            )
+            .setFooter({ text: 'Gerencie seu servidor de suporte!' });
+
+          await message.author.send({ embeds: [dmEmbed] });
+        } catch (error) {
+          console.log('Não foi possível enviar DM ao admin');
+        }
+
+      } catch (error) {
+        console.error('Erro ao criar servidor:', error);
+        await message.reply('❌ Erro ao criar o servidor de suporte! Tente novamente mais tarde. 💀');
+      }
+    }
   }
 };
 

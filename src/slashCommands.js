@@ -1017,6 +1017,123 @@ export const slashCommands = {
         .setFooter({ text: `Total: ${adminsList.length}` });
       await interaction.reply({ embeds: [embed] });
     }
+  },
+
+  createsuporte: {
+    data: new SlashCommandBuilder()
+      .setName('createsuporte')
+      .setDescription('[ADMIN] Criar servidor de suporte')
+      .addStringOption(option =>
+        option.setName('nome')
+          .setDescription('Nome do servidor (padrão: Suporte - Miku Diva)')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+
+      const nomeSuporte = interaction.options.getString('nome') || 'Suporte - Miku Diva';
+      
+      await interaction.deferReply();
+
+      try {
+        // Criar o servidor
+        const guild = await interaction.client.guilds.create({
+          name: nomeSuporte,
+          icon: interaction.client.user.displayAvatarURL({ extension: 'png' })
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Deletar canal padrão
+        const defaultChannel = guild.channels.cache.find(ch => ch.isTextBased() && ch.name === 'general');
+        if (defaultChannel) await defaultChannel.delete();
+
+        // Criar canais
+        const channels = {};
+        
+        channels.welcome = await guild.channels.create({
+          name: '👋-bem-vindo',
+          type: 0,
+          topic: 'Bem-vindo ao servidor de suporte da Miku!'
+        });
+
+        channels.support = await guild.channels.create({
+          name: '🆘-suporte',
+          type: 0,
+          topic: 'Aqui você pode tirar dúvidas e pedir ajuda'
+        });
+
+        channels.bugs = await guild.channels.create({
+          name: '🐛-bugs',
+          type: 0,
+          topic: 'Reporte bugs e problemas encontrados'
+        });
+
+        channels.suggestions = await guild.channels.create({
+          name: '💡-sugestões',
+          type: 0,
+          topic: 'Compartilhe suas ideias e sugestões'
+        });
+
+        channels.staff = await guild.channels.create({
+          name: '👑-staff',
+          type: 0,
+          topic: 'Canal privado para staff'
+        });
+
+        // Criar convite
+        const invite = await channels.welcome.createInvite({
+          maxAge: 0,
+          maxUses: 0
+        });
+
+        // Mensagem de boas-vindas
+        await channels.welcome.send({
+          embeds: [new EmbedBuilder()
+            .setColor('#00bfff')
+            .setTitle('🎤 Bem-vindo ao Suporte da Miku!')
+            .setDescription('*Fufu~ Que alegria em tê-lo aqui!* 💙\n\nEste é um espaço seguro para:\n🆘 Tirar dúvidas sobre o bot\n🐛 Reportar bugs e problemas\n💡 Sugerir novas funcionalidades\n👑 Conversar com a equipe')
+            .setFooter({ text: 'Miku Diva - Suporte' })
+          ]
+        });
+
+        // Resposta ao admin
+        const successEmbed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✨ Servidor de Suporte Criado!')
+          .setDescription(`**${nomeSuporte}** foi criado com sucesso!\n\n🎉 Canais criados:\n✅ #bem-vindo\n✅ #suporte\n✅ #bugs\n✅ #sugestões\n✅ #staff`)
+          .addFields(
+            { name: '🔗 Link', value: invite.url, inline: false }
+          )
+          .setFooter({ text: '*Agora todos podem encontrar ajuda comigo!* 🖤' });
+
+        await interaction.editReply({ embeds: [successEmbed] });
+
+        // DM ao admin
+        try {
+          const dmEmbed = new EmbedBuilder()
+            .setColor('#00bfff')
+            .setTitle('🎭 Seu Servidor Pronto!')
+            .setDescription(`Servidor: **${nomeSuporte}**`)
+            .addFields(
+              { name: '📍 ID', value: `\`${guild.id}\``, inline: false },
+              { name: '🔗 Link', value: `[Clique aqui](${invite.url})`, inline: false }
+            )
+            .setFooter({ text: 'Gerencie seu servidor!' });
+
+          await interaction.user.send({ embeds: [dmEmbed] });
+        } catch (error) {
+          console.log('Não foi possível enviar DM');
+        }
+
+      } catch (error) {
+        console.error('Erro ao criar servidor:', error);
+        await interaction.editReply('❌ Erro ao criar servidor! Tente novamente. 💀');
+      }
+    }
   }
 };
 
