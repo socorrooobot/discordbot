@@ -1019,14 +1019,15 @@ export const slashCommands = {
     }
   },
 
-  createsuporte: {
+  editserver: {
     data: new SlashCommandBuilder()
-      .setName('createsuporte')
-      .setDescription('[ADMIN] Criar servidor de suporte decorado')
+      .setName('editserver')
+      .setDescription('[ADMIN] Editar descrição do servidor')
       .addStringOption(option =>
-        option.setName('nome')
-          .setDescription('Nome do servidor (padrão: Suporte - Miku Diva)')
-          .setRequired(false)
+        option.setName('descricao')
+          .setDescription('Nova descrição do servidor')
+          .setRequired(true)
+          .setMaxLength(120)
       ),
     execute: async (interaction) => {
       if (!isAdmin(interaction.user.id)) {
@@ -1034,179 +1035,92 @@ export const slashCommands = {
         return;
       }
 
-      const nomeSuporte = interaction.options.getString('nome') || 'Suporte - Miku Diva';
+      const descricao = interaction.options.getString('descricao');
       
-      await interaction.deferReply();
-
       try {
-        const guild = await interaction.client.guilds.create({
-          name: nomeSuporte,
-          icon: interaction.client.user.displayAvatarURL({ extension: 'png' })
-        });
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Atualizar descrição
-        await guild.edit({
-          description: '🎤 Servidor oficial de suporte da Miku Diva\n*Aqui você encontra ajuda, reporta bugs e compartilha ideias!* 💙'
-        });
-
-        const defaultChannel = guild.channels.cache.find(ch => ch.isTextBased() && ch.name === 'general');
-        if (defaultChannel) await defaultChannel.delete();
-
-        const channels = {};
-        
-        // Categoria INFO
-        const categoryInfo = await guild.channels.create({
-          name: '📌 INFORMAÇÕES',
-          type: 4
-        });
-
-        channels.welcome = await guild.channels.create({
-          name: '👋-bem-vindo',
-          type: 0,
-          parent: categoryInfo,
-          topic: '🎉 Bem-vindo ao nosso servidor de suporte!'
-        });
-
-        channels.rules = await guild.channels.create({
-          name: '📋-regras',
-          type: 0,
-          parent: categoryInfo,
-          topic: '⚠️ Leia as regras antes de participar'
-        });
-
-        // Categoria SUPORTE
-        const categorySupport = await guild.channels.create({
-          name: '🆘 SUPORTE',
-          type: 4
-        });
-
-        channels.support = await guild.channels.create({
-          name: '🆘-suporte',
-          type: 0,
-          parent: categorySupport,
-          topic: 'Tire suas dúvidas aqui!'
-        });
-
-        channels.general = await guild.channels.create({
-          name: '💬-geral',
-          type: 0,
-          parent: categorySupport,
-          topic: 'Conversas gerais sobre o bot'
-        });
-
-        // Categoria FEEDBACK
-        const categoryFeedback = await guild.channels.create({
-          name: '📊 FEEDBACK',
-          type: 4
-        });
-
-        channels.bugs = await guild.channels.create({
-          name: '🐛-bugs',
-          type: 0,
-          parent: categoryFeedback,
-          topic: 'Reporte bugs e problemas encontrados'
-        });
-
-        channels.suggestions = await guild.channels.create({
-          name: '💡-sugestões',
-          type: 0,
-          parent: categoryFeedback,
-          topic: 'Compartilhe suas ideias e sugestões'
-        });
-
-        // Categoria STAFF
-        const categoryStaff = await guild.channels.create({
-          name: '👑 STAFF',
-          type: 4
-        });
-
-        channels.staff = await guild.channels.create({
-          name: '👑-staff',
-          type: 0,
-          parent: categoryStaff,
-          topic: 'Canal privado para equipe de suporte'
-        });
-
-        channels.announcements = await guild.channels.create({
-          name: '📢-anúncios',
-          type: 0,
-          parent: categoryStaff,
-          topic: 'Anúncios importantes para o servidor'
-        });
-
-        const invite = await channels.welcome.createInvite({
-          maxAge: 0,
-          maxUses: 0
-        });
-
-        // Mensagem de boas-vindas
-        await channels.welcome.send({
-          embeds: [new EmbedBuilder()
-            .setColor('#00bfff')
-            .setTitle('🎤 Bem-vindo ao Suporte da Miku!')
-            .setDescription('*Fufu~ Que alegria em tê-lo aqui!* 💙\n\n**Você é importante para nós!** Este é um espaço seguro e acolhedor para:')
-            .addFields(
-              { name: '🆘 Suporte', value: 'Tire suas dúvidas sobre o bot e suas funcionalidades', inline: false },
-              { name: '🐛 Reportar Bugs', value: 'Encontrou um problema? Nos conte para melhorarmos!', inline: false },
-              { name: '💡 Sugestões', value: 'Tem uma ideia incrível? Compartilhe conosco!', inline: false },
-              { name: '💬 Comunidade', value: 'Converse com outros usuários e com a equipe', inline: false }
-            )
-            .setFooter({ text: 'Miku Diva - Suporte | Vamos cantar juntos! 🎵' })
-            .setThumbnail(interaction.client.user.displayAvatarURL())
-          ]
-        });
-
-        // Mensagem de regras
-        await channels.rules.send({
-          embeds: [new EmbedBuilder()
-            .setColor('#ff6b6b')
-            .setTitle('📋 Regras do Servidor')
-            .addFields(
-              { name: '1️⃣ Respeito', value: 'Trate todos com respeito e educação', inline: false },
-              { name: '2️⃣ Sem Spam', value: 'Não faça spam, flood ou mensagens repetidas', inline: false },
-              { name: '3️⃣ Sem Conteúdo Ofensivo', value: 'Nada de conteúdo preconceituoso ou ofensivo', inline: false },
-              { name: '4️⃣ Use o Canal Correto', value: 'Coloque sua mensagem no canal apropriado', inline: false },
-              { name: '5️⃣ Sem Publicidade', value: 'Não promova outros servidores ou bots', inline: false }
-            )
-            .setFooter({ text: '*O respeito é a base da nossa comunidade* 🖤' })
-          ]
-        });
-
-        const successEmbed = new EmbedBuilder()
+        await interaction.guild.edit({ description: descricao });
+        const embed = new EmbedBuilder()
           .setColor('#00ff00')
-          .setTitle('✨ Servidor Criado com Sucesso!')
-          .setDescription(`**${nomeSuporte}** foi criado e decorado! 🎉`)
-          .addFields(
-            { name: '📌 Categorias', value: '✅ Informações\n✅ Suporte\n✅ Feedback\n✅ Staff', inline: false },
-            { name: '💬 Canais', value: '✅ #bem-vindo\n✅ #regras\n✅ #suporte\n✅ #geral\n✅ #bugs\n✅ #sugestões\n✅ #staff\n✅ #anúncios', inline: false },
-            { name: '🔗 Link', value: invite.url, inline: false }
-          )
-          .setFooter({ text: '*Agora todos podem encontrar ajuda comigo!* 🖤' });
-
-        await interaction.editReply({ embeds: [successEmbed] });
-
-        try {
-          const dmEmbed = new EmbedBuilder()
-            .setColor('#00bfff')
-            .setTitle('🎭 Seu Servidor Pronto!')
-            .setDescription(`Servidor: **${nomeSuporte}**`)
-            .addFields(
-              { name: '📍 ID', value: `\`${guild.id}\``, inline: false },
-              { name: '🔗 Link', value: `[Clique aqui](${invite.url})`, inline: false },
-              { name: '✨ Decoração', value: 'Categorias, canais, mensagens e regras!', inline: false }
-            )
-            .setFooter({ text: 'Customize e gerencie seu servidor!' });
-
-          await interaction.user.send({ embeds: [dmEmbed] });
-        } catch (error) {
-          console.log('Não foi possível enviar DM');
-        }
-
+          .setTitle('✨ Servidor Editado')
+          .setDescription(`Descrição alterada para:\n\n${descricao}`);
+        await interaction.reply({ embeds: [embed] });
       } catch (error) {
-        console.error('Erro ao criar servidor:', error);
-        await interaction.editReply('❌ Erro ao criar servidor! 💀');
+        console.error('Erro ao editar servidor:', error);
+        await interaction.reply({ content: '❌ Erro ao editar servidor!', ephemeral: true });
+      }
+    }
+  },
+
+  renamechannel: {
+    data: new SlashCommandBuilder()
+      .setName('renamechannel')
+      .setDescription('[ADMIN] Renomear um canal')
+      .addChannelOption(option =>
+        option.setName('canal')
+          .setDescription('Canal a ser renomeado')
+          .setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('novonome')
+          .setDescription('Novo nome do canal')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+
+      const canal = interaction.options.getChannel('canal');
+      const novoNome = interaction.options.getString('novonome');
+      
+      try {
+        await canal.edit({ name: novoNome });
+        const embed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✨ Canal Renomeado')
+          .setDescription(`<#${canal.id}> agora é **${novoNome}**`);
+        await interaction.reply({ embeds: [embed] });
+      } catch (error) {
+        console.error('Erro ao renomear canal:', error);
+        await interaction.reply({ content: '❌ Erro ao renomear canal!', ephemeral: true });
+      }
+    }
+  },
+
+  edittopic: {
+    data: new SlashCommandBuilder()
+      .setName('edittopic')
+      .setDescription('[ADMIN] Editar tópico de um canal')
+      .addChannelOption(option =>
+        option.setName('canal')
+          .setDescription('Canal para editar o tópico')
+          .setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('topico')
+          .setDescription('Novo tópico do canal')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+
+      const canal = interaction.options.getChannel('canal');
+      const topico = interaction.options.getString('topico');
+      
+      try {
+        await canal.edit({ topic: topico });
+        const embed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✨ Tópico Atualizado')
+          .setDescription(`Tópico de <#${canal.id}> agora é:\n\n${topico}`);
+        await interaction.reply({ embeds: [embed] });
+      } catch (error) {
+        console.error('Erro ao editar tópico:', error);
+        await interaction.reply({ content: '❌ Erro ao editar tópico!', ephemeral: true });
       }
     }
   }
