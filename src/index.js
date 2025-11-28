@@ -5,6 +5,7 @@ import { addXP } from './xp.js';
 import { isAFK, removeAFK } from './afk.js';
 import { registerSlashCommands } from './slashCommands.js';
 import { getTimeUntilDaily, getAllUsers } from './economy.js';
+import { isBlacklisted } from './blacklist.js';
 import { EmbedBuilder } from 'discord.js';
 
 async function main() {
@@ -79,6 +80,12 @@ async function main() {
 
     client.on('messageCreate', async (message) => {
       if (message.author.bot) return;
+
+      // Verificar se usuário está na blacklist
+      if (isBlacklisted(message.author.id)) {
+        await message.reply('sai daqui voce ta na black list');
+        return;
+      }
 
       // Verificar se pessoa AFK escreveu algo
       const userAFK = isAFK(message.author.id);

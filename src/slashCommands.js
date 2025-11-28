@@ -5,6 +5,7 @@ import { getUserInfo, getXPLeaderboard } from './xp.js';
 import { setAFK, isAFK, removeAFK } from './afk.js';
 import { startGiveaway } from './giveaway.js';
 import { executeRPSlash } from './rpCommands.js';
+import { isBlacklisted } from './blacklist.js';
 
 export const slashCommands = {
   ask: {
