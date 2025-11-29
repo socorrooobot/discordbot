@@ -1149,11 +1149,6 @@ export const slashCommands = {
           .setRequired(false)
       ),
     execute: async (interaction) => {
-      if (!isAdmin(interaction.user.id)) {
-        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
-        return;
-      }
-
       const nome = interaction.options.getString('nome');
       const tipo = interaction.options.getString('tipo');
       const categoria = interaction.options.getChannel('categoria');
@@ -1192,11 +1187,6 @@ export const slashCommands = {
           .setRequired(false)
       ),
     execute: async (interaction) => {
-      if (!isAdmin(interaction.user.id)) {
-        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
-        return;
-      }
-
       const nome = interaction.options.getString('nome');
       const cor = interaction.options.getString('cor') || '#0099ff';
       
