@@ -6,6 +6,7 @@ import { isAFK, removeAFK } from './afk.js';
 import { registerSlashCommands } from './slashCommands.js';
 import { getTimeUntilDaily, getAllUsers } from './economy.js';
 import { isBlacklisted } from './blacklist.js';
+import { notifyRestart } from './restartNotification.js';
 import { EmbedBuilder } from 'discord.js';
 
 async function main() {
@@ -17,6 +18,9 @@ async function main() {
     client.once('ready', async () => {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
+      
+      // Notificar reinicialização
+      await notifyRestart(client, 'Reinicialização do bot');
       
       // Registrar slash commands
       await registerSlashCommands(client);

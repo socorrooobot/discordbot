@@ -7,6 +7,7 @@ import { startGiveaway } from './giveaway.js';
 import { executeRPSlash } from './rpCommands.js';
 import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
 import { isAdmin, addAdmin, removeAdmin, getAdmins } from './admin.js';
+import { setRestartChannel } from './restartNotification.js';
 
 export const slashCommands = {
   ask: {
@@ -1209,6 +1210,40 @@ export const slashCommands = {
       } catch (error) {
         console.error('Erro ao criar cargo:', error);
         await interaction.reply({ content: '❌ Erro ao criar cargo!', ephemeral: true });
+      }
+    }
+  },
+
+  setrestartchannel: {
+    data: new SlashCommandBuilder()
+      .setName('setrestartchannel')
+      .setDescription('[ADMIN] Configurar canal para notificação de reinicialização do bot')
+      .addChannelOption(option =>
+        option.setName('canal')
+          .setDescription('Canal que receberá as notificações')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+
+      const canal = interaction.options.getChannel('canal');
+      
+      try {
+        setRestartChannel(canal.id);
+        const embed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✨ Canal Configurado')
+          .setDescription(`<#${canal.id}> foi configurado para receber notificações de reinicialização! 🔔`)
+          .addFields(
+            { name: 'Notificações Ativadas', value: 'Quando o bot reiniciar, uma mensagem será enviada aqui com motivo e tempo estimado.', inline: false }
+          );
+        await interaction.reply({ embeds: [embed] });
+      } catch (error) {
+        console.error('Erro ao configurar canal:', error);
+        await interaction.reply({ content: '❌ Erro ao configurar canal!', ephemeral: true });
       }
     }
   }
