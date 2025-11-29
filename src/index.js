@@ -29,7 +29,8 @@ async function main() {
       const getActivities = () => [
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
         { text: 'use !cmds para ajuda', type: 'LISTENING' },
-        { text: 'vamos cantar juntos', type: 'PLAYING' }
+        { text: 'vamos cantar juntos', type: 'PLAYING' },
+        { text: 'entre no nosso servidor de suporte: https://discord.gg/PNwfyVc2ns', type: 'LISTENING' }
       ];
       
       let currentActivity = 0;
@@ -40,7 +41,7 @@ async function main() {
       
       // Mudar atividade a cada 30 segundos (recalculando para pegar servidores atualizados)
       setInterval(() => {
-        currentActivity = (currentActivity + 1) % 3;
+        currentActivity = (currentActivity + 1) % 4;
         activities = getActivities(); // Recalcula para pegar número de servidores atualizado
         client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
       }, 30000);
