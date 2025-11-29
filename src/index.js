@@ -30,7 +30,7 @@ async function main() {
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
         { text: 'use !cmds para ajuda', type: 'LISTENING' },
         { text: 'vamos cantar juntos', type: 'PLAYING' },
-        { text: 'entre no nosso servidor de suporte: https://discord.gg/PNwfyVc2ns', type: 'LISTENING' }
+        { text: 'Servidor de Suporte: discord.gg/PNwfyVc2ns', type: 'LISTENING' }
       ];
       
       let currentActivity = 0;
