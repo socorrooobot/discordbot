@@ -581,9 +581,22 @@ export const commands = {
           { name: '😴 AFK', value: '`!afk <motivo>` - Fique AFK\nRecebirá DM se alguém mencionar você 🌑', inline: false },
           { name: '💕 Roleplay', value: '`!tapa` `!beijo` `!abraço` `!casar` `!divorciar` `!dança` - Com gifs! 🎭', inline: false }
         )
-        .setFooter({ text: 'Página 4 de 4 - Use / para slash commands!' });
+        .setFooter({ text: 'Página 4 de 5 - Use / para slash commands!' });
 
-      await message.reply({ embeds: [embed1, embed2, embed3, embed4] });
+      // Embed 5: Servidor & Slash Commands
+      const embed5 = new EmbedBuilder()
+        .setColor('#9370DB')
+        .setTitle('🛠️ Comandos da Diva - Servidor & Slash')
+        .addFields(
+          { name: '🏗️ Servidor (Admin)', value: '`/editserver` - Editar configurações\n`/renamechannel` - Renomear canal\n`/edittopic` - Mudar descrição do canal\n`/createchannel` - Criar novo canal\n`/createrole` - Criar novo cargo\n`/setrestartchannel` - Configurar aviso de restart', inline: false },
+          { name: '💬 Chat', value: '`/ask <pergunta>` - Pergunte algo\n`/ia <pergunta>` - Atalho rápido', inline: false },
+          { name: '💰 Economia', value: '`/balance` - Ver saldo\n`/daily` - Ganhar 50/dia\n`/work` - Trabalhar\n`/gamble <qty>` - Apostar\n`/top` - Ranking', inline: false },
+          { name: '⭐ Perfil & Leveling', value: '`/perfil` - Ver perfil visual\n`/topxp` - Ranking de XP\n`/transfer @user <qty>` - Enviar Akita Neru', inline: false },
+          { name: '✨ Especial', value: '`/afk <motivo>` - Marcar como AFK\n`/quote` - Frase aleatória\n`/dream` - Sonho da Diva', inline: false }
+        )
+        .setFooter({ text: 'Página 5 de 5 - Volte sempre! 💙' });
+
+      await message.reply({ embeds: [embed1, embed2, embed3, embed4, embed5] });
     }
   },
 
