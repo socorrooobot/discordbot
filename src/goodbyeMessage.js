@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { AttachmentBuilder } from 'discord.js';
 
-const OFFICIAL_SERVER_ID = '1439232694218260603';
 const GOODBYE_CHANNEL_ID = '1439242695632752752';
 const SAD_MIKU_PATH = 'data/sad_miku.png';
 
