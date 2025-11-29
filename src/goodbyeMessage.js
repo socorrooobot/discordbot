@@ -15,14 +15,15 @@ export async function sendGoodbyeMessage(client, user) {
     }
 
     const userAvatar = user ? user.displayAvatarURL({ extension: 'png', size: 256 }) : null;
+    const userName = user ? user.username : 'Usuário';
 
     const embed = {
       color: 0x9370DB,
       title: '💜 Até Logo...',
-      description: '😢 A Miku Diva está indo embora por um tempo. Obrigada por se divertir comigo!',
+      description: `😢 **${userName}** deixou o servidor. Vamos sentir sua falta!`,
       image: { url: 'attachment://sad_miku.png' },
       thumbnail: userAvatar ? { url: userAvatar } : undefined,
-      footer: { text: 'Voltarei em breve! 💙' },
+      footer: { text: 'Espero que volte em breve... 💙' },
       timestamp: new Date().toISOString()
     };
 
@@ -32,7 +33,7 @@ export async function sendGoodbyeMessage(client, user) {
     }
 
     await channel.send(options);
-    console.log('✅ Mensagem de adeus enviada!');
+    console.log(`✅ Mensagem de adeus enviada para ${userName}!`);
   } catch (error) {
     console.error('Erro ao enviar mensagem de adeus:', error);
   }
