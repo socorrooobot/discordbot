@@ -1123,6 +1123,104 @@ export const slashCommands = {
         await interaction.reply({ content: '❌ Erro ao editar tópico!', ephemeral: true });
       }
     }
+  },
+
+  createchannel: {
+    data: new SlashCommandBuilder()
+      .setName('createchannel')
+      .setDescription('[ADMIN] Criar um novo canal no servidor')
+      .addStringOption(option =>
+        option.setName('nome')
+          .setDescription('Nome do canal')
+          .setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('tipo')
+          .setDescription('Tipo do canal')
+          .setRequired(true)
+          .addChoices(
+            { name: 'Texto', value: 'texto' },
+            { name: 'Voz', value: 'voz' }
+          )
+      )
+      .addChannelOption(option =>
+        option.setName('categoria')
+          .setDescription('Categoria (opcional)')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+
+      const nome = interaction.options.getString('nome');
+      const tipo = interaction.options.getString('tipo');
+      const categoria = interaction.options.getChannel('categoria');
+      
+      try {
+        const novoCanal = await interaction.guild.channels.create({
+          name: nome,
+          type: tipo === 'voz' ? 2 : 0,
+          parent: categoria ? categoria.id : undefined
+        });
+
+        const embed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✨ Canal Criado')
+          .setDescription(`Canal <#${novoCanal.id}> foi criado com sucesso! 🎉`);
+        await interaction.reply({ embeds: [embed] });
+      } catch (error) {
+        console.error('Erro ao criar canal:', error);
+        await interaction.reply({ content: '❌ Erro ao criar canal!', ephemeral: true });
+      }
+    }
+  },
+
+  createrole: {
+    data: new SlashCommandBuilder()
+      .setName('createrole')
+      .setDescription('[ADMIN] Criar um novo cargo no servidor')
+      .addStringOption(option =>
+        option.setName('nome')
+          .setDescription('Nome do cargo')
+          .setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('cor')
+          .setDescription('Cor do cargo (hex: #FF0000)')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+
+      const nome = interaction.options.getString('nome');
+      const cor = interaction.options.getString('cor') || '#0099ff';
+      
+      try {
+        const novoCargo = await interaction.guild.roles.create({
+          name: nome,
+          color: cor,
+          reason: `Cargo criado pelo bot`
+        });
+
+        const embed = new EmbedBuilder()
+          .setColor(cor)
+          .setTitle('✨ Cargo Criado')
+          .setDescription(`Cargo **${novoCargo.name}** foi criado com sucesso! 🎉`)
+          .addFields(
+            { name: 'ID', value: `\`${novoCargo.id}\``, inline: true },
+            { name: 'Cor', value: `\`${cor}\``, inline: true }
+          );
+        await interaction.reply({ embeds: [embed] });
+      } catch (error) {
+        console.error('Erro ao criar cargo:', error);
+        await interaction.reply({ content: '❌ Erro ao criar cargo!', ephemeral: true });
+      }
+    }
   }
 };
 
