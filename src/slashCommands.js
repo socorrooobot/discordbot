@@ -1252,12 +1252,25 @@ export const slashCommands = {
 export async function registerSlashCommands(client) {
   const commands = Object.values(slashCommands).map(cmd => cmd.data);
   
-  // Registrar handlers de interação
+  // Registrar comandos imediatamente
+  try {
+    console.log('📝 Registrando slash commands...');
+    await client.application.commands.set(commands);
+    console.log('✅ Slash commands registrados!');
+  } catch (error) {
+    console.error('Erro ao registrar slash commands:', error);
+  }
+}
+
+export async function setupSlashCommandHandler(client) {
   client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
     const command = slashCommands[interaction.commandName];
-    if (!command) return;
+    if (!command) {
+      console.log(`Comando não encontrado: ${interaction.commandName}`);
+      return;
+    }
 
     try {
       await command.execute(interaction);
@@ -1275,13 +1288,4 @@ export async function registerSlashCommands(client) {
       }
     }
   });
-
-  // Registrar comandos imediatamente
-  try {
-    console.log('📝 Registrando slash commands...');
-    await client.application.commands.set(commands);
-    console.log('✅ Slash commands registrados!');
-  } catch (error) {
-    console.error('Erro ao registrar slash commands:', error);
-  }
 }

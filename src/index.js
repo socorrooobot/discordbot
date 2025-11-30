@@ -3,7 +3,7 @@ import { chat } from './gemini.js';
 import { handleCommand, shouldRespondToMention } from './commands.js';
 import { addXP } from './xp.js';
 import { isAFK, removeAFK } from './afk.js';
-import { registerSlashCommands } from './slashCommands.js';
+import { registerSlashCommands, setupSlashCommandHandler } from './slashCommands.js';
 import { getTimeUntilDaily, getAllUsers } from './economy.js';
 import { isBlacklisted } from './blacklist.js';
 import { notifyRestart } from './restartNotification.js';
@@ -23,8 +23,9 @@ async function main() {
       // Notificar reinicialização
       await notifyRestart(client, 'Reinicialização do bot');
       
-      // Registrar slash commands
+      // Registrar slash commands e handlers
       await registerSlashCommands(client);
+      await setupSlashCommandHandler(client);
       
       const getActivities = () => [
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
