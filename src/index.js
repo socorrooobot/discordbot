@@ -87,6 +87,7 @@ async function main() {
 
     client.on('messageCreate', async (message) => {
       if (message.author.bot) return;
+      console.log(`📨 Mensagem recebida de ${message.author.tag}: ${message.content.substring(0, 50)}`);
 
       // Verificar se usuário está na blacklist
       if (isBlacklisted(message.author.id)) {
