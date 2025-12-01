@@ -13,9 +13,7 @@ export async function getDiscordClient() {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.MessageContent,
       GatewayIntentBits.DirectMessages,
-      GatewayIntentBits.GuildMembers,
-      GatewayIntentBits.GuildPresences,
-      GatewayIntentBits.DirectMessageTyping
+      GatewayIntentBits.GuildMembers
     ]
   });
 
