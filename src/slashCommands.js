@@ -1246,6 +1246,101 @@ export const slashCommands = {
         await interaction.reply({ content: '❌ Erro ao configurar canal!', ephemeral: true });
       }
     }
+  },
+
+  createembed: {
+    data: new SlashCommandBuilder()
+      .setName('createembed')
+      .setDescription('[ADMIN] Criar uma embed personalizada')
+      .addStringOption(option =>
+        option.setName('titulo')
+          .setDescription('Título da embed')
+          .setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('descricao')
+          .setDescription('Descrição da embed')
+          .setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('cor')
+          .setDescription('Cor da embed em hexadecimal (ex: #FF0000)')
+          .setRequired(false)
+      )
+      .addChannelOption(option =>
+        option.setName('canal')
+          .setDescription('Canal onde a embed será enviada (padrão: canal atual)')
+          .setRequired(false)
+      )
+      .addStringOption(option =>
+        option.setName('imagem')
+          .setDescription('URL da imagem para a embed')
+          .setRequired(false)
+      )
+      .addStringOption(option =>
+        option.setName('thumbnail')
+          .setDescription('URL do thumbnail para a embed')
+          .setRequired(false)
+      )
+      .addStringOption(option =>
+        option.setName('footer')
+          .setDescription('Texto do rodapé da embed')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      // Verificar se o usuário tem permissão de Administrador
+      if (!interaction.member.permissions.has('Administrator')) {
+        await interaction.reply({ 
+          content: '❌ Você precisa ter a permissão de Administrador para usar este comando!', 
+          ephemeral: true 
+        });
+        return;
+      }
+
+      const titulo = interaction.options.getString('titulo');
+      const descricao = interaction.options.getString('descricao');
+      const cor = interaction.options.getString('cor') || '#0a0a0a';
+      const canal = interaction.options.getChannel('canal') || interaction.channel;
+      const imagem = interaction.options.getString('imagem');
+      const thumbnail = interaction.options.getString('thumbnail');
+      const footer = interaction.options.getString('footer');
+
+      try {
+        const embed = new EmbedBuilder()
+          .setColor(cor)
+          .setTitle(titulo)
+          .setDescription(descricao)
+          .setTimestamp();
+
+        if (imagem) {
+          embed.setImage(imagem);
+        }
+
+        if (thumbnail) {
+          embed.setThumbnail(thumbnail);
+        }
+
+        if (footer) {
+          embed.setFooter({ text: footer });
+        }
+
+        await canal.send({ embeds: [embed] });
+
+        const confirmEmbed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✅ Embed Criada')
+          .setDescription(`A embed foi enviada com sucesso em <#${canal.id}>!`)
+          .setFooter({ text: '*Criação artística completa.* 🖤' });
+
+        await interaction.reply({ embeds: [confirmEmbed], ephemeral: true });
+      } catch (error) {
+        console.error('Erro ao criar embed:', error);
+        await interaction.reply({ 
+          content: '❌ Erro ao criar a embed! Verifique se a cor está no formato correto (#HEXADECIMAL) e se as URLs são válidas.', 
+          ephemeral: true 
+        });
+      }
+    }
   }
 };
 
