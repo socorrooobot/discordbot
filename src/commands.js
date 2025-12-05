@@ -2996,5 +2996,5 @@ export async function handleCommand(message, client) {
 }
 
 export function shouldRespondToMention(message, client) {
-  return message.mentions.has(client.user) && !message.content.toLowerCase().startsWith('!');
+  return message.mentions.has(client.user);
 }

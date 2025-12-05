@@ -12,34 +12,34 @@ import { EmbedBuilder } from 'discord.js';
 
 async function main() {
   console.log('Starting Discord bot...');
-  
+
   try {
     const client = await getDiscordClient();
-    
+
     client.once('ready', async () => {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
-      
+
       // Notificar reinicialização
       await notifyRestart(client, 'Reinicialização do bot');
-      
+
       // Registrar slash commands e handlers
       await registerSlashCommands(client);
       await setupSlashCommandHandler(client);
-      
+
       const getActivities = () => [
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
         { text: 'use !cmds para ajuda', type: 'LISTENING' },
         { text: 'vamos cantar juntos', type: 'PLAYING' },
         { text: 'Servidor de Suporte: discord.gg/PNwfyVc2ns', type: 'LISTENING' }
       ];
-      
+
       let currentActivity = 0;
-      
+
       // Atualizar atividade imediatamente
       let activities = getActivities();
       client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
-      
+
       // Mudar atividade a cada 30 segundos (recalculando para pegar servidores atualizados)
       setInterval(() => {
         currentActivity = (currentActivity + 1) % 4;
@@ -49,14 +49,14 @@ async function main() {
 
       // Sistema de notificação de daily disponível
       const notifiedUsers = new Set();
-      
+
       setInterval(async () => {
         try {
           const users = getAllUsers();
-          
+
           for (const [userId, userData] of Object.entries(users)) {
             const timeUntil = getTimeUntilDaily(userId);
-            
+
             // Se daily está disponível e ainda não notificou
             if (timeUntil === 0 && !notifiedUsers.has(userId)) {
               try {
@@ -66,14 +66,14 @@ async function main() {
                   .setTitle('✨ Seu Daily está Disponível!')
                   .setDescription('*Vamos cantar e ganhar moedas!* 🎵\n\nUse `/daily` ou `!daily` para receber seus **50 Akita Neru**!')
                   .setFooter({ text: '*Fufu~ Mais um dueto! 💙' });
-                
+
                 await user.send({ embeds: [dailyNotifyEmbed] });
                 notifiedUsers.add(userId);
               } catch (error) {
                 console.error(`Erro ao enviar DM para ${userId}:`, error);
               }
             }
-            
+
             // Remover do set se daily não está mais disponível
             if (timeUntil > 0) {
               notifiedUsers.delete(userId);
@@ -86,7 +86,9 @@ async function main() {
     });
 
     client.on('messageCreate', async (message) => {
+      // Ignorar mensagens de bots
       if (message.author.bot) return;
+
       console.log(`📨 Mensagem recebida de ${message.author.tag}: ${message.content.substring(0, 50)}`);
 
       // Verificar se usuário está na blacklist
@@ -99,7 +101,7 @@ async function main() {
       const userAFK = isAFK(message.author.id);
       if (userAFK && !message.content.startsWith('!')) {
         removeAFK(message.author.id);
-        
+
         try {
           const member = await message.guild.members.fetch(message.author.id);
           await member.setNickname(null);
@@ -112,7 +114,7 @@ async function main() {
           .setTitle('🎭 Você voltou!')
           .setDescription('*Saiu do vazio...*')
           .setFooter({ text: 'Bem-vindo de volta ao mundo das vivas. 🖤' });
-        
+
         await message.reply({ embeds: [afkRemoveEmbed] });
       }
 
@@ -136,13 +138,14 @@ async function main() {
         }
       }
 
-      // Tentar executar comando
+      // PRIMEIRO: Verificar se é um comando com prefixo !
       if (message.content.startsWith('!')) {
         const wasHandled = await handleCommand(message, client);
-        if (wasHandled) return;
+        if (wasHandled) return; // Se comando foi executado, PARA AQUI
       }
 
-      // Responder quando mencionado
+      // SEGUNDO: Só responde a menções se NÃO for comando
+      // Agora verificamos se a mensagem NÃO começa com ! antes de processar menção
       if (shouldRespondToMention(message, client)) {
         const question = message.content.replace(/<@!?\d+>/g, '').trim();
         if (!question) {
@@ -151,10 +154,10 @@ async function main() {
         }
 
         await message.channel.sendTyping();
-        
+
         try {
           const response = await chat(message.author.id, question);
-          
+
           if (response.length > 2000) {
             const chunks = response.match(/.{1,2000}/gs);
             for (const chunk of chunks) {
