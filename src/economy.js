@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { getMultiplier } from './multiplier.js';
 
 const dataDir = 'data';
 const economyFile = path.join(dataDir, 'economy.json');
@@ -105,12 +106,15 @@ export function dailyReward(userId) {
     return null;
   }
   
-  const reward = 50; // 50 Akita Neru por dia
+  const baseReward = 50; // 50 Akita Neru base
+  const multiplier = getMultiplier();
+  const reward = Math.floor(baseReward * multiplier);
+  
   user.balance += reward;
   user.lastDaily = now;
   updateUser(userId, user);
   
-  return reward;
+  return { reward, multiplier };
 }
 
 // Calcular quando o próximo daily estará disponível

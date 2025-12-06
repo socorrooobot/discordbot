@@ -7,6 +7,7 @@ import { executeRP } from './rpCommands.js';
 import { generateProfileCard } from './profileCard.js';
 import { isAdmin, addAdmin, removeAdmin, getAdmins } from './admin.js';
 import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
+import { getMultiplier, setMultiplier } from './multiplier.js';
 
 
 const quotes = [
@@ -622,9 +623,9 @@ export const commands = {
     aliases: ['!diario'],
     description: 'Receba sua recompensa diária (50 Akita Neru)',
     execute: async (message) => {
-      const reward = dailyReward(message.author.id);
+      const result = dailyReward(message.author.id);
       
-      if (!reward) {
+      if (!result) {
         const dailyEmbed = new EmbedBuilder()
           .setColor('#ff0000')
           .setTitle('❌ Prematuro')
@@ -633,10 +634,12 @@ export const commands = {
         return;
       }
 
+      const multiplierText = result.multiplier > 1 ? `\n🔥 **Multiplicador ${result.multiplier}x ativo!**` : '';
+      
       const dailyEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('✨ Recompensa Diária!')
-        .setDescription(`Você ganhou **${reward} Akita Neru**!\n\n*Você compreendeu como obter valor aqui...* 💀`)
+        .setDescription(`Você ganhou **${result.reward} Akita Neru**!${multiplierText}\n\n*Você compreendeu como obter valor aqui...* 💀`)
         .setFooter({ text: `Seu novo saldo: ${getBalance(message.author.id)} Akita Neru` });
       
       await message.reply({ embeds: [dailyEmbed] });
@@ -2965,6 +2968,56 @@ export const commands = {
           ? adminsList.map((id, i) => `${i + 1}. <@${id}> (\`${id}\`)`).join('\n')
           : 'Nenhum admin configurado!')
         .setFooter({ text: `Total: ${adminsList.length}` });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  setmultiplier: {
+    name: '!setmultiplier',
+    aliases: ['!setmulti', '!multiplicador'],
+    description: '[ADMIN] Define o multiplicador de daily (1x - 10x)',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const multiplier = parseFloat(args[0]);
+
+      if (isNaN(multiplier) || multiplier < 1 || multiplier > 10) {
+        await message.reply('❌ Uso: `!setmultiplier <valor>`\nValor deve ser entre 1 e 10\nExemplo: `!setmultiplier 2` para 2x');
+        return;
+      }
+
+      const success = setMultiplier(multiplier);
+      if (!success) {
+        await message.reply('❌ Erro ao definir multiplicador!');
+        return;
+      }
+
+      const embed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('🔥 Multiplicador Configurado!')
+        .setDescription(`O multiplicador de daily foi definido para **${multiplier}x**!\n\nAgora todos ganharão **${50 * multiplier} Akita Neru** no daily!\n\n*O poder flui através das moedas...* 💰`)
+        .setFooter({ text: `Configurado por: ${message.author.username}` });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  multiplier: {
+    name: '!multiplier',
+    aliases: ['!multi', '!mult'],
+    description: 'Ver o multiplicador de daily atual',
+    execute: async (message) => {
+      const multiplier = getMultiplier();
+      
+      const embed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('🔥 Multiplicador Atual')
+        .setDescription(`O multiplicador de daily está em **${multiplier}x**!\n\nRecompensa atual: **${50 * multiplier} Akita Neru**\n\n*${multiplier > 1 ? 'Aproveite enquanto dura!' : 'Apenas o valor base.'}* 💰`)
+        .setFooter({ text: 'Use !daily para coletar sua recompensa' });
       
       await message.reply({ embeds: [embed] });
     }

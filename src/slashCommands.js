@@ -6,7 +6,8 @@ import { setAFK, isAFK, removeAFK } from './afk.js';
 import { startGiveaway } from './giveaway.js';
 import { executeRPSlash } from './rpCommands.js';
 import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
-import { isAdmin, addAdmin, removeAdmin, getAdmins } from './admin.js';
+import { isAdmin, addAdmin, removeAdmin } from './admin.js';
+import { getMultiplier, setMultiplier } from './multiplier.js';
 import { setRestartChannel } from './restartNotification.js';
 
 export const slashCommands = {
@@ -24,7 +25,7 @@ export const slashCommands = {
       try {
         const question = interaction.options.getString('pergunta');
         const response = await chat(interaction.user.id, question);
-        
+
         if (response.length > 2000) {
           await interaction.editReply(response.substring(0, 2000));
         } else {
@@ -49,7 +50,7 @@ export const slashCommands = {
         .setThumbnail(interaction.user.displayAvatarURL())
         .setDescription(`**${balance} Akita Neru**`)
         .setFooter({ text: '*Porcelana vale mais do que ouro...* 🖤' });
-      
+
       await interaction.reply({ embeds: [balanceEmbed] });
     }
   },
@@ -57,10 +58,11 @@ export const slashCommands = {
   daily: {
     data: new SlashCommandBuilder()
       .setName('daily')
-      .setDescription('Receba sua recompensa diária (50 Akita Neru)'),
+      .setDescription('Receba sua recompensa diária'),
     execute: async (interaction) => {
-      const reward = dailyReward(interaction.user.id);
-      
+      const multiplier = getMultiplier();
+      const reward = dailyReward(interaction.user.id, multiplier);
+
       if (!reward) {
         const dailyEmbed = new EmbedBuilder()
           .setColor('#ff0000')
@@ -75,7 +77,7 @@ export const slashCommands = {
         .setTitle('✨ Recompensa Diária')
         .setDescription(`Você ganhou **${reward} Akita Neru**!\n\n*A vida continua... de alguma forma.* 🖤`)
         .setFooter({ text: 'Volte amanhã!' });
-      
+
       await interaction.reply({ embeds: [dailyEmbed] });
     }
   },
@@ -86,7 +88,7 @@ export const slashCommands = {
       .setDescription('Veja o ranking de Akita Neru do servidor'),
     execute: async (interaction) => {
       const leaderboard = getLeaderboard();
-      
+
       if (leaderboard.length === 0) {
         await interaction.reply('Ninguém tem saldo ainda...');
         return;
@@ -95,14 +97,14 @@ export const slashCommands = {
       const topEmbed = new EmbedBuilder()
         .setColor('#ffd700')
         .setTitle('💰 Ranking de Akita Neru');
-      
+
       let description = '';
       for (let i = 0; i < Math.min(10, leaderboard.length); i++) {
         const entry = leaderboard[i];
         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
         description += `${medal} <@${entry.userId}>: **${entry.balance} Neru**\n`;
       }
-      
+
       topEmbed.setDescription(description);
       await interaction.reply({ embeds: [topEmbed] });
     }
@@ -143,7 +145,7 @@ export const slashCommands = {
       .setDescription('Veja o ranking de XP do servidor'),
     execute: async (interaction) => {
       const topXp = getXPLeaderboard();
-      
+
       if (topXp.length === 0) {
         await interaction.reply('Ninguém tem XP ainda...');
         return;
@@ -152,14 +154,14 @@ export const slashCommands = {
       const topEmbed = new EmbedBuilder()
         .setColor('#00ffff')
         .setTitle('⭐ Ranking de XP');
-      
+
       let description = '';
       for (let i = 0; i < Math.min(10, topXp.length); i++) {
         const entry = topXp[i];
         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
         description += `${medal} <@${entry.userId}>: **Nível ${entry.level}** (${entry.totalXP} XP)\n`;
       }
-      
+
       topEmbed.setDescription(description);
       await interaction.reply({ embeds: [topEmbed] });
     }
@@ -234,7 +236,7 @@ export const slashCommands = {
         .setTitle('🖤 Latência')
         .setDescription(`**${latency}ms**`)
         .setFooter({ text: '*Tão rápido quanto a luz na escuridão...*' });
-      
+
       await interaction.reply({ embeds: [pingEmbed] });
     }
   },
@@ -351,7 +353,7 @@ export const slashCommands = {
     execute: async (interaction) => {
       const amount = interaction.options.getInteger('valor');
       const balance = getBalance(interaction.user.id);
-      
+
       if (balance < amount) {
         const poorEmbed = new EmbedBuilder()
           .setColor('#ff6b9d')
@@ -362,7 +364,7 @@ export const slashCommands = {
       }
 
       const result = gamble(interaction.user.id, amount);
-      
+
       if (result.won) {
         const winEmbed = new EmbedBuilder()
           .setColor('#00ff00')
@@ -399,7 +401,7 @@ export const slashCommands = {
     execute: async (interaction) => {
       const user = interaction.options.getUser('usuario');
       const amount = interaction.options.getInteger('valor');
-      
+
       if (user.id === interaction.user.id) {
         await interaction.reply('Você não pode transferir para si mesmo!');
         return;
@@ -412,7 +414,7 @@ export const slashCommands = {
       }
 
       const result = transfer(interaction.user.id, user.id, amount);
-      
+
       if (result) {
         const transferEmbed = new EmbedBuilder()
           .setColor('#00bfff')
@@ -435,7 +437,7 @@ export const slashCommands = {
     execute: async (interaction) => {
       const reason = interaction.options.getString('motivo');
       setAFK(interaction.user.id, reason);
-      
+
       try {
         const member = await interaction.guild.members.fetch(interaction.user.id);
         await member.setNickname(`[AFK] ${member.displayName}`);
@@ -710,14 +712,14 @@ export const slashCommands = {
         .setTitle('💡 Sugestão Recebida')
         .setDescription(`**De:** ${interaction.user}\n**Sugestão:** ${suggestion}`)
         .setFooter({ text: 'Obrigada pela sugestão! 💙' });
-      
+
       try {
         const owner = await interaction.client.users.fetch('1441445617003139113');
         await owner.send({ embeds: [suggestEmbed] });
       } catch (error) {
         console.error('Erro ao enviar sugestão:', error);
       }
-      
+
       await interaction.reply({ content: '✨ Sua sugestão foi enviada! Obrigada! 💙', ephemeral: true });
     }
   },
@@ -808,7 +810,7 @@ export const slashCommands = {
         .setTitle('💰 Akita Neru Adicionado')
         .setDescription(`✨ **${amount} Akita Neru** foi adicionado para <@${user.id}>!`)
         .setFooter({ text: '*A generosidade também é uma forma de arte.* 🖤' });
-      
+
       await interaction.reply({ embeds: [addnruEmbed] });
     }
   },
@@ -841,7 +843,7 @@ export const slashCommands = {
         .setTitle('🚫 Usuário Bloqueado')
         .setDescription(`<@${user.id}> foi adicionado à blacklist!\n\n*Nem todos conseguem entender minha arte.* 🖤`)
         .setFooter({ text: `Admin: ${interaction.user.username}` });
-      
+
       await interaction.reply({ embeds: [blacklistEmbed] });
     }
   },
@@ -874,7 +876,7 @@ export const slashCommands = {
         .setTitle('✨ Usuário Desbloqueado')
         .setDescription(`<@${user.id}> foi removido da blacklist!\n\n*Talvez você mereça uma segunda chance.* 💙`)
         .setFooter({ text: `Admin: ${interaction.user.username}` });
-      
+
       await interaction.reply({ embeds: [unblacklistEmbed] });
     }
   },
@@ -988,7 +990,7 @@ export const slashCommands = {
     data: new SlashCommandBuilder()
       .setName('removeadmin')
       .setDescription('[ADMIN] Remover admin')
-      .addUserOption(option => option.setName('usuario').setDescription('Usuário').setRequired(true)),
+      .addUserOption(option => option.setName('usuario').setDescription('Admin a remover').setRequired(true)),
     execute: async (interaction) => {
       if (!isAdmin(interaction.user.id)) {
         await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
@@ -996,11 +998,11 @@ export const slashCommands = {
       }
       const user = interaction.options.getUser('usuario');
       if (!isAdmin(user.id)) {
-        await interaction.reply({ content: `⚠️ Não é admin!`, ephemeral: true });
+        await interaction.reply({ content: `⚠️ <@${user.id}> não é admin!`, ephemeral: true });
         return;
       }
       removeAdmin(user.id);
-      const embed = new EmbedBuilder().setColor('#ff0000').setTitle('🔴 Admin Removido').setDescription(`<@${user.id}> não é mais admin.`);
+      const embed = new EmbedBuilder().setColor('#ff0000').setTitle('🔴 Removido').setDescription(`<@${user.id}> não é mais admin.`);
       await interaction.reply({ embeds: [embed] });
     }
   },
@@ -1037,7 +1039,7 @@ export const slashCommands = {
       }
 
       const descricao = interaction.options.getString('descricao');
-      
+
       try {
         await interaction.guild.edit({ description: descricao });
         const embed = new EmbedBuilder()
@@ -1074,7 +1076,7 @@ export const slashCommands = {
 
       const canal = interaction.options.getChannel('canal');
       const novoNome = interaction.options.getString('novonome');
-      
+
       try {
         await canal.edit({ name: novoNome });
         const embed = new EmbedBuilder()
@@ -1111,7 +1113,7 @@ export const slashCommands = {
 
       const canal = interaction.options.getChannel('canal');
       const topico = interaction.options.getString('topico');
-      
+
       try {
         await canal.edit({ topic: topico });
         const embed = new EmbedBuilder()
@@ -1153,7 +1155,7 @@ export const slashCommands = {
       const nome = interaction.options.getString('nome');
       const tipo = interaction.options.getString('tipo');
       const categoria = interaction.options.getChannel('categoria');
-      
+
       try {
         const novoCanal = await interaction.guild.channels.create({
           name: nome,
@@ -1190,7 +1192,7 @@ export const slashCommands = {
     execute: async (interaction) => {
       const nome = interaction.options.getString('nome');
       const cor = interaction.options.getString('cor') || '#0099ff';
-      
+
       try {
         const novoCargo = await interaction.guild.roles.create({
           name: nome,
@@ -1230,7 +1232,7 @@ export const slashCommands = {
       }
 
       const canal = interaction.options.getChannel('canal');
-      
+
       try {
         setRestartChannel(canal.id);
         const embed = new EmbedBuilder()
@@ -1290,9 +1292,9 @@ export const slashCommands = {
     execute: async (interaction) => {
       // Verificar se o usuário tem permissão de Administrador
       if (!interaction.member.permissions.has('Administrator')) {
-        await interaction.reply({ 
-          content: '❌ Você precisa ter a permissão de Administrador para usar este comando!', 
-          ephemeral: true 
+        await interaction.reply({
+          content: '❌ Você precisa ter a permissão de Administrador para usar este comando!',
+          ephemeral: true
         });
         return;
       }
@@ -1335,18 +1337,70 @@ export const slashCommands = {
         await interaction.reply({ embeds: [confirmEmbed], ephemeral: true });
       } catch (error) {
         console.error('Erro ao criar embed:', error);
-        await interaction.reply({ 
-          content: '❌ Erro ao criar a embed! Verifique se a cor está no formato correto (#HEXADECIMAL) e se as URLs são válidas.', 
-          ephemeral: true 
+        await interaction.reply({
+          content: '❌ Erro ao criar a embed! Verifique se a cor está no formato correto (#HEXADECIMAL) e se as URLs são válidas.',
+          ephemeral: true
         });
       }
     }
-  }
+  },
+
+  setmultiplier: {
+    data: new SlashCommandBuilder()
+      .setName('setmultiplier')
+      .setDescription('[ADMIN] Define o multiplicador de daily (1x - 10x)')
+      .addNumberOption(option =>
+        option.setName('valor')
+          .setDescription('Multiplicador (1 a 10)')
+          .setRequired(true)
+          .setMinValue(1)
+          .setMaxValue(10)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão! Apenas admins.', ephemeral: true });
+        return;
+      }
+
+      const multiplier = interaction.options.getNumber('valor');
+      const success = setMultiplier(multiplier);
+
+      if (!success) {
+        await interaction.reply({ content: '❌ Erro ao definir multiplicador!', ephemeral: true });
+        return;
+      }
+
+      const embed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('🔥 Multiplicador Configurado!')
+        .setDescription(`O multiplicador de daily foi definido para **${multiplier}x**!\n\nAgora todos ganharão **${50 * multiplier} Akita Neru** no daily!\n\n*O poder flui através das moedas...* 💰`)
+        .setFooter({ text: `Configurado por: ${interaction.user.username}` });
+
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
+
+  multiplier: {
+    data: new SlashCommandBuilder()
+      .setName('multiplier')
+      .setDescription('Ver o multiplicador de daily atual'),
+    execute: async (interaction) => {
+      const multiplier = getMultiplier();
+
+      const embed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('🔥 Multiplicador Atual')
+        .setDescription(`O multiplicador de daily está em **${multiplier}x**!\n\nRecompensa atual: **${50 * multiplier} Akita Neru**\n\n*${multiplier > 1 ? 'Aproveite enquanto dura!' : 'Apenas o valor base.'}* 💰`)
+        .setFooter({ text: 'Use /daily para coletar sua recompensa' });
+
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
 };
 
 export async function registerSlashCommands(client) {
   const commands = Object.values(slashCommands).map(cmd => cmd.data);
-  
+
   // Registrar comandos imediatamente
   try {
     console.log('📝 Registrando slash commands...');
@@ -1375,7 +1429,7 @@ export async function setupSlashCommandHandler(client) {
         .setColor('#ff0000')
         .setTitle('❌ Erro')
         .setDescription('Houve um erro ao executar este comando.');
-      
+
       if (interaction.replied || interaction.deferred) {
         await interaction.editReply({ embeds: [errorEmbed] });
       } else {
