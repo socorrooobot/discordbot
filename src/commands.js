@@ -8,6 +8,7 @@ import { generateProfileCard } from './profileCard.js';
 import { isAdmin, addAdmin, removeAdmin, getAdmins } from './admin.js';
 import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
 import { getMultiplier, setMultiplier } from './multiplier.js';
+import { getXPMultiplier, setXPMultiplier } from './xp.js';
 
 
 const quotes = [
@@ -3018,6 +3019,56 @@ export const commands = {
         .setTitle('🔥 Multiplicador Atual')
         .setDescription(`O multiplicador de daily está em **${multiplier}x**!\n\nRecompensa atual: **${50 * multiplier} Akita Neru**\n\n*${multiplier > 1 ? 'Aproveite enquanto dura!' : 'Apenas o valor base.'}* 💰`)
         .setFooter({ text: 'Use !daily para coletar sua recompensa' });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  setxpmultiplier: {
+    name: '!setxpmultiplier',
+    aliases: ['!setxpmulti', '!xpmultiplicador'],
+    description: '[ADMIN] Define o multiplicador de XP (1x - 10x)',
+    execute: async (message, args) => {
+      if (!isAdmin(message.author.id)) {
+        await message.reply('❌ Você não tem permissão para usar este comando! Apenas admins podem usar.');
+        return;
+      }
+
+      const multiplier = parseFloat(args[0]);
+
+      if (isNaN(multiplier) || multiplier < 1 || multiplier > 10) {
+        await message.reply('❌ Uso: `!setxpmultiplier <valor>`\nValor deve ser entre 1 e 10\nExemplo: `!setxpmultiplier 2` para 2x');
+        return;
+      }
+
+      const success = setXPMultiplier(multiplier);
+      if (!success) {
+        await message.reply('❌ Erro ao definir multiplicador!');
+        return;
+      }
+
+      const embed = new EmbedBuilder()
+        .setColor('#9966ff')
+        .setTitle('⭐ Multiplicador de XP Configurado!')
+        .setDescription(`O multiplicador de XP foi definido para **${multiplier}x**!\n\nAgora todos ganharão **${10 * multiplier} XP** por mensagem!\n\n*O conhecimento flui mais rápido agora...* 💫`)
+        .setFooter({ text: `Configurado por: ${message.author.username}` });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
+  xpmultiplier: {
+    name: '!xpmultiplier',
+    aliases: ['!xpmulti', '!xpmult'],
+    description: 'Ver o multiplicador de XP atual',
+    execute: async (message) => {
+      const multiplier = getXPMultiplier();
+      
+      const embed = new EmbedBuilder()
+        .setColor('#9966ff')
+        .setTitle('⭐ Multiplicador de XP Atual')
+        .setDescription(`O multiplicador de XP está em **${multiplier}x**!\n\nGanho por mensagem: **${10 * multiplier} XP**\n\n*${multiplier > 1 ? 'Evolua mais rápido!' : 'Apenas o ganho base.'}* 💫`)
+        .setFooter({ text: 'Continue enviando mensagens para ganhar XP' });
       
       await message.reply({ embeds: [embed] });
     }

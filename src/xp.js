@@ -3,6 +3,7 @@ import path from 'path';
 
 const dataDir = 'data';
 const xpFile = path.join(dataDir, 'xp.json');
+const xpMultiplierFile = path.join(dataDir, 'xpmultiplier.json');
 
 // Criar diretório se não existir
 if (!fs.existsSync(dataDir)) {
@@ -12,6 +13,38 @@ if (!fs.existsSync(dataDir)) {
 // Constantes
 const XP_PER_MESSAGE = 10; // XP por mensagem
 const XP_PER_LEVEL = 100; // XP necessário para próximo nível
+
+// Carregar multiplicador de XP
+function loadXPMultiplier() {
+  if (fs.existsSync(xpMultiplierFile)) {
+    try {
+      return JSON.parse(fs.readFileSync(xpMultiplierFile, 'utf8'));
+    } catch {
+      return { multiplier: 1 };
+    }
+  }
+  return { multiplier: 1 };
+}
+
+// Salvar multiplicador de XP
+function saveXPMultiplier(data) {
+  fs.writeFileSync(xpMultiplierFile, JSON.stringify(data, null, 2));
+}
+
+// Obter multiplicador de XP
+export function getXPMultiplier() {
+  const data = loadXPMultiplier();
+  return data.multiplier || 1;
+}
+
+// Definir multiplicador de XP (admin)
+export function setXPMultiplier(multiplier) {
+  if (multiplier < 1 || multiplier > 10) {
+    return false; // Limite de 1x a 10x
+  }
+  saveXPMultiplier({ multiplier });
+  return true;
+}
 
 // Carregar dados
 function loadXP() {
@@ -70,19 +103,21 @@ function getXPForNextLevel(level) {
 export function addXP(userId) {
   const user = getUser(userId);
   const oldLevel = user.level;
+  const multiplier = getXPMultiplier();
+  const xpGained = XP_PER_MESSAGE * multiplier;
   
-  user.totalXP += XP_PER_MESSAGE;
-  user.xp += XP_PER_MESSAGE;
+  user.totalXP += xpGained;
+  user.xp += xpGained;
   user.level = calculateLevel(user.totalXP);
   
   updateUser(userId, user);
   
   // Retornar se houve level up
   if (user.level > oldLevel) {
-    return { leveledUp: true, newLevel: user.level, oldLevel };
+    return { leveledUp: true, newLevel: user.level, oldLevel, xpGained, multiplier };
   }
   
-  return { leveledUp: false, level: user.level };
+  return { leveledUp: false, level: user.level, xpGained, multiplier };
 }
 
 // Obter informações do usuário
