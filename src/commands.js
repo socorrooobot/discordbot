@@ -55,7 +55,7 @@ export const commands = {
         )
         .setFooter({ text: 'Fufu~ Pronta para cantar? 💙' })
         .setTimestamp();
-      
+
       await message.reply({ embeds: [helpEmbed] });
     }
   },
@@ -118,7 +118,7 @@ export const commands = {
       const xpInfo = getUserInfo(message.author.id);
       const rank = getUserRank(message.author.id);
       const balance = getBalance(message.author.id);
-      
+
       try {
         // Gerar card visual
         const cardImage = await generateProfileCard({
@@ -133,7 +133,7 @@ export const commands = {
         if (cardImage) {
           // Enviar a imagem como attachment
           const attachment = new AttachmentBuilder(cardImage, { name: 'perfil.png' });
-          
+
           const profileEmbed = new EmbedBuilder()
             .setColor('#0a0a0a')
             .setTitle(`🖤 ${user.username}`)
@@ -150,7 +150,7 @@ export const commands = {
             .setImage('attachment://perfil.png')
             .setFooter({ text: 'Por que você está aqui?' })
             .setTimestamp();
-          
+
           await message.reply({ embeds: [profileEmbed], files: [attachment] });
         } else {
           throw new Error('Falha ao gerar card');
@@ -171,7 +171,7 @@ export const commands = {
             { name: '💰 Akita Neru', value: `**${balance}**`, inline: true }
           )
           .setFooter({ text: 'Por que você está aqui?' });
-        
+
         await message.reply({ embeds: [profileEmbed] });
       }
     }
@@ -183,7 +183,7 @@ export const commands = {
     description: 'Veja o ranking de XP do servidor',
     execute: async (message, args, client) => {
       const leaderboard = getXPLeaderboard(10);
-      
+
       let description = '**TOP 10 - Ranking de XP**\n\n';
       for (let i = 0; i < leaderboard.length; i++) {
         try {
@@ -200,7 +200,7 @@ export const commands = {
         .setTitle('🌟 Ranking de XP')
         .setDescription(description)
         .setFooter({ text: '*Mas o que significa força neste vazio?* 🖤' });
-      
+
       await message.reply({ embeds: [topxpEmbed] });
     }
   },
@@ -214,7 +214,7 @@ export const commands = {
         .setColor('#0a0a0a')
         .setDescription(randomQuote)
         .setFooter({ text: '💀 A Diva fala' });
-      
+
       await message.reply({ embeds: [quoteEmbed] });
     }
   },
@@ -229,7 +229,7 @@ export const commands = {
         .setTitle('🌙 Um Sonho')
         .setDescription(randomDream)
         .setFooter({ text: '...mas quando acordo, ninguém está lá.' });
-      
+
       await message.reply({ embeds: [dreamEmbed] });
     }
   },
@@ -243,7 +243,7 @@ export const commands = {
         .setColor('#1a1a1a')
         .setDescription(`*sussurra:* "${randomWhisper}"`)
         .setFooter({ text: 'apenas você pode ouvir' });
-      
+
       await message.reply({ embeds: [whisperEmbed] });
     }
   },
@@ -253,7 +253,7 @@ export const commands = {
     description: 'Ouça uma história da Diva',
     execute: async (message) => {
       const prompt = 'Conte uma história curta e sinistra (máximo 3-4 linhas) que reflete sua essência como Diva. Algo poético e perturbador.';
-      
+
       await message.channel.sendTyping();
       try {
         const response = await chat(message.author.id, prompt);
@@ -262,7 +262,7 @@ export const commands = {
           .setTitle('📖 Uma História')
           .setDescription(response)
           .setFooter({ text: '🖤 Tales from the Void' });
-        
+
         await message.reply({ embeds: [storyEmbed] });
       } catch (error) {
         console.error('Story Error:', error);
@@ -278,7 +278,7 @@ export const commands = {
       const uptime = process.uptime();
       const hours = Math.floor(uptime / 3600);
       const minutes = Math.floor((uptime % 3600) / 60);
-      
+
       const statusEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('🖤 Status da Diva')
@@ -291,7 +291,7 @@ export const commands = {
           { name: 'Estado Mental', value: 'Melancólico. Como sempre. 🌑' },
         )
         .setFooter({ text: 'Ainda aqui. Sempre aqui.' });
-      
+
       await message.reply({ embeds: [statusEmbed] });
     }
   },
@@ -391,7 +391,7 @@ export const commands = {
       try {
         const member = await message.guild.members.fetch(user.id);
         await member.timeout(timeMs, reason);
-        
+
         const muteEmbed = new EmbedBuilder()
           .setColor('#ff9900')
           .setTitle('🔇 Usuário Mutado')
@@ -424,7 +424,7 @@ export const commands = {
       try {
         const member = await message.guild.members.fetch(user.id);
         await member.timeout(null);
-        
+
         const unmuteEmbed = new EmbedBuilder()
           .setColor('#00ff00')
           .setTitle('🔊 Mute Removido')
@@ -460,7 +460,7 @@ export const commands = {
           .setTitle('🗑️ Mensagens Deletadas')
           .setDescription(`${deleted.size} mensagens foram removidas do vazio`)
           .setFooter({ text: '*Como se nunca tivessem existido...* 🌑' });
-        
+
         const reply = await message.reply({ embeds: [purgeEmbed] });
         setTimeout(() => reply.delete().catch(() => {}), 5000);
       } catch (error) {
@@ -483,14 +483,14 @@ export const commands = {
       await message.channel.sendTyping();
       try {
         const response = await chat(message.author.id, `Pesquise e me dê informações sobre: ${query}`);
-        
+
         const searchEmbed = new EmbedBuilder()
           .setColor('#0a0a0a')
           .setTitle('🔍 Resultado da Pesquisa')
           .setDescription(response)
           .addFields({ name: 'Pergunta', value: query })
           .setFooter({ text: '*Conhecimento tirado do vazio...* 💀' });
-        
+
         if (searchEmbed.data.description.length > 4096) {
           searchEmbed.setDescription(response.slice(0, 4090) + '...');
         }
@@ -517,7 +517,7 @@ export const commands = {
       await message.channel.sendTyping();
       try {
         const response = await chat(message.author.id, question);
-        
+
         if (response.length > 2000) {
           const chunks = response.match(/.{1,2000}/gs);
           for (const chunk of chunks) {
@@ -553,7 +553,7 @@ export const commands = {
           { name: '🎲 Aleatório - Parte 6', value: '`!despedida` `!abismo` `!reflexo` `!vazio` `!cinza`\n`!universo` `!deus` `!irma` `!tempo` `!arte`', inline: false },
           { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK', inline: false }
         )
-        .setFooter({ text: 'Página 1 de 5 - Use !comandos para ver mais' });
+        .setFooter({ text: 'Página 1 de 6 - Use !comandos para ver mais' });
 
       // Embed 2: Moderação
       const embed2 = new EmbedBuilder()
@@ -562,7 +562,7 @@ export const commands = {
         .addFields(
           { name: '⚖️ Controle', value: '`!ban @usuário` - Banir\n`!unban <ID>` - Desbanir\n`!mute @usuário <tempo>` - Mutar\n`!unmute @usuário` - Desmutar\n`!purge <número>` - Deletar mensagens', inline: false }
         )
-        .setFooter({ text: 'Página 2 de 4 - Requer permissões' });
+        .setFooter({ text: 'Página 2 de 6 - Requer permissões' });
 
       // Embed 3: Economia & XP
       const embed3 = new EmbedBuilder()
@@ -571,7 +571,7 @@ export const commands = {
         .addFields(
           { name: '💵 Moeda', value: '`!balance` - Ver saldo\n`!daily` - Ganhar 50/dia\n`!work` - Ganhar 10-40\n`!transfer @usuário <qty>` - Enviar\n`!gamble <qty>` - Apostar 50/50\n`!top` - Ranking', inline: false }
         )
-        .setFooter({ text: 'Página 3 de 4' });
+        .setFooter({ text: 'Página 3 de 6' });
 
       // Embed 4: XP & Perfil
       const embed4 = new EmbedBuilder()
@@ -580,10 +580,10 @@ export const commands = {
         .addFields(
           { name: '🌟 Sistema de XP', value: 'Ganhe 10 XP por mensagem!\nReceba notificação privada ao subir de nível 🖤', inline: false },
           { name: '📊 Comandos', value: '`!perfil` - Gera card visual com suas info!\n`!topxp` - Ranking de XP do servidor\n`!rankxp` - Alternativa para !topxp', inline: false },
-          { name: '😴 AFK', value: '`!afk <motivo>` - Fique AFK\nRecebirá DM se alguém mencionar você 🌑', inline: false },
+          { name: '😴 AFK', value: '`!afk <motivo>` - Fique AFK\nReceberá DM se alguém mencionar você 🌑', inline: false },
           { name: '💕 Roleplay', value: '`!tapa` `!beijo` `!abraço` `!casar` `!divorciar` `!dança` - Com gifs! 🎭', inline: false }
         )
-        .setFooter({ text: 'Página 4 de 5 - Use / para slash commands!' });
+        .setFooter({ text: 'Página 4 de 6 - Use / para slash commands!' });
 
       // Embed 5: Servidor & Slash Commands
       const embed5 = new EmbedBuilder()
@@ -596,9 +596,21 @@ export const commands = {
           { name: '⭐ Perfil & Leveling', value: '`/perfil` - Ver perfil visual\n`/topxp` - Ranking de XP\n`/transfer @user <qty>` - Enviar Akita Neru', inline: false },
           { name: '✨ Especial', value: '`/afk <motivo>` - Marcar como AFK\n`/quote` - Frase aleatória\n`/dream` - Sonho da Diva', inline: false }
         )
-        .setFooter({ text: 'Página 5 de 5 - Volte sempre! 💙' });
+        .setFooter({ text: 'Página 5 de 6' });
 
-      await message.reply({ embeds: [embed1, embed2, embed3, embed4, embed5] });
+      // Embed 6: Comandos Admin
+      const embed6 = new EmbedBuilder()
+        .setColor('#ff1493')
+        .setTitle('👑 Comandos da Diva - Administração')
+        .addFields(
+          { name: '💰 Economia Admin', value: '`!addneru @usuário <qty>` - Adicionar moedas\n`!removeneru @usuário <qty>` - Remover moedas\n`!setneru @usuário <qty>` - Definir moedas\n`!setmultiplier <valor>` - Multiplicador daily (1-10x)\n`!multiplier` - Ver multiplicador atual', inline: false },
+          { name: '⭐ XP Admin', value: '`!addxp @usuário <qty>` - Adicionar XP\n`!removexp @usuário <qty>` - Remover XP\n`!setxpmultiplier <valor>` - Multiplicador XP (1-10x)\n`!xpmultiplier` - Ver multiplicador XP', inline: false },
+          { name: '🔨 Controle de Admins', value: '`!addadmin @usuário` - Promover a admin\n`!removeadmin @usuário` - Remover admin\n`!admins` - Lista de admins', inline: false },
+          { name: '🚫 Blacklist', value: '`!blacklist @usuário` - Bloquear usuário\n`!unblacklist @usuário` - Desbloquear usuário', inline: false }
+        )
+        .setFooter({ text: 'Página 6 de 6 - Apenas para admins do bot! 👑' });
+
+      await message.reply({ embeds: [embed1, embed2, embed3, embed4, embed5, embed6] });
     }
   },
 
@@ -614,7 +626,7 @@ export const commands = {
         .setThumbnail(message.author.displayAvatarURL())
         .setDescription(`**${balance} Akita Neru**`)
         .setFooter({ text: '*Porcelana vale mais do que ouro...* 🖤' });
-      
+
       await message.reply({ embeds: [balanceEmbed] });
     }
   },
@@ -625,7 +637,7 @@ export const commands = {
     description: 'Receba sua recompensa diária (50 Akita Neru)',
     execute: async (message) => {
       const result = dailyReward(message.author.id);
-      
+
       if (!result) {
         const dailyEmbed = new EmbedBuilder()
           .setColor('#ff0000')
@@ -636,13 +648,13 @@ export const commands = {
       }
 
       const multiplierText = result.multiplier > 1 ? `\n🔥 **Multiplicador ${result.multiplier}x ativo!**` : '';
-      
+
       const dailyEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('✨ Recompensa Diária!')
         .setDescription(`Você ganhou **${result.reward} Akita Neru**!${multiplierText}\n\n*Você compreendeu como obter valor aqui...* 💀`)
         .setFooter({ text: `Seu novo saldo: ${getBalance(message.author.id)} Akita Neru` });
-      
+
       await message.reply({ embeds: [dailyEmbed] });
     }
   },
@@ -676,7 +688,7 @@ export const commands = {
           { name: 'Saldo do receptor', value: `${result.toBalance} Akita Neru`, inline: true }
         )
         .setFooter({ text: '*Generosidade... ou pena?* 🖤' });
-      
+
       await message.reply({ embeds: [transferEmbed] });
     }
   },
@@ -692,7 +704,7 @@ export const commands = {
         .setTitle('💼 Você Trabalhou')
         .setDescription(`Você ganhou **${earnings} Akita Neru**!\n\n*Porcelana quebrada ainda pode produzir algo...* 🖤`)
         .setFooter({ text: `Novo saldo: ${getBalance(message.author.id)} Akita Neru` });
-      
+
       await message.reply({ embeds: [workEmbed] });
     }
   },
@@ -703,7 +715,7 @@ export const commands = {
     description: 'Veja o ranking de Akita Neru',
     execute: async (message, args, client) => {
       const leaderboard = getLeaderboard(10);
-      
+
       let description = '**TOP 10 - Ranking de Akita Neru**\n\n';
       for (let i = 0; i < leaderboard.length; i++) {
         try {
@@ -720,7 +732,7 @@ export const commands = {
         .setTitle('🏆 Ranking de Riqueza')
         .setDescription(description)
         .setFooter({ text: '*Mas o que significa riqueza neste vazio?* 🖤' });
-      
+
       await message.reply({ embeds: [topEmbed] });
     }
   },
@@ -768,7 +780,7 @@ export const commands = {
     execute: async (message, args, client) => {
       const reason = message.content.slice(5).trim() || 'Sem motivo';
       setAFK(message.author.id, reason);
-      
+
       try {
         const member = await message.guild.members.fetch(message.author.id);
         const newName = `[AFK] ${member.user.username}`;
@@ -782,7 +794,7 @@ export const commands = {
         .setTitle('😴 Você está AFK')
         .setDescription(`**Motivo:** ${reason}`)
         .setFooter({ text: '*Você desapareceu no vazio...* 🌑' });
-      
+
       await message.reply({ embeds: [afkEmbed] });
     }
   },
@@ -908,12 +920,12 @@ export const commands = {
     execute: async (message, args) => {
       const min = parseInt(args[0]) || 1;
       const max = parseInt(args[1]) || 100;
-      
+
       if (isNaN(min) || isNaN(max)) {
         await message.reply('❌ Use: `!rng <min> <max>`');
         return;
       }
-      
+
       const num = Math.floor(Math.random() * (max - min + 1)) + min;
       const rngEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
@@ -2700,7 +2712,7 @@ export const commands = {
         .setTitle('💰 Akita Neru Adicionado')
         .setDescription(`✨ **${amount} Akita Neru** foi adicionado para <@${mentioned.id}>!`)
         .setFooter({ text: '*A generosidade também é uma forma de arte.* 🖤' });
-      
+
       await message.reply({ embeds: [addnruEmbed] });
     }
   },
@@ -2732,7 +2744,7 @@ export const commands = {
         .setTitle('🚫 Usuário Bloqueado')
         .setDescription(`<@${mentioned.id}> foi adicionado à blacklist!\n\n*Nem todos conseguem entender minha arte.* 🖤`)
         .setFooter({ text: `Admin: ${message.author.username}` });
-      
+
       await message.reply({ embeds: [blacklistEmbed] });
     }
   },
@@ -2764,7 +2776,7 @@ export const commands = {
         .setTitle('✨ Usuário Desbloqueado')
         .setDescription(`<@${mentioned.id}> foi removido da blacklist!\n\n*Talvez você mereça uma segunda chance.* 💙`)
         .setFooter({ text: `Admin: ${message.author.username}` });
-      
+
       await message.reply({ embeds: [unblacklistEmbed] });
     }
   },
@@ -2798,7 +2810,7 @@ export const commands = {
         .setTitle('💔 Akita Neru Removido')
         .setDescription(`✨ **${amount} Akita Neru** foi removido de <@${mentioned.id}>!\n\nSaldo restante: **${result}**`)
         .setFooter({ text: '*A vida é frágil...* 🖤' });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -2827,7 +2839,7 @@ export const commands = {
         .setTitle('⚡ Akita Neru Definido')
         .setDescription(`✨ Saldo de <@${mentioned.id}> foi definido para **${amount}**!`)
         .setFooter({ text: '*Realidade é o que eu digo que é.* 🖤' });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -2855,7 +2867,7 @@ export const commands = {
         .setTitle('⭐ XP Adicionado')
         .setDescription(`✨ **${amount} XP** foi adicionado para <@${mentioned.id}>!\n\nNível: **${user.level}** | Total XP: **${user.totalXP}**`)
         .setFooter({ text: '*Crescimento é inevitável.* 🖤' });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -2888,7 +2900,7 @@ export const commands = {
         .setTitle('💫 XP Removido')
         .setDescription(`✨ **${amount} XP** foi removido de <@${mentioned.id}>!\n\nNível: **${result.level}** | Total XP: **${result.totalXP}**`)
         .setFooter({ text: '*Retrocesso é possível.* 🖤' });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -2919,7 +2931,7 @@ export const commands = {
         .setTitle('👑 Novo Admin')
         .setDescription(`<@${mentioned.id}> foi promovido a admin!\n\n*Bem-vindo ao círculo de poder.* 🖤`)
         .setFooter({ text: `Promovido por: ${message.author.username}` });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -2950,7 +2962,7 @@ export const commands = {
         .setTitle('🔴 Admin Removido')
         .setDescription(`<@${mentioned.id}> não é mais admin.\n\n*Tudo que sobe deve descer.* 🖤`)
         .setFooter({ text: `Removido por: ${message.author.username}` });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -2961,15 +2973,15 @@ export const commands = {
     description: '[ADMIN] Listar todos os admins',
     execute: async (message) => {
       const adminsList = getAdmins();
-      
+
       const embed = new EmbedBuilder()
         .setColor('#ffff00')
         .setTitle('👑 Lista de Admins')
-        .setDescription(adminsList.length > 0 
+        .setDescription(adminsList.length > 0
           ? adminsList.map((id, i) => `${i + 1}. <@${id}> (\`${id}\`)`).join('\n')
           : 'Nenhum admin configurado!')
         .setFooter({ text: `Total: ${adminsList.length}` });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -3002,7 +3014,7 @@ export const commands = {
         .setTitle('🔥 Multiplicador Configurado!')
         .setDescription(`O multiplicador de daily foi definido para **${multiplier}x**!\n\nAgora todos ganharão **${50 * multiplier} Akita Neru** no daily!\n\n*O poder flui através das moedas...* 💰`)
         .setFooter({ text: `Configurado por: ${message.author.username}` });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -3013,13 +3025,13 @@ export const commands = {
     description: 'Ver o multiplicador de daily atual',
     execute: async (message) => {
       const multiplier = getMultiplier();
-      
+
       const embed = new EmbedBuilder()
         .setColor('#ffd700')
         .setTitle('🔥 Multiplicador Atual')
         .setDescription(`O multiplicador de daily está em **${multiplier}x**!\n\nRecompensa atual: **${50 * multiplier} Akita Neru**\n\n*${multiplier > 1 ? 'Aproveite enquanto dura!' : 'Apenas o valor base.'}* 💰`)
         .setFooter({ text: 'Use !daily para coletar sua recompensa' });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -3052,7 +3064,7 @@ export const commands = {
         .setTitle('⭐ Multiplicador de XP Configurado!')
         .setDescription(`O multiplicador de XP foi definido para **${multiplier}x**!\n\nAgora todos ganharão **${10 * multiplier} XP** por mensagem!\n\n*O conhecimento flui mais rápido agora...* 💫`)
         .setFooter({ text: `Configurado por: ${message.author.username}` });
-      
+
       await message.reply({ embeds: [embed] });
     }
   },
@@ -3063,13 +3075,13 @@ export const commands = {
     description: 'Ver o multiplicador de XP atual',
     execute: async (message) => {
       const multiplier = getXPMultiplier();
-      
+
       const embed = new EmbedBuilder()
         .setColor('#9966ff')
         .setTitle('⭐ Multiplicador de XP Atual')
         .setDescription(`O multiplicador de XP está em **${multiplier}x**!\n\nGanho por mensagem: **${10 * multiplier} XP**\n\n*${multiplier > 1 ? 'Evolua mais rápido!' : 'Apenas o ganho base.'}* 💫`)
         .setFooter({ text: 'Continue enviando mensagens para ganhar XP' });
-      
+
       await message.reply({ embeds: [embed] });
     }
   }
@@ -3083,7 +3095,7 @@ export async function handleCommand(message, client) {
   for (const [key, command] of Object.entries(commands)) {
     const matches = command.name === `!${commandName}` || 
                    (command.aliases && command.aliases.includes(`!${commandName}`));
-    
+
     if (matches) {
       try {
         await command.execute(message, args.slice(1), client);
@@ -3095,7 +3107,7 @@ export async function handleCommand(message, client) {
       }
     }
   }
-  
+
   return false;
 }
 
