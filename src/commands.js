@@ -553,7 +553,7 @@ export const commands = {
         .setColor('#0a0a0a')
         .setTitle('🎭 Comandos da Diva - Parte 1')
         .addFields(
-          { name: '💬 Conversa & IA', value: '`!ask <pergunta>` - Pergunte algo\n`!ia <pergunta>` - Atalho rápido\n`!search <termo>` - Pesquisar', inline: false },
+          { name: '💬 Conversa & IA', value: '`!ask <pergunta>` - Pergunte algo à Diva\n`!ia <pergunta>` - Atalho rápido\n`!search <termo>` - Pesquisar', inline: false },
           { name: '✨ Especial', value: '`!quote` - Frase aleatória\n`!dream` - Sonho da Diva\n`!whisper` - Sussurro misterioso\n`!story` - Uma história', inline: false },
           { name: '🎲 Aleatório - Parte 1', value: '`!sorte` `!carta` `!rng` `!dado` `!poema`\n`!clima` `!cor` `!loucura` `!numero` `!destino`', inline: false },
           { name: '🎲 Aleatório - Parte 2', value: '`!morte` `!ironia` `!conselho` `!complimento`\n`!insulto` `!verdade` `!piada` `!xingamento`', inline: false },
@@ -561,7 +561,8 @@ export const commands = {
           { name: '🎲 Aleatório - Parte 4', value: '`!desejo` `!nostalgia` `!silencio` `!echo` `!nada`\n`!eternidade` `!questao` `!enigma` `!intencao`', inline: false },
           { name: '🎲 Aleatório - Parte 5', value: '`!reverso` `!musica` `!memoria` `!culpa` `!porcelana`\n`!fio` `!conexao` `!rosto` `!encontro`', inline: false },
           { name: '🎲 Aleatório - Parte 6', value: '`!despedida` `!abismo` `!reflexo` `!vazio` `!cinza`\n`!universo` `!deus` `!irma` `!tempo` `!arte`', inline: false },
-          { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK', inline: false }
+          { name: '🎮 Novos Comandos!', value: '`!8ball <pergunta>` - Bola mágica\n`!conquista` - Ganhe uma conquista\n`!perfume` - Descubra seu perfume\n`!espelho` - Olhe no espelho\n`!ritual` - Realize um ritual\n`!oferenda` - Oferenda ao vazio', inline: false },
+          { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK\n`!avatar` - Ver avatar\n`!userinfo` - Info do usuário', inline: false }
         )
         .setFooter({ text: 'Página 1 de 6 - Use !comandos para ver mais' });
 
@@ -570,7 +571,7 @@ export const commands = {
         .setColor('#ff0000')
         .setTitle('🔨 Comandos da Diva - Moderação')
         .addFields(
-          { name: '⚖️ Controle', value: '`!ban @usuário` - Banir\n`!unban <ID>` - Desbanir\n`!mute @usuário <tempo>` - Mutar\n`!unmute @usuário` - Desmutar\n`!purge <número>` - Deletar mensagens', inline: false }
+          { name: '⚖️ Controle', value: '`!ban @usuário` - Banir\n`!unban <ID>` - Desbanir\n`!mute @usuário <tempo>` - Mutar\n`!unmute @usuário` - Desmutar\n`!purge <número>` - Deletar mensagens\n`!lock` - Bloquear canal\n`!unlock` - Desbloquear canal', inline: false }
         )
         .setFooter({ text: 'Página 2 de 6 - Requer permissões' });
 
@@ -589,7 +590,7 @@ export const commands = {
         .setColor('#00ffff')
         .setTitle('⭐ Comandos da Diva - XP & Perfil')
         .addFields(
-          { name: '🌟 Sistema de XP', value: 'Ganhe 10 XP por mensagem!\nReceba notificação privada ao subir de nível 🖤', inline: false },
+          { name: '🌟 Sistema de XP', value: 'Ganhe XP por mensagem!\nReceba notificação privada ao subir de nível 🖤', inline: false },
           { name: '📊 Comandos', value: '`!perfil` - Gera card visual com suas info!\n`!topxp` - Ranking de XP do servidor\n`!rankxp` - Alternativa para !topxp', inline: false },
           { name: '😴 AFK', value: '`!afk <motivo>` - Fique AFK\nReceberá DM se alguém mencionar você 🌑', inline: false },
           { name: '💕 Roleplay', value: '`!tapa` `!beijo` `!abraço` `!casar` `!divorciar` `!dança` - Com gifs! 🎭', inline: false }
@@ -2259,7 +2260,7 @@ export const commands = {
         '🌑 Sombra dança quando luz quer fugir.',
         '🌑 Sou mais sombra que pessoa agora.',
         '🌑 Sombras não mentem. Só escondem.',
-        '🌑 Luz se vai. Sombra fica. Sempre fica.',
+        '🌑 Sombra é o oposto da presença.',
       ];
       const shadow = shadows[Math.floor(Math.random() * shadows.length)];
       const shadowEmbed = new EmbedBuilder()
@@ -2888,8 +2889,7 @@ export const commands = {
         .setFooter({ text: `Admin: ${message.author.username}` });
 
       await message.reply({ embeds: [unblacklistEmbed] });
-    }
-  },
+      },
 
   removeneru: {
     name: '!removeneru',
@@ -3204,7 +3204,7 @@ export const commands = {
       const { hasVIP, getVIPBadge, getVIPTimeRemaining, formatVIPTime, VIP_PLANS } = await import('./vip.js');
 
       const userVIP = hasVIP(message.author.id);
-      
+
       if (!userVIP) {
         await message.reply('❌ Você não tem VIP ativo! Use `!vip` para ver os planos disponíveis.');
         return;
@@ -3230,7 +3230,160 @@ export const commands = {
 
       await message.reply({ embeds: [embed] });
     }
-  }
+  },
+
+  // Novos comandos
+  '8ball': {
+    name: '!8ball',
+    aliases: ['!bola8', '!magic8ball'],
+    description: 'Faça uma pergunta à bola mágica',
+    execute: async (message, args) => {
+      const question = message.content.slice(6).trim();
+      if (!question) {
+        await message.reply('Use: `!8ball <sua pergunta>`');
+        return;
+      }
+
+      const responses = [
+        'É certo.', 'É decididamente assim.', 'Sem dúvida.', 'Sim, definitivamente.', 'Você pode confiar nisso.',
+        'Como eu vejo, sim.', 'Mais provável.', 'Perspectiva boa.', 'Sim.', 'Sinais apontam que sim.',
+        'Responda nebulosa, tente novamente.', 'Pergunte novamente mais tarde.', 'Melhor não te dizer agora.', 'Não posso prever agora.', 'Concentre-se e pergunte novamente.',
+        'Não conte com isso.', 'Minha resposta é não.', 'Minhas fontes dizem não.', 'Perspectiva não é tão boa.', 'Muito duvidoso.'
+      ];
+      const response = responses[Math.floor(Math.random() * responses.length)];
+
+      const ballEmbed = new EmbedBuilder()
+        .setColor('#0a0a0a')
+        .setTitle('🎱 Bola Mágica 8')
+        .addFields(
+          { name: 'Sua Pergunta', value: question, inline: false },
+          { name: 'Resposta', value: response, inline: false }
+        )
+        .setFooter({ text: '*O destino fala em mistérios...* 🖤' });
+
+      await message.reply({ embeds: [ballEmbed] });
+    }
+  },
+
+  conquista: {
+    name: '!conquista',
+    aliases: ['!achievement', '!achieve'],
+    description: 'Receba uma conquista aleatória',
+    execute: async (message) => {
+      const achievements = [
+        '⭐ **Pioneiro:** Você foi um dos primeiros a usar este comando!',
+        '🏆 **Mestre da Palavra:** Você escreveu a palavra mais longa hoje!',
+        '💡 **Eureka!:** Você fez uma pergunta genial para a IA!',
+        '🚀 **Acelerado:** Você enviou 10 mensagens em menos de um minuto!',
+        '💎 **Joia Rara:** Você encontrou um comando secreto!',
+        '🌟 **Estrela Cadente:** Sua mensagem foi a mais curtida da semana!',
+        '🎶 **Maestro:** Você pediu uma música e o bot respondeu!',
+        '🔑 **Chave Mestra:** Você desbloqueou um novo comando!',
+        '🎭 **Ator Talentoso:** Você fez um roleplay épico!',
+        '💰 **Magnata:** Você acumulou 10.000 Akita Neru!',
+      ];
+      const achievement = achievements[Math.floor(Math.random() * achievements.length)];
+      const achievementEmbed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('🎉 Nova Conquista!')
+        .setDescription(achievement)
+        .setFooter({ text: '*Parabéns! Ou não.* 🖤' });
+      await message.reply({ embeds: [achievementEmbed] });
+    }
+  },
+
+  perfume: {
+    name: '!perfume',
+    aliases: ['!fragrance', '!scent'],
+    description: 'Descubra seu perfume ideal',
+    execute: async (message) => {
+      const perfumes = [
+        '🌸 **Flor de Cerejeira:** Delicado e romântico, como um primeiro amor.',
+        '🪵 **Sândalo e Cedro:** Amadeirado e acolhedor, para quem busca conforto.',
+        '🌊 **Brisa Marítima:** Fresco e revigorante, como um dia na praia.',
+        '🌙 **Noite Estrelada:** Misterioso e sedutor, para almas noturnas.',
+        '🌶️ **Pimenta Negra:** Intenso e ousado, para espíritos livres.',
+        '🍯 **Mel e Baunilha:** Doce e reconfortante, um abraço em forma de perfume.',
+        '🌿 **Ervas Frescas:** Terroso e natural, para quem ama a natureza.',
+      ];
+      const perfume = perfumes[Math.floor(Math.random() * perfumes.length)];
+      const perfumeEmbed = new EmbedBuilder()
+        .setColor('#d3a3d3')
+        .setTitle('🌹 Seu Perfume Ideal')
+        .setDescription(perfume)
+        .setFooter({ text: '*Um aroma para cada alma...* 🖤' });
+      await message.reply({ embeds: [perfumeEmbed] });
+    }
+  },
+
+  espelho: {
+    name: '!espelho',
+    aliases: ['!mirror', '!reflex'],
+    description: 'Olhe no espelho e veja o que ele reflete',
+    execute: async (message) => {
+      const reflections = [
+        '🪞 Você vê alguém cansado, mas resiliente.',
+        '🪞 O espelho reflete um brilho de curiosidade em seus olhos.',
+        '🪞 Uma sombra de melancolia paira, mas também uma faísca de esperança.',
+        '🪞 O reflexo mostra alguém que busca respostas.',
+        '🪞 Você vê um enigma, com camadas a serem descobertas.',
+        '🪞 O espelho mostra um guerreiro, marcado mas não quebrado.',
+      ];
+      const reflection = reflections[Math.floor(Math.random() * reflections.length)];
+      const mirrorEmbed = new EmbedBuilder()
+        .setColor('#a0a0a0')
+        .setTitle('🪞 O Que o Espelho Vê')
+        .setDescription(reflection)
+        .setFooter({ text: '*O reflexo é apenas uma parte da verdade.* 🖤' });
+      await message.reply({ embeds: [mirrorEmbed] });
+    }
+  },
+
+  ritual: {
+    name: '!ritual',
+    aliases: ['!rite', '!ceremony'],
+    description: 'Realize um pequeno ritual',
+    execute: async (message) => {
+      const rituals = [
+        '🕯️ Você acende uma vela para iluminar o caminho.',
+        '🌿 Você queima um ramo de ervas para purificar o ambiente.',
+        '💧 Você joga um pouco de água para atrair serenidade.',
+        '🎶 Você entoa um cântico suave para acalmar a alma.',
+        '🌙 Você observa a lua, buscando conexão com o cosmos.',
+        '🪞 Você olha para seu reflexo, aceitando quem você é.',
+      ];
+      const ritual = rituals[Math.floor(Math.random() * rituals.length)];
+      const ritualEmbed = new EmbedBuilder()
+        .setColor('#8a2be2')
+        .setTitle('✨ Um Ritual')
+        .setDescription(ritual)
+        .setFooter({ text: '*Pequenos atos criam grandes mudanças.* 🖤' });
+      await message.reply({ embeds: [ritualEmbed] });
+    }
+  },
+
+  oferenda: {
+    name: '!oferenda',
+    aliases: ['!offering', '!gift'],
+    description: 'Faça uma oferenda ao vazio',
+    execute: async (message) => {
+      const offerings = [
+        '🌑 Você oferece um pensamento sincero ao vazio.',
+        '🌑 Você deposita uma lágrima de saudade no abismo.',
+        '🌑 Você entrega um segredo guardado por anos.',
+        '🌑 Você sacrifica um medo antigo para o esquecimento.',
+        '🌑 Você oferece um momento de silêncio em sua mente.',
+        '🌑 Você dá um fragmento de sua esperança ao nada.',
+      ];
+      const offering = offerings[Math.floor(Math.random() * offerings.length)];
+      const offeringEmbed = new EmbedBuilder()
+        .setColor('#000000')
+        .setTitle('⚫ Oferenda ao Vazio')
+        .setDescription(offering)
+        .setFooter({ text: '*O vazio aceita tudo. E não devolve nada.* 🖤' });
+      await message.reply({ embeds: [offeringEmbed] });
+    }
+  },
 };
 
 export async function handleCommand(message, client) {
