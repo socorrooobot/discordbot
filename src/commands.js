@@ -648,23 +648,29 @@ export const commands = {
     aliases: ['!diario'],
     description: 'Receba sua recompensa diária (50 Akita Neru)',
     execute: async (message) => {
-      const result = dailyReward(message.author.id);
+      const result = await dailyReward(message.author.id);
 
       if (!result) {
+        const timeLeft = getTimeUntilDaily(message.author.id);
+        const hours = Math.floor(timeLeft / 3600000);
+        const minutes = Math.floor((timeLeft % 3600000) / 60000);
+        const seconds = Math.floor((timeLeft % 60000) / 1000);
+
         const dailyEmbed = new EmbedBuilder()
           .setColor('#ff0000')
-          .setTitle('❌ Prematuro')
-          .setDescription('Você já coletou sua recompensa diária!\nVolte amanhã... ou talvez nunca. 🌑');
+          .setTitle('❌ Cooldown Ativo')
+          .setDescription(`Você já coletou sua recompensa diária!\n\n⏰ Volte em: **${hours}h ${minutes}m ${seconds}s**\n\n*A paciência é uma virtude... ou tormento.* 🌑`);
         await message.reply({ embeds: [dailyEmbed] });
         return;
       }
 
       const multiplierText = result.multiplier > 1 ? `\n🔥 **Multiplicador ${result.multiplier}x ativo!**` : '';
+      const vipText = result.vipBonus > 0 ? `\n⭐ **Bônus VIP: +${result.vipBonus}**` : '';
 
       const dailyEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('✨ Recompensa Diária!')
-        .setDescription(`Você ganhou **${result.reward} Akita Neru**!${multiplierText}\n\n*Você compreendeu como obter valor aqui...* 💀`)
+        .setDescription(`Você ganhou **${result.reward} Akita Neru**!${multiplierText}${vipText}\n\n*Você compreendeu como obter valor aqui...* 💀`)
         .setFooter({ text: `Seu novo saldo: ${getBalance(message.author.id)} Akita Neru` });
 
       await message.reply({ embeds: [dailyEmbed] });

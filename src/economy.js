@@ -101,8 +101,9 @@ export async function dailyReward(userId) {
   const now = Date.now();
   const lastDaily = user.lastDaily || 0;
   
-  // Verificar se 24 horas passaram
-  if (now - lastDaily < 86400000) {
+  // Verificar se 24 horas passaram (86400000 ms = 24 horas)
+  const timeSinceLastDaily = now - lastDaily;
+  if (timeSinceLastDaily < 86400000) {
     return null;
   }
   
