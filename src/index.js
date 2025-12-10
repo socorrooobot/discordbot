@@ -178,11 +178,42 @@ async function main() {
       await sendGoodbyeMessage(client, member.user);
     });
 
-    process.on('SIGINT', () => {
-      console.log('💀 Shutting down bot...');
-      client.destroy();
-      process.exit(0);
-    });
+    const shutdownHandler = async (signal) => {
+      console.log(`💀 Shutting down bot... (${signal})`);
+      
+      // Enviar notificação de shutdown
+      try {
+        const channelId = '1439242814763307091';
+        const channel = await client.channels.fetch(channelId);
+        if (channel && channel.isTextBased()) {
+          const embed = {
+            color: 0xFF0000,
+            title: '🔴 Bot Ficando Offline',
+            description: '⚠️ A Miku Diva está sendo desligada!',
+            fields: [
+              { name: '📝 Motivo', value: 'Processo encerrado (manutenção ou restart)', inline: false },
+              { name: '⏱️ Status', value: '🔴 Ficando offline agora...', inline: false }
+            ],
+            footer: { text: 'Até logo! 💙' },
+            timestamp: new Date().toISOString()
+          };
+          
+          await channel.send({ embeds: [embed] });
+          console.log('✅ Notificação de shutdown enviada!');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar notificação de shutdown:', error);
+      }
+      
+      // Aguardar um pouco para garantir que a mensagem foi enviada
+      setTimeout(() => {
+        client.destroy();
+        process.exit(0);
+      }, 1000);
+    };
+
+    process.on('SIGINT', () => shutdownHandler('SIGINT'));
+    process.on('SIGTERM', () => shutdownHandler('SIGTERM'));
 
   } catch (error) {
     console.error('Failed to start bot:', error);
