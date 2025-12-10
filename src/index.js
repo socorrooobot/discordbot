@@ -173,6 +173,17 @@ async function main() {
       }
     });
 
+    client.on('guildMemberAdd', async (member) => {
+      if (member.user.bot) return;
+      
+      try {
+        const { applyAutoRole } = await import('./autorole.js');
+        await applyAutoRole(member);
+      } catch (error) {
+        console.error('Erro ao aplicar autorole:', error);
+      }
+    });
+
     client.on('guildMemberRemove', async (member) => {
       if (member.user.bot) return;
       await sendGoodbyeMessage(client, member.user);

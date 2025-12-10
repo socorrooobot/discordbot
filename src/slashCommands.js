@@ -1396,6 +1396,69 @@ export const slashCommands = {
       await interaction.reply({ embeds: [embed] });
     }
   },
+
+  setautorole: {
+    data: new SlashCommandBuilder()
+      .setName('setautorole')
+      .setDescription('[ADMIN] Configurar cargo automático ao entrar no servidor')
+      .addRoleOption(option =>
+        option.setName('cargo')
+          .setDescription('Cargo que será dado automaticamente')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão! Apenas admins.', ephemeral: true });
+        return;
+      }
+
+      const role = interaction.options.getRole('cargo');
+
+      try {
+        const { setAutoRole } = await import('./autorole.js');
+        setAutoRole(interaction.guild.id, role.id);
+
+        const embed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✅ Auto Role Configurado')
+          .setDescription(`O cargo ${role} será dado automaticamente para novos membros!\n\n*Bem-vindos serão marcados...* 🎭`)
+          .setFooter({ text: `Configurado por: ${interaction.user.username}` });
+
+        await interaction.reply({ embeds: [embed] });
+      } catch (error) {
+        console.error('Erro ao configurar autorole:', error);
+        await interaction.reply({ content: '❌ Erro ao configurar autorole!', ephemeral: true });
+      }
+    }
+  },
+
+  removeautorole: {
+    data: new SlashCommandBuilder()
+      .setName('removeautorole')
+      .setDescription('[ADMIN] Remover cargo automático ao entrar no servidor'),
+    execute: async (interaction) => {
+      if (!isAdmin(interaction.user.id)) {
+        await interaction.reply({ content: '❌ Sem permissão! Apenas admins.', ephemeral: true });
+        return;
+      }
+
+      try {
+        const { removeAutoRole } = await import('./autorole.js');
+        removeAutoRole(interaction.guild.id);
+
+        const embed = new EmbedBuilder()
+          .setColor('#ff0000')
+          .setTitle('🗑️ Auto Role Removido')
+          .setDescription('O cargo automático foi desativado!\n\n*Novos membros não receberão cargo automaticamente.*')
+          .setFooter({ text: `Removido por: ${interaction.user.username}` });
+
+        await interaction.reply({ embeds: [embed] });
+      } catch (error) {
+        console.error('Erro ao remover autorole:', error);
+        await interaction.reply({ content: '❌ Erro ao remover autorole!', ephemeral: true });
+      }
+    }
+  },
 };
 
 export async function registerSlashCommands(client) {
