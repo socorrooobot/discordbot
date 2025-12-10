@@ -1,0 +1,81 @@
+
+<%- include('layout', { body: `
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">📊 Dashboard - Miku Diva Bot</h1>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-discord"></i> Servidores</h5>
+                <h2>${stats.servers}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-people"></i> Usuários</h5>
+                <h2>${stats.users}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-hash"></i> Canais</h5>
+                <h2>${stats.channels}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-speedometer"></i> Ping</h5>
+                <h2>${stats.ping}ms</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-3">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">⏱️ Uptime</h5>
+                <p class="card-text">${Math.floor(stats.uptime / 3600)}h ${Math.floor((stats.uptime % 3600) / 60)}m</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">💰 Usuários com Economia</h5>
+                <p class="card-text">${stats.economyUsers}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">⭐ Usuários com XP</h5>
+                <p class="card-text">${stats.xpUsers}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">👑 Administradores</h5>
+                <p class="card-text">${stats.admins} admin(s) registrado(s)</p>
+            </div>
+        </div>
+    </div>
+</div>
+`, user, title: 'Dashboard' }) %>

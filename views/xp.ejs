@@ -1,0 +1,57 @@
+
+<%- include('layout', { body: \`
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">⭐ Gerenciar XP</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">🔥 Multiplicador de XP</h5>
+                <form method="POST" action="/xp/multiplier">
+                    <div class="input-group">
+                        <input type="number" name="multiplier" class="form-control" value="\${xpMultiplier}" min="1" max="10" step="0.1">
+                        <button class="btn btn-primary" type="submit">Atualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Top Usuários por Nível</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Usuário</th>
+                        <th>Nível</th>
+                        <th>XP</th>
+                        <th>Total XP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    \${users.map((u, i) => \`
+                        <tr>
+                            <td>\${i + 1}</td>
+                            <td>
+                                <img src="\${u.avatar}" class="rounded-circle me-2" width="32" height="32">
+                                \${u.username}
+                            </td>
+                            <td><span class="badge bg-primary">\${u.level}</span></td>
+                            <td>\${u.xp}</td>
+                            <td>\${u.totalXP}</td>
+                        </tr>
+                    \`).join('')}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+\`, user, title: 'XP' }) %>

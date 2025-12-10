@@ -1,0 +1,31 @@
+
+<%- include('layout', { body: \`
+<div class="row">
+    <div class="col-12 mb-4">
+        <h1>🌐 Servidores</h1>
+    </div>
+</div>
+
+<div class="row g-4">
+    \${servers.map(server => \`
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        \${server.icon ? \`<img src="\${server.icon}" class="rounded me-3" width="64" height="64">\` : '<div class="bg-secondary rounded me-3" style="width: 64px; height: 64px;"></div>'}
+                        <div>
+                            <h5 class="card-title mb-0">\${server.name}</h5>
+                            <small class="text-muted">\${server.id}</small>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-people"></i> \${server.members} membros</li>
+                        <li><i class="bi bi-hash"></i> \${server.channels} canais</li>
+                        <li><i class="bi bi-award"></i> \${server.roles} cargos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    \`).join('')}
+</div>
+\`, user, title: 'Servidores' }) %>

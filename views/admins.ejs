@@ -1,0 +1,62 @@
+
+<%- include('layout', { body: \`
+<div class="row">
+    <div class="col-12 mb-4">
+        <h1>👑 Gerenciar Administradores</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Adicionar Admin</h5>
+                <form method="POST" action="/admins/add">
+                    <div class="input-group">
+                        <input type="text" name="userId" class="form-control" placeholder="Discord User ID" required>
+                        <button class="btn btn-success" type="submit">
+                            <i class="bi bi-plus"></i> Adicionar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Lista de Admins</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Admin</th>
+                        <th>ID</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    \${admins.map(admin => \`
+                        <tr>
+                            <td>
+                                <img src="\${admin.avatar}" class="rounded-circle me-2" width="32" height="32">
+                                \${admin.username}
+                            </td>
+                            <td><code>\${admin.id}</code></td>
+                            <td>
+                                <form method="POST" action="/admins/remove" style="display: inline;">
+                                    <input type="hidden" name="userId" value="\${admin.id}">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Remover
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    \`).join('')}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+\`, user, title: 'Admins' }) %>

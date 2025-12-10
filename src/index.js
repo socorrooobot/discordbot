@@ -27,6 +27,10 @@ async function main() {
       await registerSlashCommands(client);
       await setupSlashCommandHandler(client);
 
+      // Iniciar Dashboard Web
+      const { startDashboard } = await import('./dashboard.js');
+      startDashboard(client);
+
       const getActivities = () => [
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
         { text: 'use !cmds para ajuda', type: 'LISTENING' },

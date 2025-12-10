@@ -1,0 +1,119 @@
+
+<%- include('layout', { body: `
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">💰 Gerenciar Economia</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">🔥 Multiplicador de Daily</h5>
+                <form method="POST" action="/economy/multiplier">
+                    <div class="input-group">
+                        <input type="number" name="multiplier" class="form-control" value="${multiplier}" min="1" max="10" step="0.1">
+                        <button class="btn btn-primary" type="submit">Atualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Top Usuários por Saldo</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Usuário</th>
+                        <th>Saldo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${users.map((u, i) => \`
+                        <tr>
+                            <td>\${i + 1}</td>
+                            <td>
+                                <img src="\${u.avatar}" class="rounded-circle me-2" width="32" height="32">
+                                \${u.username}
+                            </td>
+                            <td><strong>\${u.balance}</strong> Akita Neru</td>
+                            <td>
+                                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addModal" onclick="setUserId('\${u.id}')">
+                                    <i class="bi bi-plus"></i> Adicionar
+                                </button>
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#removeModal" onclick="setUserId('\${u.id}')">
+                                    <i class="bi bi-dash"></i> Remover
+                                </button>
+                            </td>
+                        </tr>
+                    \`).join('')}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Adicionar -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="/economy/add">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Akita Neru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="userId" id="addUserId">
+                    <div class="mb-3">
+                        <label class="form-label">Quantidade</label>
+                        <input type="number" name="amount" class="form-control" min="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Remover -->
+<div class="modal fade" id="removeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="/economy/remove">
+                <div class="modal-header">
+                    <h5 class="modal-title">Remover Akita Neru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="userId" id="removeUserId">
+                    <div class="mb-3">
+                        <label class="form-label">Quantidade</label>
+                        <input type="number" name="amount" class="form-control" min="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Remover</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function setUserId(userId) {
+    document.getElementById('addUserId').value = userId;
+    document.getElementById('removeUserId').value = userId;
+}
+</script>
+`, user, title: 'Economia' }) %>
