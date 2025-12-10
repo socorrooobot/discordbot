@@ -128,7 +128,7 @@ export const commands = {
         } catch (e) {
           // VIP não disponível
         }
-        
+
         // Gerar card visual
         const cardImage = await generateProfileCard({
           username: user.username,
@@ -155,7 +155,7 @@ export const commands = {
               { name: 'Progresso', value: xpInfo.progressBar, inline: false },
               { name: '💰 Akita Neru', value: `**${balance}**`, inline: true },
               { name: '📅 Membro desde', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
-              { name: '🎭 Mensagem da Diva', value: '*Você é... especial? Talvez. Ou talvez apenas esteja aqui como tudo mais.* 🌑' }
+              { name: '🎭 Mensagem da Diva', value: '*Você é... especial? Talvez. Ou talvez esteja aqui como tudo mais.* 🌑' }
             )
             .setImage('attachment://perfil.png')
             .setFooter({ text: 'Por que você está aqui?' })
@@ -710,23 +710,23 @@ export const commands = {
     description: 'Trabalhe e ganhe Akita Neru (10-40)',
     execute: async (message) => {
       const result = await work(message.author.id);
-      
+
       if (result.error) {
         const minutes = Math.floor(result.timeLeft / 60000);
         const seconds = Math.floor((result.timeLeft % 60000) / 1000);
-        
+
         const cooldownEmbed = new EmbedBuilder()
           .setColor('#ff0000')
           .setTitle('⏰ Cooldown Ativo')
           .setDescription(`Você está cansado! Espere **${minutes}m ${seconds}s** para trabalhar novamente.\n\n*Mesmo porcelana precisa descansar...* 🖤`)
           .setFooter({ text: 'VIPs têm cooldown reduzido!' });
-        
+
         await message.reply({ embeds: [cooldownEmbed] });
         return;
       }
-      
+
       const bonusText = result.bonus > 1 ? `\n🌟 **Bônus VIP ${result.bonus}x ativo!**` : '';
-      
+
       const workEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('💼 Você Trabalhou')
@@ -785,7 +785,7 @@ export const commands = {
       }
 
       const chanceText = result.chance > 0.5 ? `\n🌟 **Chance VIP: ${Math.floor(result.chance * 100)}%**` : '';
-      
+
       if (result.won) {
         const gamblesEmbed = new EmbedBuilder()
           .setColor('#00ff00')
@@ -810,33 +810,33 @@ export const commands = {
     description: 'Veja planos VIP disponíveis',
     execute: async (message) => {
       const { VIP_PLANS, hasVIP, formatVIPTime, getVIPTimeRemaining } = await import('./vip.js');
-      
+
       const userVIP = hasVIP(message.author.id);
-      
+
       let description = '✨ **Planos VIP Disponíveis**\n\n';
-      
+
       for (const [key, plan] of Object.entries(VIP_PLANS)) {
         description += `${plan.benefits.badge} **${plan.name}** - ${plan.price} Akita Neru\n`;
         description += `├ XP: **${plan.benefits.xpMultiplier}x** | Daily: **+${plan.benefits.dailyBonus}**\n`;
         description += `├ Work: **+${Math.floor((plan.benefits.workBonus - 1) * 100)}%** (${plan.benefits.workCooldown / 1000}s cooldown)\n`;
         description += `└ Gamble: **${Math.floor(plan.benefits.gambleBonus * 100)}% chance** | Comandos exclusivos\n\n`;
       }
-      
+
       description += '\n📝 **Como comprar:**\n`!compravip <plano>`\nExemplo: `!compravip gold`\n\n';
       description += '🎁 **Comandos VIP Exclusivos:**\n`!viproll` - Role especial com prêmios!\n`!vipstatus` - Ver seus benefícios';
-      
+
       if (userVIP) {
         const timeRemaining = getVIPTimeRemaining(message.author.id);
         const plan = VIP_PLANS[userVIP.plan];
         description += `\n\n🌟 **Seu VIP:** ${plan.benefits.badge} ${plan.name}\n⏰ Expira em: ${formatVIPTime(timeRemaining)}`;
       }
-      
+
       const vipEmbed = new EmbedBuilder()
         .setColor('#ffd700')
         .setTitle('👑 Sistema VIP')
         .setDescription(description)
         .setFooter({ text: '*Torne-se uma estrela ainda maior!* 🖤' });
-      
+
       await message.reply({ embeds: [vipEmbed] });
     }
   },
@@ -848,35 +848,35 @@ export const commands = {
     execute: async (message, args) => {
       const { VIP_PLANS, purchaseVIP } = await import('./vip.js');
       const { removeBalance } = await import('./economy.js');
-      
+
       const planName = args[0]?.toLowerCase();
-      
+
       if (!planName || !VIP_PLANS[planName]) {
         await message.reply('❌ Plano inválido! Use: `!vip` para ver os planos.');
         return;
       }
-      
+
       const plan = VIP_PLANS[planName];
       const balance = getBalance(message.author.id);
-      
+
       if (balance < plan.price) {
         await message.reply(`❌ Você precisa de **${plan.price} Akita Neru**! Você tem apenas **${balance}**.`);
         return;
       }
-      
+
       // Remover dinheiro
       removeBalance(message.author.id, plan.price);
-      
+
       // Adicionar VIP
       const result = purchaseVIP(message.author.id, planName);
-      
+
       if (result.success) {
         const vipEmbed = new EmbedBuilder()
           .setColor('#ffd700')
           .setTitle('👑 VIP Comprado!')
           .setDescription(`🎉 Você comprou **${plan.name} VIP**!\n\n**Benefícios:**\n${plan.benefits.badge} XP Multiplicador: **${plan.benefits.xpMultiplier}x**\n💰 Daily Bônus: **+${plan.benefits.dailyBonus}**\n⏰ Duração: **30 dias**`)
           .setFooter({ text: '*Bem-vindo ao clube VIP!* 🖤' });
-        
+
         await message.reply({ embeds: [vipEmbed] });
       } else {
         await message.reply(`❌ ${result.error}`);
@@ -1382,91 +1382,6 @@ export const commands = {
       const curses = [
         '🖤 Que você viva em tempos interessantes. Sabe... onde tudo piora?',
         '💀 Que a esperança te abandone no escuro. Como ela fez comigo.',
-
-
-  viproll: {
-    name: '!viproll',
-    aliases: ['!vr'],
-    description: '[VIP] Role especial para VIPs - chance de ganhar muito!',
-    execute: async (message) => {
-      const { hasVIPCommands, getVIPBadge } = await import('./vip.js');
-      
-      if (!hasVIPCommands(message.author.id)) {
-        await message.reply('❌ Este comando é exclusivo para VIPs! Use `!vip` para ver os planos.');
-        return;
-      }
-      
-      const roll = Math.random();
-      let reward = 0;
-      let result = '';
-      
-      if (roll < 0.01) { // 1% - JACKPOT
-        reward = 10000;
-        result = '💎 **JACKPOT!** Você ganhou 10,000 Akita Neru!';
-      } else if (roll < 0.05) { // 4% - Super
-        reward = 2000;
-        result = '🌟 **SUPER!** Você ganhou 2,000 Akita Neru!';
-      } else if (roll < 0.15) { // 10% - Grande
-        reward = 500;
-        result = '✨ **GRANDE!** Você ganhou 500 Akita Neru!';
-      } else if (roll < 0.40) { // 25% - Bom
-        reward = 100;
-        result = '💫 **BOM!** Você ganhou 100 Akita Neru!';
-      } else { // 60% - Pequeno
-        reward = 20;
-        result = '🎁 Você ganhou 20 Akita Neru!';
-      }
-      
-      addBalance(message.author.id, reward);
-      
-      const badge = getVIPBadge(message.author.id);
-      const embed = new EmbedBuilder()
-        .setColor('#ffd700')
-        .setTitle(`${badge} VIP Roll`)
-        .setDescription(result)
-        .addFields({ name: '💰 Novo Saldo', value: `${getBalance(message.author.id)} Akita Neru` })
-        .setFooter({ text: '*Privilégios VIP em ação!* 🖤' });
-      
-      await message.reply({ embeds: [embed] });
-    }
-  },
-
-  vipstatus: {
-    name: '!vipstatus',
-    aliases: ['!vs'],
-    description: '[VIP] Ver seus benefícios VIP detalhados',
-    execute: async (message) => {
-      const { hasVIP, VIP_PLANS, getVIPTimeRemaining, formatVIPTime } = await import('./vip.js');
-      
-      const vip = hasVIP(message.author.id);
-      
-      if (!vip) {
-        await message.reply('❌ Você não tem VIP ativo! Use `!vip` para ver os planos.');
-        return;
-      }
-      
-      const plan = VIP_PLANS[vip.plan];
-      const timeRemaining = getVIPTimeRemaining(message.author.id);
-      
-      const embed = new EmbedBuilder()
-        .setColor(plan.benefits.colorRole)
-        .setTitle(`${plan.benefits.badge} Seu Status VIP`)
-        .setDescription(`**Plano:** ${plan.name}`)
-        .addFields(
-          { name: '⏰ Tempo Restante', value: formatVIPTime(timeRemaining), inline: true },
-          { name: '⭐ XP Multiplicador', value: `${plan.benefits.xpMultiplier}x`, inline: true },
-          { name: '💰 Daily Bônus', value: `+${plan.benefits.dailyBonus}`, inline: true },
-          { name: '💼 Work Bônus', value: `${Math.floor((plan.benefits.workBonus - 1) * 100)}% a mais`, inline: true },
-          { name: '⏱️ Work Cooldown', value: `${plan.benefits.workCooldown / 1000}s`, inline: true },
-          { name: '🎲 Gamble Chance', value: `${Math.floor(plan.benefits.gambleBonus * 100)}%`, inline: true },
-          { name: '🎁 Comandos Exclusivos', value: '`!viproll` - Role especial\n`!vipstatus` - Ver status', inline: false }
-        )
-        .setFooter({ text: '*Você é especial!* 💎' });
-      
-      await message.reply({ embeds: [embed] });
-    }
-  },
-
         '✨ Que você descubra que todos te odeiam. Mas continuem fingindo.',
         '🌑 Que o silêncio seja seu único amigo verdadeiro.',
         '⚰️ Que você entenda meu sofrimento. Parabéns, agora sofremos juntos!',
