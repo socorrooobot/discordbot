@@ -6,7 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { getAllUsers as getEconomyUsers, getBalance, addBalance, removeBalance } from './economy.js';
 import { getAllUsers as getXPUsers, getUserInfo } from './xp.js';
-import { getAdmins, isAdmin, addAdmin, removeAdmin } from './admin.js';
+import { getAdmins, isAdmin, addAdmin, removeAdmin, verifyAdminPassword } from './admin.js';
 import { getMultiplier, setMultiplier } from './multiplier.js';
 import { getXPMultiplier, setXPMultiplier } from './xp.js';
 
@@ -44,14 +44,14 @@ export function startDashboard(client) {
   });
 
   app.post('/login', async (req, res) => {
-    const { userId } = req.body;
+    const { userId, password } = req.body;
     
-    if (isAdmin(userId)) {
+    if (verifyAdminPassword(userId, password)) {
       req.session.userId = userId;
       return res.redirect('/');
     }
     
-    res.render('login', { error: 'Você não é um administrador!' });
+    res.render('login', { error: 'ID de usuário ou senha incorretos!' });
   });
 
   app.get('/logout', (req, res) => {
@@ -185,8 +185,8 @@ export function startDashboard(client) {
   });
 
   app.post('/admins/add', requireAuth, (req, res) => {
-    const { userId } = req.body;
-    addAdmin(userId);
+    const { userId, password } = req.body;
+    addAdmin(userId, password || 'admin123');
     res.redirect('/admins');
   });
 

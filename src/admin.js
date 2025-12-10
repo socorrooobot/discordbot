@@ -8,18 +8,29 @@ const adminsPath = path.join(__dirname, '../data/admins.json');
 export function isAdmin(userId) {
   try {
     const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
-    return data.adminUsers.includes(userId);
+    return data.adminUsers.some(admin => admin.userId === userId);
   } catch (error) {
     console.error('Erro ao verificar admin:', error);
     return false;
   }
 }
 
-export function addAdmin(userId) {
+export function verifyAdminPassword(userId, password) {
   try {
     const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
-    if (!data.adminUsers.includes(userId)) {
-      data.adminUsers.push(userId);
+    const admin = data.adminUsers.find(admin => admin.userId === userId);
+    return admin && admin.password === password;
+  } catch (error) {
+    console.error('Erro ao verificar senha:', error);
+    return false;
+  }
+}
+
+export function addAdmin(userId, password = 'admin123') {
+  try {
+    const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
+    if (!data.adminUsers.some(admin => admin.userId === userId)) {
+      data.adminUsers.push({ userId, password });
       fs.writeFileSync(adminsPath, JSON.stringify(data, null, 2));
       return true;
     }
@@ -33,7 +44,7 @@ export function addAdmin(userId) {
 export function removeAdmin(userId) {
   try {
     const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
-    data.adminUsers = data.adminUsers.filter(id => id !== userId);
+    data.adminUsers = data.adminUsers.filter(admin => admin.userId !== userId);
     fs.writeFileSync(adminsPath, JSON.stringify(data, null, 2));
     return true;
   } catch (error) {
@@ -45,7 +56,7 @@ export function removeAdmin(userId) {
 export function getAdmins() {
   try {
     const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
-    return data.adminUsers || [];
+    return data.adminUsers.map(admin => admin.userId) || [];
   } catch (error) {
     console.error('Erro ao obter admins:', error);
     return [];

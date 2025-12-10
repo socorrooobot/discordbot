@@ -32,8 +32,12 @@
         <% } %>
         <form method="POST" action="/login">
             <div class="mb-3">
-                <label for="userId" class="form-label">Seu Discord User ID</label>
+                <label for="userId" class="form-label">Discord User ID</label>
                 <input type="text" class="form-control" id="userId" name="userId" required placeholder="123456789012345678">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="password" name="password" required placeholder="Digite sua senha">
                 <small class="text-muted">Apenas administradores podem acessar</small>
             </div>
             <button type="submit" class="btn btn-primary w-100">Entrar</button>
