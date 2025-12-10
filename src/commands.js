@@ -2889,7 +2889,8 @@ export const commands = {
         .setFooter({ text: `Admin: ${message.author.username}` });
 
       await message.reply({ embeds: [unblacklistEmbed] });
-      },
+    },
+  },
 
   removeneru: {
     name: '!removeneru',
