@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,7 +10,40 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <%- include('layout', { user, activePage: 'economy' }) %>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                🎤 Miku Diva Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="bi bi-house"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/economy"><i class="bi bi-cash-coin"></i> Economia</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/xp"><i class="bi bi-star"></i> XP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admins"><i class="bi bi-shield"></i> Admins</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/servers"><i class="bi bi-discord"></i> Servidores</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <img src="<%= user.displayAvatarURL() %>" alt="Avatar" class="rounded-circle me-2" width="32" height="32">
+                    <span class="text-white me-3"><%= user.username %></span>
+                    <a href="/logout" class="btn btn-outline-light btn-sm">Sair</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <div class="container-fluid py-4">
         <h1 class="mb-4">💰 Gerenciar Economia</h1>
@@ -38,22 +72,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% users.forEach(user => { %>
+                    <% users.forEach(userItem => { %>
                     <tr>
                         <td>
-                            <img src="<%= user.avatar %>" width="32" class="rounded-circle me-2">
-                            <%= user.username %>
+                            <img src="<%= userItem.avatar %>" width="32" class="rounded-circle me-2">
+                            <%= userItem.username %>
                         </td>
-                        <td>💵 <%= user.balance %> Akita Neru</td>
-                        <td><%= user.lastDaily ? new Date(user.lastDaily).toLocaleString('pt-BR') : 'Nunca' %></td>
+                        <td>💵 <%= userItem.balance %> Akita Neru</td>
+                        <td><%= userItem.lastDaily ? new Date(userItem.lastDaily).toLocaleString('pt-BR') : 'Nunca' %></td>
                         <td>
                             <form method="POST" action="/economy/add" class="d-inline">
-                                <input type="hidden" name="userId" value="<%= user.id %>">
+                                <input type="hidden" name="userId" value="<%= userItem.id %>">
                                 <input type="number" name="amount" placeholder="Valor" style="width: 100px" required>
                                 <button type="submit" class="btn btn-sm btn-success">Adicionar</button>
                             </form>
                             <form method="POST" action="/economy/remove" class="d-inline ms-2">
-                                <input type="hidden" name="userId" value="<%= user.id %>">
+                                <input type="hidden" name="userId" value="<%= userItem.id %>">
                                 <input type="number" name="amount" placeholder="Valor" style="width: 100px" required>
                                 <button type="submit" class="btn btn-sm btn-danger">Remover</button>
                             </form>
