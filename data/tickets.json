@@ -1,0 +1,16 @@
+{
+  "tickets": {
+    "ticket-1": {
+      "userId": "1424065435988656128",
+      "channelId": "1448280672501235765",
+      "status": "open",
+      "createdAt": "2025-12-10T11:50:20.549Z",
+      "closedAt": null
+    }
+  },
+  "config": {
+    "categoryId": null,
+    "supportRoleId": "1443659428791320779",
+    "ticketCounter": 1
+  }
+}
