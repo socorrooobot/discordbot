@@ -15,13 +15,13 @@
     "inventory": {}
   },
   "1393590181327536210": {
-    "balance": 100000,
+    "balance": 150000,
     "lastDaily": 1765066631831,
     "inventory": {}
   },
   "1216913071671345237": {
-    "balance": 100,
-    "lastDaily": 0,
+    "balance": 9950450,
+    "lastDaily": 1765401905933,
     "inventory": {}
   },
   "1420187478148517909": {
@@ -31,6 +31,16 @@
   },
   "1443210534848823296": {
     "balance": 10000000000100,
+    "lastDaily": 0,
+    "inventory": {}
+  },
+  "797936685626425404": {
+    "balance": 100,
+    "lastDaily": 0,
+    "inventory": {}
+  },
+  "1311826193410166808": {
+    "balance": 50100,
     "lastDaily": 0,
     "inventory": {}
   }
