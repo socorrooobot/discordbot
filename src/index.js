@@ -9,7 +9,7 @@ import { isBlacklisted } from './blacklist.js';
 import { notifyRestart } from './restartNotification.js';
 import { sendGoodbyeMessage } from './goodbyeMessage.js';
 import { EmbedBuilder } from 'discord.js';
-import { createTicket, closeTicket, claimTicket } from './tickets.js';
+import { loadTickets, createTicket, closeTicket, claimTicket } from './tickets.js';
 
 async function main() {
   console.log('Starting Discord bot...');
@@ -183,36 +183,56 @@ async function main() {
       }
     });
 
-    // Handler de botões de tickets
     client.on('interactionCreate', async (interaction) => {
       if (!interaction.isButton()) return;
 
       const customId = interaction.customId;
 
-      // Abrir ticket
+      // Sistema de Tickets
       if (customId === 'open_ticket') {
         await createTicket(interaction);
         return;
       }
 
-      // Fechar ticket
       if (customId.startsWith('close_ticket_')) {
         const ticketId = customId.replace('close_ticket_', '');
         await closeTicket(interaction, ticketId);
         return;
       }
 
-      // Assumir ticket
       if (customId.startsWith('claim_ticket_')) {
         const ticketId = customId.replace('claim_ticket_', '');
         await claimTicket(interaction, ticketId);
+        return;
+      }
+
+      // Sistema de Casamento/Divórcio
+      if (interaction.customId === 'cancel_marriage') {
+        await interaction.update({ content: '💔 Casamento cancelado!', components: [], embeds: [] });
+        return;
+      }
+
+      if (interaction.customId.startsWith('accept_marriage_')) {
+        const { handleMarriageAccept } = await import('./rpCommands.js');
+        await handleMarriageAccept(interaction);
+        return;
+      }
+
+      if (interaction.customId.startsWith('accept_divorce_')) {
+        const { handleDivorceAccept } = await import('./rpCommands.js');
+        await handleDivorceAccept(interaction);
+        return;
+      }
+
+      if (interaction.customId === 'cancel_divorce') {
+        await interaction.update({ content: '💙 Divórcio cancelado! O amor continua!', components: [], embeds: [] });
         return;
       }
     });
 
     client.on('guildMemberAdd', async (member) => {
       if (member.user.bot) return;
-      
+
       try {
         const { applyAutoRole } = await import('./autorole.js');
         await applyAutoRole(member);
@@ -228,7 +248,7 @@ async function main() {
 
     const shutdownHandler = async (signal) => {
       console.log(`💀 Shutting down bot... (${signal})`);
-      
+
       // Enviar notificação de shutdown
       try {
         const channelId = '1439242814763307091';
@@ -245,14 +265,14 @@ async function main() {
             footer: { text: 'Até logo! 💙' },
             timestamp: new Date().toISOString()
           };
-          
+
           await channel.send({ embeds: [embed] });
           console.log('✅ Notificação de shutdown enviada!');
         }
       } catch (error) {
         console.error('Erro ao enviar notificação de shutdown:', error);
       }
-      
+
       // Aguardar um pouco para garantir que a mensagem foi enviada
       setTimeout(() => {
         client.destroy();

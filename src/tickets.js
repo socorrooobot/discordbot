@@ -40,6 +40,11 @@ function saveTickets() {
   }
 }
 
+// Verificar se usuário é administrador do Discord
+export function isDiscordAdmin(member) {
+  return member.permissions.has(PermissionFlagsBits.Administrator);
+}
+
 // Configurar categoria de tickets
 export function setTicketCategory(guildId, categoryId) {
   ticketsData.config.categoryId = categoryId;
@@ -194,6 +199,20 @@ export async function closeTicket(interaction, ticketId) {
     return;
   }
 
+  // Verificar se é o dono do ticket, admin do Discord ou suporte
+  const isOwner = ticket.userId === interaction.user.id;
+  const isAdmin = isDiscordAdmin(interaction.member);
+  const hasSupport = ticketsData.config.supportRoleId && 
+                     interaction.member.roles.cache.has(ticketsData.config.supportRoleId);
+
+  if (!isOwner && !isAdmin && !hasSupport) {
+    await interaction.reply({
+      content: '❌ Você não tem permissão para fechar este ticket!',
+      ephemeral: true
+    });
+    return;
+  }
+
   const channel = interaction.channel;
 
   // Criar transcript (log básico)
@@ -233,6 +252,19 @@ export async function claimTicket(interaction, ticketId) {
   if (!ticket) {
     await interaction.reply({
       content: '❌ Ticket não encontrado!',
+      ephemeral: true
+    });
+    return;
+  }
+
+  // Verificar se é admin do Discord ou tem cargo de suporte
+  const isAdmin = isDiscordAdmin(interaction.member);
+  const hasSupport = ticketsData.config.supportRoleId && 
+                     interaction.member.roles.cache.has(ticketsData.config.supportRoleId);
+
+  if (!isAdmin && !hasSupport) {
+    await interaction.reply({
+      content: '❌ Você não tem permissão para assumir tickets! Apenas administradores ou suporte.',
       ephemeral: true
     });
     return;
