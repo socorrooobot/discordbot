@@ -3194,6 +3194,42 @@ export const commands = {
 
       await message.reply({ embeds: [embed] });
     }
+  },
+
+  vipstatus: {
+    name: '!vipstatus',
+    aliases: ['!vip-info'],
+    description: 'Ver informações do seu VIP',
+    execute: async (message) => {
+      const { hasVIP, getVIPBadge, getVIPTimeRemaining, formatVIPTime, VIP_PLANS } = await import('./vip.js');
+
+      const userVIP = hasVIP(message.author.id);
+      
+      if (!userVIP) {
+        await message.reply('❌ Você não tem VIP ativo! Use `!vip` para ver os planos disponíveis.');
+        return;
+      }
+
+      const plan = VIP_PLANS[userVIP.plan];
+      const timeRemaining = getVIPTimeRemaining(message.author.id);
+      const badge = getVIPBadge(message.author.id);
+
+      const embed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle(`${badge} Status VIP`)
+        .setDescription(`Você possui **${plan.name} VIP**!`)
+        .addFields(
+          { name: '⏰ Tempo Restante', value: formatVIPTime(timeRemaining), inline: true },
+          { name: '⭐ Multiplicador XP', value: `${plan.benefits.xpMultiplier}x`, inline: true },
+          { name: '💰 Bônus Daily', value: `+${plan.benefits.dailyBonus}`, inline: true },
+          { name: '💼 Bônus Work', value: `+${Math.floor((plan.benefits.workBonus - 1) * 100)}%`, inline: true },
+          { name: '⏱️ Cooldown Work', value: `${plan.benefits.workCooldown / 1000}s`, inline: true },
+          { name: '🎲 Chance Gamble', value: `${Math.floor(plan.benefits.gambleBonus * 100)}%`, inline: true }
+        )
+        .setFooter({ text: '*Continue aproveitando seus benefícios VIP!* 🖤' });
+
+      await message.reply({ embeds: [embed] });
+    }
   }
 };
 
