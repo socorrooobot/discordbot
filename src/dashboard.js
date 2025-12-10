@@ -214,7 +214,18 @@ export function startDashboard(client) {
     });
   });
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`🌐 Dashboard rodando em http://0.0.0.0:${PORT}`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.log(`⚠️ Porta ${PORT} em uso, tentando porta 5001...`);
+      app.listen(5001, '0.0.0.0', () => {
+        console.log(`🌐 Dashboard rodando em http://0.0.0.0:5001`);
+      });
+    } else {
+      console.error('❌ Erro ao iniciar dashboard:', err);
+    }
   });
 }

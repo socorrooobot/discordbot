@@ -28,8 +28,13 @@ async function main() {
       await setupSlashCommandHandler(client);
 
       // Iniciar Dashboard Web
-      const { startDashboard } = await import('./dashboard.js');
-      startDashboard(client);
+      try {
+        const { startDashboard } = await import('./dashboard.js');
+        startDashboard(client);
+      } catch (error) {
+        console.error('⚠️ Erro ao iniciar dashboard:', error);
+        console.log('✅ Bot continuará funcionando sem dashboard');
+      }
 
       const getActivities = () => [
         { text: `estou em ${client.guilds.cache.size} servidores`, type: 'WATCHING' },
