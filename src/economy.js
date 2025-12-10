@@ -96,7 +96,7 @@ export function transfer(fromId, toId, amount) {
 }
 
 // Diário (daily)
-export function dailyReward(userId) {
+export async function dailyReward(userId) {
   const user = getUser(userId);
   const now = Date.now();
   const lastDaily = user.lastDaily || 0;
