@@ -15,7 +15,11 @@ export const VIP_PLANS = {
       xpMultiplier: 1.5,
       dailyBonus: 25,
       colorRole: '#cd7f32',
-      badge: '🥉'
+      badge: '🥉',
+      workCooldown: 120000, // 2 min (vs 5 min normal)
+      workBonus: 1.2, // 20% a mais
+      gambleBonus: 0.52, // 52% chance (vs 50%)
+      exclusiveCommands: true
     }
   },
   silver: {
@@ -26,7 +30,11 @@ export const VIP_PLANS = {
       xpMultiplier: 2,
       dailyBonus: 50,
       colorRole: '#c0c0c0',
-      badge: '🥈'
+      badge: '🥈',
+      workCooldown: 90000, // 1.5 min
+      workBonus: 1.5, // 50% a mais
+      gambleBonus: 0.55, // 55% chance
+      exclusiveCommands: true
     }
   },
   gold: {
@@ -37,7 +45,11 @@ export const VIP_PLANS = {
       xpMultiplier: 3,
       dailyBonus: 100,
       colorRole: '#ffd700',
-      badge: '🥇'
+      badge: '🥇',
+      workCooldown: 60000, // 1 min
+      workBonus: 2, // 100% a mais
+      gambleBonus: 0.58, // 58% chance
+      exclusiveCommands: true
     }
   },
   diamond: {
@@ -48,7 +60,11 @@ export const VIP_PLANS = {
       xpMultiplier: 5,
       dailyBonus: 250,
       colorRole: '#b9f2ff',
-      badge: '💎'
+      badge: '💎',
+      workCooldown: 30000, // 30 seg
+      workBonus: 3, // 200% a mais
+      gambleBonus: 0.62, // 62% chance
+      exclusiveCommands: true
     }
   }
 };
@@ -113,6 +129,51 @@ export function getVIPBadge(userId) {
   
   const plan = VIP_PLANS[vip.plan];
   return plan?.benefits.badge || '';
+}
+
+// Obter cooldown de work do VIP
+export function getVIPWorkCooldown(userId) {
+  const vip = hasVIP(userId);
+  if (!vip) return 300000; // 5 min padrão
+  
+  const plan = VIP_PLANS[vip.plan];
+  return plan?.benefits.workCooldown || 300000;
+}
+
+// Obter bônus de work do VIP
+export function getVIPWorkBonus(userId) {
+  const vip = hasVIP(userId);
+  if (!vip) return 1;
+  
+  const plan = VIP_PLANS[vip.plan];
+  return plan?.benefits.workBonus || 1;
+}
+
+// Obter bônus de gamble do VIP
+export function getVIPGambleBonus(userId) {
+  const vip = hasVIP(userId);
+  if (!vip) return 0.5; // 50% padrão
+  
+  const plan = VIP_PLANS[vip.plan];
+  return plan?.benefits.gambleBonus || 0.5;
+}
+
+// Obter cor do VIP
+export function getVIPColor(userId) {
+  const vip = hasVIP(userId);
+  if (!vip) return '#0a0a0a';
+  
+  const plan = VIP_PLANS[vip.plan];
+  return plan?.benefits.colorRole || '#0a0a0a';
+}
+
+// Verificar se tem acesso a comandos exclusivos
+export function hasVIPCommands(userId) {
+  const vip = hasVIP(userId);
+  if (!vip) return false;
+  
+  const plan = VIP_PLANS[vip.plan];
+  return plan?.benefits.exclusiveCommands || false;
 }
 
 // Comprar VIP

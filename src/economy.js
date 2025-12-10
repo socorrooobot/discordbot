@@ -157,29 +157,64 @@ export function getLeaderboard(limit = 10) {
 }
 
 // Sistema de trabalho (ganha moeda aleatória)
-export function work(userId) {
-  const earnings = Math.floor(Math.random() * 30) + 10; // 10-40 Akita Neru
+export async function work(userId) {
   const user = getUser(userId);
+  const now = Date.now();
+  const lastWork = user.lastWork || 0;
+  
+  // Obter cooldown VIP
+  let workCooldown = 300000; // 5 min padrão
+  let workBonus = 1;
+  
+  try {
+    const { getVIPWorkCooldown, getVIPWorkBonus } = await import('./vip.js');
+    workCooldown = getVIPWorkCooldown(userId);
+    workBonus = getVIPWorkBonus(userId);
+  } catch (e) {
+    // VIP não disponível
+  }
+  
+  // Verificar cooldown
+  if (now - lastWork < workCooldown) {
+    const timeLeft = workCooldown - (now - lastWork);
+    return { error: true, timeLeft };
+  }
+  
+  const baseEarnings = Math.floor(Math.random() * 30) + 10; // 10-40 Akita Neru
+  const earnings = Math.floor(baseEarnings * workBonus);
+  
   user.balance += earnings;
+  user.lastWork = now;
   updateUser(userId, user);
-  return earnings;
+  
+  return { error: false, earnings, bonus: workBonus };
 }
 
 // Sistema de jogo (gambling)
-export function gamble(userId, amount) {
+export async function gamble(userId, amount) {
   const user = getUser(userId);
   
   if (user.balance < amount) return null;
   
-  const won = Math.random() > 0.5;
+  // Obter chance VIP
+  let winChance = 0.5; // 50% padrão
+  
+  try {
+    const { getVIPGambleBonus } = await import('./vip.js');
+    winChance = getVIPGambleBonus(userId);
+  } catch (e) {
+    // VIP não disponível
+  }
+  
+  const won = Math.random() < winChance;
   
   if (won) {
     user.balance += amount;
     updateUser(userId, user);
-    return { won: true, earnings: amount, newBalance: user.balance };
+    return { won: true, earnings: amount, newBalance: user.balance, chance: winChance };
   } else {
     user.balance -= amount;
     updateUser(userId, user);
-    return { won: false, loss: amount, newBalance: user.balance };
+    return { won: false, loss: amount, newBalance: user.balance, chance: winChance };
   }
 }
