@@ -3383,7 +3383,7 @@ export const commands = {
         .setFooter({ text: '*O vazio aceita tudo. E não devolve nada.* 🖤' });
       await message.reply({ embeds: [offeringEmbed] });
     }
-  },
+  }
 };
 
 export async function handleCommand(message, client) {
