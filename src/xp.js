@@ -100,7 +100,7 @@ function getXPForNextLevel(level) {
 }
 
 // Adicionar XP
-export function addXP(userId) {
+export async function addXP(userId) {
   const user = getUser(userId);
   const oldLevel = user.level;
   

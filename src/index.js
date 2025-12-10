@@ -139,10 +139,10 @@ async function main() {
       }
 
       // Sistema de XP
-      const xpResult = addXP(message.author.id);
-      if (xpResult.leveledUp) {
+      const result = await addXP(message.author.id);
+      if (result.leveledUp) {
         try {
-          await message.author.send(`🖤 **Parabéns!** Você subiu para o **nível ${xpResult.newLevel}**!\n\n*Você compreendeu mais sobre você mesma...* 💀`);
+          await message.author.send(`🖤 **Parabéns!** Você subiu para o **nível ${result.newLevel}**!\n\n*Você compreendeu mais sobre você mesma...* 💀`);
         } catch (error) {
           console.error('Erro ao enviar DM de level up:', error);
         }
