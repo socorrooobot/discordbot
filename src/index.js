@@ -103,7 +103,11 @@ async function main() {
 
       // Verificar se usuário está na blacklist
       if (isBlacklisted(message.author.id)) {
-        await message.reply('sai daqui voce ta na black list');
+        try {
+          await message.reply('❌ Você está na blacklist e não pode usar o bot.');
+        } catch (error) {
+          console.error('Erro ao enviar mensagem de blacklist:', error);
+        }
         return;
       }
 
@@ -125,7 +129,11 @@ async function main() {
           .setDescription('*Saiu do vazio...*')
           .setFooter({ text: 'Bem-vindo de volta ao mundo das vivas. 🖤' });
 
-        await message.reply({ embeds: [afkRemoveEmbed] });
+        try {
+          await message.reply({ embeds: [afkRemoveEmbed] });
+        } catch (error) {
+          console.error('Erro ao enviar embed de AFK:', error);
+        }
       }
 
       // Verificar se mencionou alguém AFK
@@ -133,39 +141,59 @@ async function main() {
       for (const [userId, user] of mentions) {
         const afkData = isAFK(userId);
         if (afkData && message.author.id !== client.user.id) {
-          await message.reply(`🌑 **${user.username} está AFK!**\n\n**Motivo:** ${afkData.reason}`);
+          try {
+            await message.reply(`🌑 **${user.username} está AFK!**\n\n**Motivo:** ${afkData.reason}`);
+          } catch (error) {
+            console.error('Erro ao avisar sobre AFK:', error);
+          }
           break;
         }
       }
 
       // Sistema de XP
-      const result = await addXP(message.author.id);
-      if (result.leveledUp) {
-        try {
-          await message.author.send(`🖤 **Parabéns!** Você subiu para o **nível ${result.newLevel}**!\n\n*Você compreendeu mais sobre você mesma...* 💀`);
-        } catch (error) {
-          console.error('Erro ao enviar DM de level up:', error);
+      try {
+        const result = await addXP(message.author.id);
+        if (result.leveledUp) {
+          try {
+            await message.author.send(`🖤 **Parabéns!** Você subiu para o **nível ${result.newLevel}**!\n\n*Você compreendeu mais sobre você mesma...* 💀`);
+          } catch (error) {
+            console.error('Erro ao enviar DM de level up:', error);
+          }
         }
+      } catch (error) {
+        console.error('Erro no sistema de XP:', error);
       }
 
       // PRIMEIRO: Verificar se é um comando com prefixo !
       if (message.content.startsWith('!')) {
-        const wasHandled = await handleCommand(message, client);
-        if (wasHandled) return; // Se comando foi executado, PARA AQUI
+        try {
+          const wasHandled = await handleCommand(message, client);
+          if (wasHandled) return; // Se comando foi executado, PARA AQUI
+        } catch (error) {
+          console.error('Erro ao executar comando:', error);
+          try {
+            await message.reply('❌ Ocorreu um erro ao executar o comando.');
+          } catch (e) {
+            console.error('Erro ao enviar mensagem de erro:', e);
+          }
+          return;
+        }
       }
 
       // SEGUNDO: Só responde a menções se NÃO for comando
-      // Agora verificamos se a mensagem NÃO começa com ! antes de processar menção
-      if (shouldRespondToMention(message, client)) {
+      if (shouldRespondToMention(message, client) && !message.content.startsWith('!')) {
         const question = message.content.replace(/<@!?\d+>/g, '').trim();
         if (!question) {
-          await message.reply('Oi! Me pergunte qualquer coisa ou use `!ajuda` para ver meus comandos.');
+          try {
+            await message.reply('Oi! Me pergunte qualquer coisa ou use `!ajuda` para ver meus comandos.');
+          } catch (error) {
+            console.error('Erro ao responder menção vazia:', error);
+          }
           return;
         }
 
-        await message.channel.sendTyping();
-
         try {
+          await message.channel.sendTyping();
           const response = await chat(message.author.id, question);
 
           if (response.length > 2000) {
@@ -178,7 +206,11 @@ async function main() {
           }
         } catch (error) {
           console.error('AI Error:', error);
-          await message.reply('Desculpa, tive um probleminha para processar isso. Tenta de novo! 🖤');
+          try {
+            await message.reply('Desculpa, tive um probleminha para processar isso. Tenta de novo! 🖤');
+          } catch (e) {
+            console.error('Erro ao enviar mensagem de erro da IA:', e);
+          }
         }
       }
     });
