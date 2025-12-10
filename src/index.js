@@ -9,6 +9,7 @@ import { isBlacklisted } from './blacklist.js';
 import { notifyRestart } from './restartNotification.js';
 import { sendGoodbyeMessage } from './goodbyeMessage.js';
 import { EmbedBuilder } from 'discord.js';
+import { createTicket, closeTicket, claimTicket } from './tickets.js';
 
 async function main() {
   console.log('Starting Discord bot...');
@@ -179,6 +180,33 @@ async function main() {
           console.error('AI Error:', error);
           await message.reply('Desculpa, tive um probleminha para processar isso. Tenta de novo! 🖤');
         }
+      }
+    });
+
+    // Handler de botões de tickets
+    client.on('interactionCreate', async (interaction) => {
+      if (!interaction.isButton()) return;
+
+      const customId = interaction.customId;
+
+      // Abrir ticket
+      if (customId === 'open_ticket') {
+        await createTicket(interaction);
+        return;
+      }
+
+      // Fechar ticket
+      if (customId.startsWith('close_ticket_')) {
+        const ticketId = customId.replace('close_ticket_', '');
+        await closeTicket(interaction, ticketId);
+        return;
+      }
+
+      // Assumir ticket
+      if (customId.startsWith('claim_ticket_')) {
+        const ticketId = customId.replace('claim_ticket_', '');
+        await claimTicket(interaction, ticketId);
+        return;
       }
     });
 

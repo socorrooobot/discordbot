@@ -9,6 +9,7 @@ import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.
 import { isAdmin, addAdmin, removeAdmin } from './admin.js';
 import { getMultiplier, setMultiplier } from './multiplier.js';
 import { setRestartChannel } from './restartNotification.js';
+import { setTicketCategory, setSupportRole, sendTicketPanel, getTicketStats } from './tickets.js';
 
 export const slashCommands = {
   ask: {
@@ -1376,6 +1377,106 @@ export const slashCommands = {
         .setDescription(`O multiplicador de daily foi definido para **${multiplier}x**!\n\nAgora todos ganharão **${50 * multiplier} Akita Neru** no daily!\n\n*O poder flui através das moedas...* 💰`)
         .setFooter({ text: `Configurado por: ${interaction.user.username}` });
 
+      await interaction.reply({ embeds: [embed] });
+    }
+  },
+
+  ticketpanel: {
+    data: new SlashCommandBuilder()
+      .setName('ticketpanel')
+      .setDescription('[ADMIN] Enviar painel de tickets no canal atual'),
+    execute: async (interaction) => {
+      if (!interaction.member.permissions.has('Administrator')) {
+        await interaction.reply({ content: '❌ Você precisa ser Administrador!', ephemeral: true });
+        return;
+      }
+
+      try {
+        await sendTicketPanel(interaction.channel);
+        await interaction.reply({ content: '✅ Painel de tickets enviado!', ephemeral: true });
+      } catch (error) {
+        console.error('Erro ao enviar painel:', error);
+        await interaction.reply({ content: '❌ Erro ao enviar painel!', ephemeral: true });
+      }
+    }
+  },
+
+  ticketconfig: {
+    data: new SlashCommandBuilder()
+      .setName('ticketconfig')
+      .setDescription('[ADMIN] Configurar sistema de tickets')
+      .addSubcommand(subcommand =>
+        subcommand
+          .setName('category')
+          .setDescription('Definir categoria onde tickets serão criados')
+          .addChannelOption(option =>
+            option.setName('categoria')
+              .setDescription('Categoria para os tickets')
+              .setRequired(true)
+          )
+      )
+      .addSubcommand(subcommand =>
+        subcommand
+          .setName('supportrole')
+          .setDescription('Definir cargo de suporte')
+          .addRoleOption(option =>
+            option.setName('cargo')
+              .setDescription('Cargo que terá acesso aos tickets')
+              .setRequired(true)
+          )
+      ),
+    execute: async (interaction) => {
+      if (!interaction.member.permissions.has('Administrator')) {
+        await interaction.reply({ content: '❌ Você precisa ser Administrador!', ephemeral: true });
+        return;
+      }
+
+      const subcommand = interaction.options.getSubcommand();
+
+      if (subcommand === 'category') {
+        const category = interaction.options.getChannel('categoria');
+        setTicketCategory(interaction.guild.id, category.id);
+        
+        const embed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✅ Categoria Configurada')
+          .setDescription(`Categoria de tickets definida para: ${category}`)
+          .setFooter({ text: 'Sistema de Tickets' });
+        
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+      } else if (subcommand === 'supportrole') {
+        const role = interaction.options.getRole('cargo');
+        setSupportRole(interaction.guild.id, role.id);
+        
+        const embed = new EmbedBuilder()
+          .setColor('#00ff00')
+          .setTitle('✅ Cargo de Suporte Configurado')
+          .setDescription(`Cargo de suporte definido para: ${role}`)
+          .setFooter({ text: 'Sistema de Tickets' });
+        
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+      }
+    }
+  },
+
+  ticketstats: {
+    data: new SlashCommandBuilder()
+      .setName('ticketstats')
+      .setDescription('Ver estatísticas de tickets'),
+    execute: async (interaction) => {
+      const stats = getTicketStats();
+      
+      const embed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('📊 Estatísticas de Tickets')
+        .addFields(
+          { name: '🟢 Abertos', value: `${stats.open}`, inline: true },
+          { name: '🔴 Fechados', value: `${stats.closed}`, inline: true },
+          { name: '📈 Total', value: `${stats.total}`, inline: true }
+        )
+        .setFooter({ text: 'Sistema de Tickets | Diva Bot' })
+        .setTimestamp();
+      
       await interaction.reply({ embeds: [embed] });
     }
   },
