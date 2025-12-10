@@ -1,57 +1,61 @@
 
-<%- include('layout', { body: \`
-<div class="row">
-    <div class="col-12">
-        <h1 class="mb-4">⭐ Gerenciar XP</h1>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XP - Miku Diva Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <%- include('layout', { user, activePage: 'xp' }) %>
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card">
+    <div class="container-fluid py-4">
+        <h1 class="mb-4">⭐ Gerenciar XP</h1>
+
+        <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">🔥 Multiplicador de XP</h5>
-                <form method="POST" action="/xp/multiplier">
-                    <div class="input-group">
-                        <input type="number" name="multiplier" class="form-control" value="\${xpMultiplier}" min="1" max="10" step="0.1">
-                        <button class="btn btn-primary" type="submit">Atualizar</button>
+                <h5>Multiplicador de XP: <%= xpMultiplier %>x</h5>
+                <form method="POST" action="/xp/multiplier" class="d-flex gap-2 align-items-end">
+                    <div>
+                        <label class="form-label">Novo Multiplicador</label>
+                        <input type="number" name="multiplier" step="0.1" value="<%= xpMultiplier %>" class="form-control" required>
                     </div>
+                    <button type="submit" class="btn btn-primary">Atualizar</button>
                 </form>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Top Usuários por Nível</h5>
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-dark table-hover">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Rank</th>
                         <th>Usuário</th>
                         <th>Nível</th>
-                        <th>XP</th>
-                        <th>Total XP</th>
+                        <th>XP Atual</th>
+                        <th>XP Total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    \${users.map((u, i) => \`
-                        <tr>
-                            <td>\${i + 1}</td>
-                            <td>
-                                <img src="\${u.avatar}" class="rounded-circle me-2" width="32" height="32">
-                                \${u.username}
-                            </td>
-                            <td><span class="badge bg-primary">\${u.level}</span></td>
-                            <td>\${u.xp}</td>
-                            <td>\${u.totalXP}</td>
-                        </tr>
-                    \`).join('')}
+                    <% users.forEach((user, index) => { %>
+                    <tr>
+                        <td><%= index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1) %></td>
+                        <td>
+                            <img src="<%= user.avatar %>" width="32" class="rounded-circle me-2">
+                            <%= user.username %>
+                        </td>
+                        <td>Nível <%= user.level %></td>
+                        <td><%= user.xp %> XP</td>
+                        <td><%= user.totalXP %> XP</td>
+                    </tr>
+                    <% }); %>
                 </tbody>
             </table>
         </div>
     </div>
-</div>
-\`, user, title: 'XP' }) %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

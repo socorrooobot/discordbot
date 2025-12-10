@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -22,19 +21,19 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="bi bi-house"></i> Home</a>
+                        <a class="nav-link <%= activePage === 'home' ? 'active' : '' %>" href="/"><i class="bi bi-house"></i> Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/economy"><i class="bi bi-cash-coin"></i> Economia</a>
+                        <a class="nav-link <%= activePage === 'economy' ? 'active' : '' %>" href="/economy"><i class="bi bi-cash-coin"></i> Economia</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/xp"><i class="bi bi-star"></i> XP</a>
+                        <a class="nav-link <%= activePage === 'xp' ? 'active' : '' %>" href="/xp"><i class="bi bi-star"></i> XP</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/admins"><i class="bi bi-shield"></i> Admins</a>
+                        <a class="nav-link <%= activePage === 'admins' ? 'active' : '' %>" href="/admins"><i class="bi bi-shield"></i> Admins</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/servers"><i class="bi bi-discord"></i> Servidores</a>
+                        <a class="nav-link <%= activePage === 'servers' ? 'active' : '' %>" href="/servers"><i class="bi bi-discord"></i> Servidores</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">
