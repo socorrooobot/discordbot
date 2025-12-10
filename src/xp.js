@@ -103,7 +103,18 @@ function getXPForNextLevel(level) {
 export function addXP(userId) {
   const user = getUser(userId);
   const oldLevel = user.level;
-  const multiplier = getXPMultiplier();
+  
+  // Importar multiplicador VIP dinamicamente
+  let vipMultiplier = 1;
+  try {
+    const { getVIPXPMultiplier } = await import('./vip.js');
+    vipMultiplier = getVIPXPMultiplier(userId);
+  } catch (e) {
+    // VIP não disponível
+  }
+  
+  const baseMultiplier = getXPMultiplier();
+  const multiplier = baseMultiplier * vipMultiplier;
   const xpGained = XP_PER_MESSAGE * multiplier;
   
   user.totalXP += xpGained;

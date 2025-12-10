@@ -8,7 +8,7 @@ async function downloadImage(url) {
   return new Promise((resolve, reject) => {
     const tmpFile = join(tmpdir(), `avatar_${Date.now()}.png`);
     const file = createWriteStream(tmpFile);
-    
+
     https.get(url, (response) => {
       response.pipe(file);
       file.on('finish', () => {
@@ -21,8 +21,9 @@ async function downloadImage(url) {
 
 export async function generateProfileCard(userInfo) {
   try {
-    const { username, avatarURL, level, xp, xpNeeded, balance } = userInfo;
-    
+    const { username, avatarURL, level, xp, xpNeeded, balance, isVip } = userInfo;
+    const vipBadge = isVip ? '👑 VIP' : ''; // Adiciona badge VIP se o usuário for VIP
+
     // Download avatar
     let avatarBuffer;
     try {
@@ -54,34 +55,34 @@ export async function generateProfileCard(userInfo) {
             <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
           </linearGradient>
         </defs>
-        
+
         <!-- Fundo -->
         <rect width="500" height="300" fill="url(#grad)"/>
         <rect width="500" height="300" fill="#0a0a0a" opacity="0.3"/>
-        
+
         <!-- Borda -->
         <rect x="10" y="10" width="480" height="280" fill="none" stroke="#ff69b4" stroke-width="2"/>
-        
+
         <!-- Círculo do avatar (placeholder) -->
         <circle cx="100" cy="100" r="75" fill="#1a1a1a" stroke="#ff69b4" stroke-width="2"/>
         <text x="100" y="110" text-anchor="middle" font-size="14" fill="#ff69b4" font-family="Arial">Avatar</text>
-        
+
         <!-- Nome do usuário -->
-        <text x="200" y="50" font-size="28" font-weight="bold" fill="#ffffff" font-family="Arial">${username}</text>
-        
+        <text x="200" y="50" font-size="28" font-weight="bold" fill="#ffffff" font-family="Arial">${vipBadge}${username}</text>
+
         <!-- Nível -->
         <text x="200" y="90" font-size="18" fill="#ff69b4" font-family="Arial">⭐ Nível: ${level}</text>
-        
+
         <!-- XP -->
         <text x="200" y="130" font-size="16" fill="#ffffff" font-family="Arial">✨ XP: ${xp}/${xpNeeded}</text>
-        
+
         <!-- Barra de XP -->
         <rect x="200" y="145" width="${barWidth}" height="15" fill="#2a2a2a" stroke="#ff69b4" stroke-width="1"/>
         <rect x="200" y="145" width="${filledWidth}" height="15" fill="url(#xpGrad)"/>
-        
+
         <!-- Saldo -->
         <text x="200" y="200" font-size="16" fill="#ffd700" font-family="Arial">💰 Saldo: ${balance} Akita Neru</text>
-        
+
         <!-- Rodapé -->
         <text x="250" y="280" text-anchor="middle" font-size="12" fill="#ff69b4" font-family="Arial" opacity="0.8">*A vida é um palco... e você é a estrela.* 🖤</text>
       </svg>
@@ -89,7 +90,7 @@ export async function generateProfileCard(userInfo) {
 
     // Converter SVG para buffer
     const svgBuffer = Buffer.from(svg);
-    
+
     // Converter SVG para PNG
     let finalImage = await sharp(svgBuffer)
       .png()

@@ -108,13 +108,23 @@ export function dailyReward(userId) {
   
   const baseReward = 50; // 50 Akita Neru base
   const multiplier = getMultiplier();
-  const reward = Math.floor(baseReward * multiplier);
+  
+  // Bônus VIP
+  let vipBonus = 0;
+  try {
+    const { getVIPDailyBonus } = await import('./vip.js');
+    vipBonus = getVIPDailyBonus(userId);
+  } catch (e) {
+    // VIP não disponível
+  }
+  
+  const reward = Math.floor(baseReward * multiplier) + vipBonus;
   
   user.balance += reward;
   user.lastDaily = now;
   updateUser(userId, user);
   
-  return { reward, multiplier };
+  return { reward, multiplier, vipBonus };
 }
 
 // Calcular quando o próximo daily estará disponível

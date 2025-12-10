@@ -120,6 +120,15 @@ export const commands = {
       const balance = getBalance(message.author.id);
 
       try {
+        // Badge VIP
+        let vipBadge = '';
+        try {
+          const { getVIPBadge } = await import('./vip.js');
+          vipBadge = getVIPBadge(user.id);
+        } catch (e) {
+          // VIP não disponível
+        }
+        
         // Gerar card visual
         const cardImage = await generateProfileCard({
           username: user.username,
@@ -127,7 +136,8 @@ export const commands = {
           level: xpInfo.level,
           xp: xpInfo.xp,
           xpNeeded: xpInfo.xpNeeded,
-          balance: balance
+          balance: balance,
+          vipBadge: vipBadge
         });
 
         if (cardImage) {
@@ -569,7 +579,8 @@ export const commands = {
         .setColor('#ffd700')
         .setTitle('💰 Comandos da Diva - Economia (Akita Neru)')
         .addFields(
-          { name: '💵 Moeda', value: '`!balance` - Ver saldo\n`!daily` - Ganhar 50/dia\n`!work` - Ganhar 10-40\n`!transfer @usuário <qty>` - Enviar\n`!gamble <qty>` - Apostar 50/50\n`!top` - Ranking', inline: false }
+          { name: '💵 Moeda', value: '`!balance` - Ver saldo\n`!daily` - Ganhar 50/dia\n`!work` - Ganhar 10-40\n`!transfer @usuário <qty>` - Enviar\n`!gamble <qty>` - Apostar 50/50\n`!top` - Ranking', inline: false },
+          { name: '👑 VIP', value: '`!vip` - Ver planos VIP\n`!compravip <plano>` - Comprar VIP', inline: false }
         )
         .setFooter({ text: 'Página 3 de 6' });
 
@@ -770,6 +781,83 @@ export const commands = {
           .setDescription(`Sua aposta desapareceu.\n\n**-${result.loss} Akita Neru**`)
           .setFooter({ text: `Novo saldo: ${result.newBalance} Akita Neru - *Como tudo que importa...* 🖤` });
         await message.reply({ embeds: [gamblesEmbed] });
+      }
+    }
+  },
+
+  vip: {
+    name: '!vip',
+    aliases: ['!premium'],
+    description: 'Veja planos VIP disponíveis',
+    execute: async (message) => {
+      const { VIP_PLANS, hasVIP, formatVIPTime, getVIPTimeRemaining } = await import('./vip.js');
+      
+      const userVIP = hasVIP(message.author.id);
+      
+      let description = '✨ **Planos VIP Disponíveis**\n\n';
+      
+      for (const [key, plan] of Object.entries(VIP_PLANS)) {
+        description += `${plan.benefits.badge} **${plan.name}** - ${plan.price} Akita Neru\n`;
+        description += `└ XP: **${plan.benefits.xpMultiplier}x** | Daily: **+${plan.benefits.dailyBonus}** | 30 dias\n\n`;
+      }
+      
+      description += '\n📝 **Como comprar:**\n`!compravip <plano>`\nExemplo: `!compravip gold`';
+      
+      if (userVIP) {
+        const timeRemaining = getVIPTimeRemaining(message.author.id);
+        const plan = VIP_PLANS[userVIP.plan];
+        description += `\n\n🌟 **Seu VIP:** ${plan.benefits.badge} ${plan.name}\n⏰ Expira em: ${formatVIPTime(timeRemaining)}`;
+      }
+      
+      const vipEmbed = new EmbedBuilder()
+        .setColor('#ffd700')
+        .setTitle('👑 Sistema VIP')
+        .setDescription(description)
+        .setFooter({ text: '*Torne-se uma estrela ainda maior!* 🖤' });
+      
+      await message.reply({ embeds: [vipEmbed] });
+    }
+  },
+
+  compravip: {
+    name: '!compravip',
+    aliases: ['!buyvip'],
+    description: 'Comprar plano VIP',
+    execute: async (message, args) => {
+      const { VIP_PLANS, purchaseVIP } = await import('./vip.js');
+      const { removeBalance } = await import('./economy.js');
+      
+      const planName = args[0]?.toLowerCase();
+      
+      if (!planName || !VIP_PLANS[planName]) {
+        await message.reply('❌ Plano inválido! Use: `!vip` para ver os planos.');
+        return;
+      }
+      
+      const plan = VIP_PLANS[planName];
+      const balance = getBalance(message.author.id);
+      
+      if (balance < plan.price) {
+        await message.reply(`❌ Você precisa de **${plan.price} Akita Neru**! Você tem apenas **${balance}**.`);
+        return;
+      }
+      
+      // Remover dinheiro
+      removeBalance(message.author.id, plan.price);
+      
+      // Adicionar VIP
+      const result = purchaseVIP(message.author.id, planName);
+      
+      if (result.success) {
+        const vipEmbed = new EmbedBuilder()
+          .setColor('#ffd700')
+          .setTitle('👑 VIP Comprado!')
+          .setDescription(`🎉 Você comprou **${plan.name} VIP**!\n\n**Benefícios:**\n${plan.benefits.badge} XP Multiplicador: **${plan.benefits.xpMultiplier}x**\n💰 Daily Bônus: **+${plan.benefits.dailyBonus}**\n⏰ Duração: **30 dias**`)
+          .setFooter({ text: '*Bem-vindo ao clube VIP!* 🖤' });
+        
+        await message.reply({ embeds: [vipEmbed] });
+      } else {
+        await message.reply(`❌ ${result.error}`);
       }
     }
   },
