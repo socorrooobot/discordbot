@@ -1,6 +1,6 @@
 import { chat, clearHistory } from './gemini.js';
 import { EmbedBuilder, PermissionFlagsBits, AttachmentBuilder } from 'discord.js';
-import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble, setBalance } from './economy.js';
+import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble, setBalance, getTimeUntilDaily } from './economy.js';
 import { getUserInfo, getXPLeaderboard, getUserRank, addXPDirect, removeXPDirect } from './xp.js';
 import { setAFK, removeAFK, isAFK } from './afk.js';
 import { executeRP } from './rpCommands.js';
