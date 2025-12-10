@@ -180,3 +180,8 @@ export function getUserRank(userId) {
   const rank = leaderboard.findIndex(entry => entry.userId === userId) + 1;
   return rank || 'N/A';
 }
+
+// Obter todos os usuários com XP (para dashboard)
+export function getAllUsers() {
+  return loadXP();
+}
