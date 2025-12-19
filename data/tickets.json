@@ -3,14 +3,41 @@
     "ticket-1": {
       "userId": "1424065435988656128",
       "channelId": "1448280672501235765",
-      "status": "open",
+      "status": "closed",
       "createdAt": "2025-12-10T11:50:20.549Z",
-      "closedAt": null
+      "closedAt": "2025-12-13T16:17:02.031Z",
+      "claimedBy": "1424065435988656128",
+      "claimedAt": "2025-12-13T16:16:58.425Z",
+      "closedBy": "1424065435988656128"
+    },
+    "ticket-2": {
+      "userId": "1424065435988656128",
+      "channelId": "1449435438174441723",
+      "status": "closed",
+      "createdAt": "2025-12-13T16:18:58.040Z",
+      "closedAt": "2025-12-13T16:19:30.220Z",
+      "closedBy": "1424065435988656128"
+    },
+    "ticket-3": {
+      "userId": "907765906669699132",
+      "channelId": "1449459350283227302",
+      "status": "closed",
+      "createdAt": "2025-12-13T17:53:59.213Z",
+      "closedAt": "2025-12-13T18:08:00.560Z",
+      "closedBy": "1424065435988656128"
+    },
+    "ticket-4": {
+      "userId": "1420187478148517909",
+      "channelId": "1450888637544661022",
+      "status": "closed",
+      "createdAt": "2025-12-17T16:33:27.812Z",
+      "closedAt": "2025-12-17T16:33:55.299Z",
+      "closedBy": "1420187478148517909"
     }
   },
   "config": {
     "categoryId": null,
-    "supportRoleId": "1443659428791320779",
-    "ticketCounter": 1
+    "supportRoleId": "1439242411338498141",
+    "ticketCounter": 4
   }
 }
