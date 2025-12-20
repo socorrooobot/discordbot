@@ -1588,7 +1588,13 @@ export async function registerSlashCommands(client) {
   }
 }
 
+let handlerSetup = false;
+
 export async function setupSlashCommandHandler(client) {
+  // Registrar handler APENAS UMA VEZ
+  if (handlerSetup) return;
+  handlerSetup = true;
+
   client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
@@ -1614,4 +1620,6 @@ export async function setupSlashCommandHandler(client) {
       }
     }
   });
+
+  console.log('✅ Handlers de interação configurados!');
 }
