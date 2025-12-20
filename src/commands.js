@@ -786,8 +786,8 @@ export const commands = {
 
       const result = await gamble(message.author.id, amount);
 
-      if (!result) {
-        await message.reply('❌ Você não tem Akita Neru suficiente!');
+      if (!result || result.error) {
+        await message.reply(`❌ ${result?.message || 'Você não tem Akita Neru suficiente!'}`);
         return;
       }
 

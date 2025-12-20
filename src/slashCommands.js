@@ -363,7 +363,21 @@ export const slashCommands = {
         return;
       }
 
+      if (amount > 1000000000) {
+        const limitEmbed = new EmbedBuilder()
+          .setColor('#ff6b9d')
+          .setTitle('❌ Limite Excedido')
+          .setDescription('O limite máximo de aposta é **1 bilhão Akita Neru**!');
+        await interaction.reply({ embeds: [limitEmbed] });
+        return;
+      }
+
       const result = await gamble(interaction.user.id, amount);
+
+      if (!result || result.error) {
+        await interaction.reply(`❌ ${result?.message || 'Erro ao fazer a aposta!'}`);
+        return;
+      }
 
       if (result.won) {
         const winEmbed = new EmbedBuilder()

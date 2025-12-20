@@ -195,7 +195,10 @@ export async function work(userId) {
 export async function gamble(userId, amount) {
   const user = getUser(userId);
   
+  // Validações
   if (user.balance < amount) return null;
+  if (amount <= 0) return null;
+  if (amount > 1000000000) return { error: true, message: 'Limite máximo de 1 bilhão por aposta!' };
   
   // Obter chance VIP
   let winChance = 0.5; // 50% padrão
