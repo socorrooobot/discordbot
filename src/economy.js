@@ -38,6 +38,13 @@ function getUser(userId) {
     };
     saveEconomy(data);
   }
+  
+  // Validar e corrigir saldo se for inválido
+  if (typeof data[userId].balance !== 'number' || isNaN(data[userId].balance) || data[userId].balance === undefined) {
+    data[userId].balance = 100;
+    saveEconomy(data);
+  }
+  
   return data[userId];
 }
 
@@ -195,10 +202,13 @@ export async function work(userId) {
 export async function gamble(userId, amount) {
   const user = getUser(userId);
   
-  // Validações
-  if (user.balance < amount) return null;
-  if (amount <= 0) return null;
-  if (amount > 1000000000) return { error: true, message: 'Limite máximo de 1 bilhão por aposta!' };
+  // Validações seguras
+  const safeAmount = Math.floor(Math.abs(parseInt(amount) || 0));
+  const safeBalance = Math.floor(Math.abs(parseInt(user.balance) || 100));
+  
+  if (safeAmount <= 0) return null;
+  if (safeBalance < safeAmount) return null;
+  if (safeAmount > 1000000000) return { error: true, message: 'Limite máximo de 1 bilhão por aposta!' };
   
   // Obter chance VIP
   let winChance = 0.5; // 50% padrão
@@ -213,12 +223,18 @@ export async function gamble(userId, amount) {
   const won = Math.random() < winChance;
   
   if (won) {
-    user.balance += amount;
-    updateUser(userId, user);
-    return { won: true, earnings: amount, newBalance: user.balance, chance: winChance };
+    user.balance = safeBalance + safeAmount;
   } else {
-    user.balance -= amount;
-    updateUser(userId, user);
-    return { won: false, loss: amount, newBalance: user.balance, chance: winChance };
+    user.balance = safeBalance - safeAmount;
   }
+  
+  updateUser(userId, user);
+  
+  return {
+    won,
+    earnings: won ? safeAmount : undefined,
+    loss: !won ? safeAmount : undefined,
+    newBalance: user.balance,
+    chance: winChance
+  };
 }
