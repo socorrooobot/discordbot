@@ -15,7 +15,7 @@
     "inventory": {}
   },
   "1393590181327536210": {
-    "balance": 100000,
+    "balance": 400000,
     "lastDaily": 1765066631831,
     "inventory": {}
   },
@@ -62,6 +62,16 @@
   "1411142499266859058": {
     "balance": 100000200,
     "lastDaily": 1766180271339,
+    "inventory": {}
+  },
+  "1150873630998282361": {
+    "balance": 20000100,
+    "lastDaily": 0,
+    "inventory": {}
+  },
+  "1348613866669740084": {
+    "balance": 300100,
+    "lastDaily": 0,
     "inventory": {}
   }
 }

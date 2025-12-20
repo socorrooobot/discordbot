@@ -61,14 +61,13 @@ export const slashCommands = {
       .setName('daily')
       .setDescription('Receba sua recompensa diária'),
     execute: async (interaction) => {
-      const multiplier = getMultiplier();
-      const reward = dailyReward(interaction.user.id, multiplier);
+      const reward = await dailyReward(interaction.user.id);
 
       if (!reward) {
         const dailyEmbed = new EmbedBuilder()
           .setColor('#ff0000')
-          .setTitle('❌ Prematuro')
-          .setDescription('Você já coletou sua recompensa diária!\nVolte amanhã... ou talvez nunca. 🌑');
+          .setTitle('❌ Cooldown Ativo')
+          .setDescription('Você já coletou sua recompensa diária!\nVolte em 24 horas 🌑');
         await interaction.reply({ embeds: [dailyEmbed] });
         return;
       }
@@ -76,8 +75,8 @@ export const slashCommands = {
       const dailyEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('✨ Recompensa Diária')
-        .setDescription(`Você ganhou **${reward} Akita Neru**!\n\n*A vida continua... de alguma forma.* 🖤`)
-        .setFooter({ text: 'Volte amanhã!' });
+        .setDescription(`Você ganhou **${reward.reward} Akita Neru**!\n\n*Você compreendeu como obter valor aqui...* 💀`)
+        .setFooter({ text: `Novo saldo: ${getBalance(interaction.user.id)} Akita Neru` });
 
       await interaction.reply({ embeds: [dailyEmbed] });
     }
@@ -364,7 +363,7 @@ export const slashCommands = {
         return;
       }
 
-      const result = gamble(interaction.user.id, amount);
+      const result = await gamble(interaction.user.id, amount);
 
       if (result.won) {
         const winEmbed = new EmbedBuilder()
