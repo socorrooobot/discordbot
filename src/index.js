@@ -17,6 +17,9 @@ async function main() {
   try {
     const client = await getDiscordClient();
 
+    // Registrar handler de slash commands APENAS UMA VEZ (fora do evento ready)
+    await setupSlashCommandHandler(client);
+
     client.once('ready', async () => {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
@@ -24,9 +27,8 @@ async function main() {
       // Notificar reinicialização
       await notifyRestart(client, 'Reinicialização do bot');
 
-      // Registrar slash commands e handlers
+      // Registrar slash commands
       await registerSlashCommands(client);
-      await setupSlashCommandHandler(client);
 
       // Iniciar Dashboard Web
       try {
