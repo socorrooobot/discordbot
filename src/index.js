@@ -17,9 +17,6 @@ async function main() {
   try {
     const client = await getDiscordClient();
 
-    // Registrar handler de slash commands APENAS UMA VEZ (fora do evento ready)
-    await setupSlashCommandHandler(client);
-
     client.once('ready', async () => {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
@@ -218,6 +215,32 @@ async function main() {
     });
 
     client.on('interactionCreate', async (interaction) => {
+      // SLASH COMMANDS (prioridade)
+      if (interaction.isChatInputCommand()) {
+        const { slashCommands } = await import('./slashCommands.js');
+        const command = slashCommands[interaction.commandName];
+        if (command) {
+          try {
+            await command.execute(interaction);
+          } catch (error) {
+            console.error(`Erro ao executar slash command ${interaction.commandName}:`, error);
+            const { EmbedBuilder } = await import('discord.js');
+            const errorEmbed = new EmbedBuilder()
+              .setColor('#ff0000')
+              .setTitle('❌ Erro')
+              .setDescription('Houve um erro ao executar este comando.');
+            
+            if (interaction.replied || interaction.deferred) {
+              await interaction.editReply({ embeds: [errorEmbed] });
+            } else {
+              await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            }
+          }
+        }
+        return;
+      }
+
+      // BUTTONS
       if (!interaction.isButton()) return;
 
       const customId = interaction.customId;
