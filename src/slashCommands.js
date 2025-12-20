@@ -1588,38 +1588,3 @@ export async function registerSlashCommands(client) {
   }
 }
 
-let handlerSetup = false;
-
-export async function setupSlashCommandHandler(client) {
-  // Registrar handler APENAS UMA VEZ
-  if (handlerSetup) return;
-  handlerSetup = true;
-
-  client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
-
-    const command = slashCommands[interaction.commandName];
-    if (!command) {
-      console.log(`Comando não encontrado: ${interaction.commandName}`);
-      return;
-    }
-
-    try {
-      await command.execute(interaction);
-    } catch (error) {
-      console.error(`Erro ao executar slash command ${interaction.commandName}:`, error);
-      const errorEmbed = new EmbedBuilder()
-        .setColor('#ff0000')
-        .setTitle('❌ Erro')
-        .setDescription('Houve um erro ao executar este comando.');
-
-      if (interaction.replied || interaction.deferred) {
-        await interaction.editReply({ embeds: [errorEmbed] });
-      } else {
-        await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
-      }
-    }
-  });
-
-  console.log('✅ Handlers de interação configurados!');
-}

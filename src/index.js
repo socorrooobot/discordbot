@@ -3,7 +3,7 @@ import { chat } from './gemini.js';
 import { handleCommand, shouldRespondToMention } from './commands.js';
 import { addXP } from './xp.js';
 import { isAFK, removeAFK } from './afk.js';
-import { registerSlashCommands, setupSlashCommandHandler } from './slashCommands.js';
+import { registerSlashCommands } from './slashCommands.js';
 import { getTimeUntilDaily, getAllUsers } from './economy.js';
 import { isBlacklisted } from './blacklist.js';
 import { notifyRestart } from './restartNotification.js';
