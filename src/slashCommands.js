@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { chat } from './gemini.js';
 import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer, addBalance, removeBalance, setBalance } from './economy.js';
 import { getUserInfo, getXPLeaderboard, addXPDirect, removeXPDirect } from './xp.js';
@@ -947,35 +947,106 @@ export const slashCommands = {
   cmds: {
     data: new SlashCommandBuilder()
       .setName('cmds')
-      .setDescription('Mostra todos os comandos disponíveis (versão slash)'),
+      .setDescription('Mostra todos os comandos disponíveis com paginação'),
     execute: async (interaction) => {
+      // Embed 1: Conversa & Utilidade
       const embed1 = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('🎭 Slash Commands - Parte 1')
         .addFields(
-          { name: '💬 Conversa', value: '`/ask` - Pergunte algo à Diva', inline: false },
-          { name: '⚙️ Utilidade', value: '`/ping` - Latência do bot\n`/afk` - Marque-se como AFK', inline: false }
+          { name: '💬 Conversa & IA', value: '`/ask <pergunta>` - Pergunte algo à Diva\n`/ia <pergunta>` - Atalho rápido', inline: false },
+          { name: '✨ Especial', value: '`/quote` - Frase aleatória\n`/dream` - Sonho da Diva\n`/whisper` - Sussurro misterioso', inline: false },
+          { name: '🎮 Diversão & Novos', value: '`/miku` - Imagem fofa da Miku\n`/ship @usuário` - Compatibilidade de amor', inline: false },
+          { name: '⚙️ Utilidade', value: '`/ping` - Latência\n`/status` - Status do bot\n`/afk <motivo>` - Marque-se como AFK', inline: false }
         )
-        .setFooter({ text: 'Página 1 de 3' });
+        .setFooter({ text: 'Página 1 de 6 - Use os botões abaixo para navegar' });
 
       const embed2 = new EmbedBuilder()
-        .setColor('#ffd700')
-        .setTitle('💰 Slash Commands - Economia')
+        .setColor('#ff0000')
+        .setTitle('🔨 Moderação & Staff')
         .addFields(
-          { name: '💵 Moeda', value: '`/balance` - Ver saldo\n`/daily` - Recompensa diária\n`/top` - Ranking', inline: false },
-          { name: '⭐ XP', value: '`/perfil` - Seu perfil\n`/topxp` - Ranking de XP', inline: false }
+          { name: '⚖️ Controle', value: '`/ban @user` - Banir\n`/unban <ID>` - Desbanir\n`/kick @user` - Expulsar\n`/warn @user` - Avisar\n`/unwarn @user` - Remover aviso\n`/warns @user` - Ver avisos\n`/clearwarns @user` - Limpar tudo', inline: true },
+          { name: '🛠️ Chat', value: '`/purge <n>` - Limpar\n`/lock` - Trancar\n`/unlock` - Abrir\n`/slowmode <seg>` - Modo lento', inline: true }
         )
-        .setFooter({ text: 'Página 2 de 3' });
+        .setFooter({ text: 'Página 2 de 6 - Requer permissões de Staff' });
 
       const embed3 = new EmbedBuilder()
-        .setColor('#ff69b4')
-        .setTitle('🎭 Slash Commands - Roleplay')
+        .setColor('#ffd700')
+        .setTitle('💰 Economia (Akita Neru)')
         .addFields(
-          { name: '💕 RP com Gifs', value: '`/tapa` - Dê um tapa\n`/beijo` - Beije alguém\n`/abraco` - Abrace\n`/casar` - Case\n`/divorciar` - Divorce\n`/danca` - Dance', inline: false }
+          { name: '💵 Moeda', value: '`/balance` - Ver saldo\n`/daily` - Ganhar 50/dia\n`/work` - Ganhar 10-40\n`/transfer @usuário <qty>` - Enviar\n`/gamble <qty>` - Apostar 50/50\n`/top` - Ranking', inline: false }
         )
-        .setFooter({ text: 'Página 3 de 3 - Use ! para comandos com prefixo' });
+        .setFooter({ text: 'Página 3 de 6' });
 
-      await interaction.reply({ embeds: [embed1, embed2, embed3] });
+      const embed4 = new EmbedBuilder()
+        .setColor('#00ffff')
+        .setTitle('⭐ XP & Perfil')
+        .addFields(
+          { name: '🌟 Sistema de XP', value: 'Ganhe XP por mensagem!\nReceba notificação privada ao subir de nível 🖤', inline: false },
+          { name: '📊 Comandos', value: '`/perfil` - Gera card visual com suas info!\n`/topxp` - Ranking de XP do servidor', inline: false },
+          { name: '💕 Roleplay', value: '`/tapa` `/beijo` `/abraço` `/casar` `/divorciar` `/dança` - Com gifs! 🎭', inline: false }
+        )
+        .setFooter({ text: 'Página 4 de 6' });
+
+      const embed5 = new EmbedBuilder()
+        .setColor('#9370DB')
+        .setTitle('🛠️ Servidor & Admin')
+        .addFields(
+          { name: '🏗️ Servidor (Admin)', value: '`/editserver` - Editar configurações\n`/renamechannel` - Renomear canal\n`/edittopic` - Mudar descrição do canal\n`/createchannel` - Criar novo canal\n`/createrole` - Criar novo cargo\n`/setrestartchannel` - Configurar aviso de restart', inline: false }
+        )
+        .setFooter({ text: 'Página 5 de 6' });
+
+      const embed6 = new EmbedBuilder()
+        .setColor('#ff1493')
+        .setTitle('👑 Administração do Bot')
+        .addFields(
+          { name: '💰 Economia Admin', value: '`/addneru @usuário <qty>` - Adicionar moedas\n`/removeneru @usuário <qty>` - Remover moedas\n`/setneru @usuário <qty>` - Definir moedas', inline: false },
+          { name: '🚫 Blacklist', value: '`/blacklist @usuário` - Bloquear usuário\n`/unblacklist @usuário` - Desbloquear usuário', inline: false }
+        )
+        .setFooter({ text: 'Página 6 de 6 - Apenas para admins do bot! 👑' });
+
+      const pages = [embed1, embed2, embed3, embed4, embed5, embed6];
+      let currentPage = 0;
+
+      const getRow = (page) => {
+        return new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId('prev_slash')
+            .setEmoji('⬅️')
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(page === 0),
+          new ButtonBuilder()
+            .setCustomId('next_slash')
+            .setEmoji('➡️')
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(page === pages.length - 1)
+        );
+      };
+
+      const response = await interaction.reply({
+        embeds: [pages[currentPage]],
+        components: [getRow(currentPage)],
+        fetchReply: true
+      });
+
+      const collector = response.createMessageComponentCollector({
+        filter: (i) => i.user.id === interaction.user.id,
+        time: 60000
+      });
+
+      collector.on('collect', async (i) => {
+        if (i.customId === 'prev_slash') currentPage--;
+        else if (i.customId === 'next_slash') currentPage++;
+
+        await i.update({
+          embeds: [pages[currentPage]],
+          components: [getRow(currentPage)]
+        });
+      });
+
+      collector.on('end', () => {
+        interaction.editReply({ components: [] }).catch(() => {});
+      });
     }
   },
 
