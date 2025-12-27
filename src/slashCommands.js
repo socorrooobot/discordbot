@@ -590,6 +590,64 @@ export const slashCommands = {
     }
   },
 
+  warn: {
+    data: new SlashCommandBuilder()
+      .setName('warn')
+      .setDescription('Avisa um usuário (Staff)')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Usuário a avisar')
+          .setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('motivo')
+          .setDescription('Motivo do aviso')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      const reason = interaction.options.getString('motivo') || 'Sem motivo';
+      const warnEmbed = new EmbedBuilder()
+        .setColor('#ffff00')
+        .setTitle('⚠️ Usuário Avisado')
+        .setDescription(`${user.tag} recebeu um aviso.`)
+        .addFields({ name: 'Motivo', value: reason });
+      await interaction.reply({ embeds: [warnEmbed] });
+      try { await user.send(`⚠️ Aviso em **${interaction.guild.name}**: ${reason}`); } catch (e) {}
+    }
+  },
+
+  kick: {
+    data: new SlashCommandBuilder()
+      .setName('kick')
+      .setDescription('Expulsa um usuário (Staff)')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Usuário a expulsar')
+          .setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('motivo')
+          .setDescription('Motivo da expulsão')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.KickMembers)) {
+        await interaction.reply({ content: '❌ Sem permissão!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      const reason = interaction.options.getString('motivo') || 'Sem motivo';
+      const member = await interaction.guild.members.fetch(user.id);
+      await member.kick(reason);
+      await interaction.reply(`✅ ${user.tag} expulso.`);
+    }
+  },
+
   miku: {
     data: new SlashCommandBuilder()
       .setName('miku')

@@ -300,6 +300,51 @@ export const commands = {
     }
   },
 
+  warn: {
+    name: '!warn',
+    description: 'Avisa um usuário',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+        await message.reply('❌ Você não tem permissão para avisar membros!');
+        return;
+      }
+      const user = message.mentions.users.first();
+      if (!user) {
+        await message.reply('❌ Mencione um usuário para avisar!');
+        return;
+      }
+      const reason = args.slice(1).join(' ') || 'Sem motivo especificado';
+      // Por enquanto apenas envia uma mensagem, um sistema de DB seria ideal para persistir
+      const warnEmbed = new EmbedBuilder()
+        .setColor('#ffff00')
+        .setTitle('⚠️ Usuário Avisado')
+        .setDescription(`${user.tag} recebeu um aviso.`)
+        .addFields({ name: 'Motivo', value: reason })
+        .setFooter({ text: 'Staff em ação' });
+      await message.reply({ embeds: [warnEmbed] });
+      try {
+        await user.send(`⚠️ Você recebeu um aviso no servidor **${message.guild.name}**!\n**Motivo:** ${reason}`);
+      } catch (e) {}
+    }
+  },
+
+  kick: {
+    name: '!kick',
+    description: 'Expulsa um usuário',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.KickMembers)) {
+        await message.reply('❌ Sem permissão!');
+        return;
+      }
+      const user = message.mentions.users.first();
+      if (!user) return message.reply('❌ Mencione alguém!');
+      const member = await message.guild.members.fetch(user.id);
+      const reason = args.slice(1).join(' ') || 'Sem motivo';
+      await member.kick(reason);
+      await message.reply(`✅ ${user.tag} expulso por: ${reason}`);
+    }
+  },
+
   ship: {
     name: '!ship',
     description: 'Vê a compatibilidade entre dois usuários',
@@ -543,6 +588,73 @@ export const commands = {
     }
   },
 
+  slowmode: {
+    name: '!slowmode',
+    description: 'Define o modo lento do canal',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        await message.reply('❌ Você não tem permissão para gerenciar canais!');
+        return;
+      }
+
+      const seconds = parseInt(args[0]);
+      if (isNaN(seconds)) {
+        await message.reply('❌ Use: `!slowmode <segundos>` (0 para desativar)');
+        return;
+      }
+
+      try {
+        await message.channel.setRateLimitPerUser(seconds);
+        await message.reply(`✅ Modo lento definido para **${seconds}** segundos.`);
+      } catch (error) {
+        console.error('Slowmode error:', error);
+        await message.reply('❌ Não consegui definir o modo lento!');
+      }
+    }
+  },
+
+  lock: {
+    name: '!lock',
+    description: 'Bloqueia o canal atual',
+    execute: async (message) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        await message.reply('❌ Você não tem permissão!');
+        return;
+      }
+
+      try {
+        await message.channel.permissionOverwrites.edit(message.guild.roles.everyone, {
+          SendMessages: false
+        });
+        await message.reply('🔒 Canal bloqueado com sucesso.');
+      } catch (error) {
+        console.error('Lock error:', error);
+        await message.reply('❌ Não consegui bloquear o canal!');
+      }
+    }
+  },
+
+  unlock: {
+    name: '!unlock',
+    description: 'Desbloqueia o canal atual',
+    execute: async (message) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        await message.reply('❌ Você não tem permissão!');
+        return;
+      }
+
+      try {
+        await message.channel.permissionOverwrites.edit(message.guild.roles.everyone, {
+          SendMessages: null
+        });
+        await message.reply('🔓 Canal desbloqueado com sucesso.');
+      } catch (error) {
+        console.error('Unlock error:', error);
+        await message.reply('❌ Não consegui desbloquear o canal!');
+      }
+    }
+  },
+
   search: {
     name: '!search',
     description: 'Pesquisa com a IA ou busca uma resposta',
@@ -628,11 +740,12 @@ export const commands = {
       // Embed 2: Moderação
       const embed2 = new EmbedBuilder()
         .setColor('#ff0000')
-        .setTitle('🔨 Comandos da Diva - Moderação')
+        .setTitle('🔨 Comandos da Diva - Moderação & Staff')
         .addFields(
-          { name: '⚖️ Controle', value: '`!ban @usuário` - Banir\n`!unban <ID>` - Desbanir\n`!mute @usuário <tempo>` - Mutar\n`!unmute @usuário` - Desmutar\n`!purge <número>` - Deletar mensagens\n`!lock` - Bloquear canal\n`!unlock` - Desbloquear canal', inline: false }
+          { name: '⚖️ Controle', value: '`!ban @user` - Banir\n`!unban <ID>` - Desbanir\n`!kick @user` - Expulsar\n`!warn @user` - Avisar\n`!mute @user <tempo>` - Mutar\n`!unmute @user` - Desmutar', inline: true },
+          { name: '🛠️ Chat', value: '`!purge <n>` - Limpar\n`!lock` - Trancar\n`!unlock` - Abrir\n`!slowmode <seg>` - Modo lento', inline: true }
         )
-        .setFooter({ text: 'Página 2 de 6 - Requer permissões' });
+        .setFooter({ text: 'Página 2 de 6 - Requer permissões de Staff' });
 
       // Embed 3: Economia & XP
       const embed3 = new EmbedBuilder()
