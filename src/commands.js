@@ -798,7 +798,7 @@ export const commands = {
         )
         .setFooter({ text: 'Página 1 de 6 - Use !comandos para ver mais' });
 
-      // Embed 2: Moderação
+      // Embed 2: Moderação & Staff
       const embed2 = new EmbedBuilder()
         .setColor('#ff0000')
         .setTitle('🔨 Comandos da Diva - Moderação & Staff')
@@ -808,7 +808,7 @@ export const commands = {
         )
         .setFooter({ text: 'Página 2 de 6 - Requer permissões de Staff' });
 
-      // Embed 3: Economia & XP
+      // Embed 3: Economia
       const embed3 = new EmbedBuilder()
         .setColor('#ffd700')
         .setTitle('💰 Comandos da Diva - Economia (Akita Neru)')
@@ -828,7 +828,7 @@ export const commands = {
           { name: '😴 AFK', value: '`!afk <motivo>` - Fique AFK\nReceberá DM se alguém mencionar você 🌑', inline: false },
           { name: '💕 Roleplay', value: '`!tapa` `!beijo` `!abraço` `!casar` `!divorciar` `!dança` - Com gifs! 🎭', inline: false }
         )
-        .setFooter({ text: 'Página 4 de 6 - Use / para slash commands!' });
+        .setFooter({ text: 'Página 4 de 6' });
 
       // Embed 5: Servidor & Slash Commands
       const embed5 = new EmbedBuilder()
