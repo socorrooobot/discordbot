@@ -590,6 +590,81 @@ export const slashCommands = {
     }
   },
 
+  miku: {
+    data: new SlashCommandBuilder()
+      .setName('miku')
+      .setDescription('Mostra uma imagem aleatória da Miku'),
+    execute: async (interaction) => {
+      const mikuImages = [
+        'https://i.pinimg.com/originals/94/d4/0b/94d40b947385906c55685906c5568590.jpg',
+        'https://i.pinimg.com/736x/8e/3c/6e/8e3c6e94e5e9e9e9e9e9e9e9e9e9e9e9.jpg',
+        'https://i.pinimg.com/736x/cf/6b/9d/cf6b9d8e3c6e94e5e9e9e9e9e9e9e9e9.jpg'
+      ];
+      const randomImage = mikuImages[Math.floor(Math.random() * mikuImages.length)];
+      const mikuEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('🎤 Hatsune Miku!')
+        .setImage(randomImage)
+        .setFooter({ text: 'Fufu~ Eu sou a Diva! 💙' });
+      await interaction.reply({ embeds: [mikuEmbed] });
+    }
+  },
+
+  ship: {
+    data: new SlashCommandBuilder()
+      .setName('ship')
+      .setDescription('Vê a compatibilidade entre dois usuários')
+      .addUserOption(option =>
+        option.setName('usuario1')
+          .setDescription('Primeiro usuário')
+          .setRequired(true)
+      )
+      .addUserOption(option =>
+        option.setName('usuario2')
+          .setDescription('Segundo usuário (opcional)')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      const user1 = interaction.options.getUser('usuario1');
+      const user2 = interaction.options.getUser('usuario2') || interaction.user;
+
+      const percent = Math.floor(Math.random() * 101);
+      let comment = '';
+      if (percent > 90) comment = '💖 Almas gêmeas! Um dueto perfeito!';
+      else if (percent > 70) comment = '💘 Muito amor envolvido!';
+      else if (percent > 50) comment = '💕 Tem futuro!';
+      else if (percent > 20) comment = '💔 Talvez como amigos...';
+      else comment = '🌑 O vazio é o único destino aqui.';
+
+      const shipEmbed = new EmbedBuilder()
+        .setColor('#ff69b4')
+        .setTitle('❤️ Medidor de Amor')
+        .setDescription(`**${user1.username}** + **${user2.username}**\n\n**${percent}%** compatíveis!\n\n${comment}`)
+        .setFooter({ text: 'Fufu~ O amor está no ar? 💙' });
+      await interaction.reply({ embeds: [shipEmbed] });
+    }
+  },
+
+  escolher: {
+    data: new SlashCommandBuilder()
+      .setName('escolher')
+      .setDescription('Ajuda a decidir entre várias opções')
+      .addStringOption(option =>
+        option.setName('opcoes')
+          .setDescription('Opções separadas por vírgula')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      const options = interaction.options.getString('opcoes').split(',');
+      if (options.length < 2) {
+        await interaction.reply({ content: '❌ Forneça pelo menos duas opções separadas por vírgula!', ephemeral: true });
+        return;
+      }
+      const choice = options[Math.floor(Math.random() * options.length)].trim();
+      await interaction.reply(`🎤 Eu escolho... **${choice}**! 💙`);
+    }
+  },
+
   quote: {
     data: new SlashCommandBuilder()
       .setName('quote')

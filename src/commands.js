@@ -281,6 +281,69 @@ export const commands = {
     }
   },
 
+  miku: {
+    name: '!miku',
+    description: 'Mostra uma imagem aleatória da Miku',
+    execute: async (message) => {
+      const mikuImages = [
+        'https://i.pinimg.com/originals/94/d4/0b/94d40b947385906c55685906c5568590.jpg',
+        'https://i.pinimg.com/736x/8e/3c/6e/8e3c6e94e5e9e9e9e9e9e9e9e9e9e9e9.jpg',
+        'https://i.pinimg.com/736x/cf/6b/9d/cf6b9d8e3c6e94e5e9e9e9e9e9e9e9e9.jpg'
+      ];
+      const randomImage = mikuImages[Math.floor(Math.random() * mikuImages.length)];
+      const mikuEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('🎤 Hatsune Miku!')
+        .setImage(randomImage)
+        .setFooter({ text: 'Fufu~ Eu sou a Diva! 💙' });
+      await message.reply({ embeds: [mikuEmbed] });
+    }
+  },
+
+  ship: {
+    name: '!ship',
+    description: 'Vê a compatibilidade entre dois usuários',
+    execute: async (message, args) => {
+      const user1 = message.mentions.users.first();
+      const user2 = message.mentions.users.at(1) || message.author;
+      
+      if (!user1) {
+        await message.reply('❌ Mencione pelo menos uma pessoa para shippar!');
+        return;
+      }
+
+      const percent = Math.floor(Math.random() * 101);
+      let comment = '';
+      if (percent > 90) comment = '💖 Almas gêmeas! Um dueto perfeito!';
+      else if (percent > 70) comment = '💘 Muito amor envolvido!';
+      else if (percent > 50) comment = '💕 Tem futuro!';
+      else if (percent > 20) comment = '💔 Talvez como amigos...';
+      else comment = '🌑 O vazio é o único destino aqui.';
+
+      const shipEmbed = new EmbedBuilder()
+        .setColor('#ff69b4')
+        .setTitle('❤️ Medidor de Amor')
+        .setDescription(`**${user1.username}** + **${user2.username}**\n\n**${percent}%** compatíveis!\n\n${comment}`)
+        .setFooter({ text: 'Fufu~ O amor está no ar? 💙' });
+      await message.reply({ embeds: [shipEmbed] });
+    }
+  },
+
+  escolher: {
+    name: '!escolher',
+    aliases: ['!choose'],
+    description: 'Ajuda a decidir entre várias opções',
+    execute: async (message, args) => {
+      const options = args.join(' ').split(',');
+      if (options.length < 2) {
+        await message.reply('❌ Use: `!escolher opção 1, opção 2, ...`');
+        return;
+      }
+      const choice = options[Math.floor(Math.random() * options.length)].trim();
+      await message.reply(`🎤 Eu escolho... **${choice}**! 💙`);
+    }
+  },
+
   status: {
     name: '!status',
     description: 'Vê o status do bot',
