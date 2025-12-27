@@ -1,5 +1,5 @@
 import { chat, clearHistory } from './gemini.js';
-import { EmbedBuilder, PermissionFlagsBits, AttachmentBuilder } from 'discord.js';
+import { EmbedBuilder, PermissionFlagsBits, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble, setBalance, getTimeUntilDaily } from './economy.js';
 import { getUserInfo, getXPLeaderboard, getUserRank, addXPDirect, removeXPDirect } from './xp.js';
 import { setAFK, removeAFK, isAFK } from './afk.js';
@@ -783,7 +783,7 @@ export const commands = {
   comandos: {
     name: '!comandos',
     aliases: ['!commands', '!cmds'],
-    description: 'Mostra todos os comandos disponíveis',
+    description: 'Mostra todos os comandos disponíveis com paginação',
     execute: async (message) => {
       // Embed 1: Conversa & Utilidade
       const embed1 = new EmbedBuilder()
@@ -796,7 +796,7 @@ export const commands = {
           { name: '🎲 Aleatório', value: '`!sorte` `!carta` `!rng` `!dado` `!poema`\n`!clima` `!cor` `!loucura` `!numero` `!destino`', inline: false },
           { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK\n`!avatar` - Ver avatar\n`!userinfo` - Info do usuário', inline: false }
         )
-        .setFooter({ text: 'Página 1 de 6 - Use !comandos para ver mais' });
+        .setFooter({ text: 'Página 1 de 6 - Use os botões abaixo para navegar' });
 
       // Embed 2: Moderação & Staff
       const embed2 = new EmbedBuilder()
@@ -855,7 +855,47 @@ export const commands = {
         )
         .setFooter({ text: 'Página 6 de 6 - Apenas para admins do bot! 👑' });
 
-      await message.reply({ embeds: [embed1, embed2, embed3, embed4, embed5, embed6] });
+      const pages = [embed1, embed2, embed3, embed4, embed5, embed6];
+      let currentPage = 0;
+
+      const getRow = (page) => {
+        return new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId('prev')
+            .setEmoji('⬅️')
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(page === 0),
+          new ButtonBuilder()
+            .setCustomId('next')
+            .setEmoji('➡️')
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(page === pages.length - 1)
+        );
+      };
+
+      const msg = await message.reply({
+        embeds: [pages[currentPage]],
+        components: [getRow(currentPage)]
+      });
+
+      const collector = msg.createMessageComponentCollector({
+        filter: (i) => i.user.id === message.author.id,
+        time: 60000
+      });
+
+      collector.on('collect', async (i) => {
+        if (i.customId === 'prev') currentPage--;
+        else if (i.customId === 'next') currentPage++;
+
+        await i.update({
+          embeds: [pages[currentPage]],
+          components: [getRow(currentPage)]
+        });
+      });
+
+      collector.on('end', () => {
+        msg.edit({ components: [] }).catch(() => {});
+      });
     }
   },
 
