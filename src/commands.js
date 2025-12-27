@@ -793,8 +793,7 @@ export const commands = {
           { name: '💬 Conversa & IA', value: '`!ask <pergunta>` - Pergunte algo à Diva\n`!ia <pergunta>` - Atalho rápido\n`!search <termo>` - Pesquisar', inline: false },
           { name: '✨ Especial', value: '`!quote` - Frase aleatória\n`!dream` - Sonho da Diva\n`!whisper` - Sussurro misterioso\n`!story` - Uma história', inline: false },
           { name: '🎮 Diversão & Novos', value: '`!miku` - Imagem fofa da Miku\n`!ship @usuário` - Compatibilidade de amor\n`!escolher op1, op2` - Eu decido por você', inline: false },
-          { name: '🎲 Aleatório - Parte 1', value: '`!sorte` `!carta` `!rng` `!dado` `!poema`\n`!clima` `!cor` `!loucura` `!numero` `!destino`', inline: false },
-          { name: '🎲 Aleatório - Parte 2', value: '`!morte` `!ironia` `!conselho` `!complimento`\n`!insulto` `!verdade` `!piada` `!xingamento`', inline: false },
+          { name: '🎲 Aleatório', value: '`!sorte` `!carta` `!rng` `!dado` `!poema`\n`!clima` `!cor` `!loucura` `!numero` `!destino`', inline: false },
           { name: '⚙️ Utilidade', value: '`!ping` - Latência\n`!status` - Status do bot\n`!clear` - Limpar chat\n`!afk <motivo>` - Marque-se como AFK\n`!avatar` - Ver avatar\n`!userinfo` - Info do usuário', inline: false }
         )
         .setFooter({ text: 'Página 1 de 6 - Use !comandos para ver mais' });
