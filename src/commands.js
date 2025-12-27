@@ -7,6 +7,7 @@ import { executeRP } from './rpCommands.js';
 import { generateProfileCard } from './profileCard.js';
 import { isAdmin, addAdmin, removeAdmin, getAdmins } from './admin.js';
 import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
+import { addWarn, getWarns, removeWarn, clearWarns } from './warns.js';
 import { getMultiplier, setMultiplier } from './multiplier.js';
 import { getXPMultiplier, setXPMultiplier } from './xp.js';
 
@@ -314,17 +315,78 @@ export const commands = {
         return;
       }
       const reason = args.slice(1).join(' ') || 'Sem motivo especificado';
-      // Por enquanto apenas envia uma mensagem, um sistema de DB seria ideal para persistir
+      
+      const count = addWarn(user.id, message.author.id, reason);
+      
       const warnEmbed = new EmbedBuilder()
         .setColor('#ffff00')
         .setTitle('⚠️ Usuário Avisado')
-        .setDescription(`${user.tag} recebeu um aviso.`)
+        .setDescription(`${user.tag} recebeu um aviso.\nEste é o aviso número **${count}**.`)
         .addFields({ name: 'Motivo', value: reason })
         .setFooter({ text: 'Staff em ação' });
+      
       await message.reply({ embeds: [warnEmbed] });
       try {
-        await user.send(`⚠️ Você recebeu um aviso no servidor **${message.guild.name}**!\n**Motivo:** ${reason}`);
+        await user.send(`⚠️ Você recebeu um aviso no servidor **${message.guild.name}**!\n**Motivo:** ${reason}\nTotal de avisos: **${count}**`);
       } catch (e) {}
+    }
+  },
+
+  warns: {
+    name: '!warns',
+    aliases: ['!avisos'],
+    description: 'Lista os avisos de um usuário',
+    execute: async (message) => {
+      const user = message.mentions.users.first() || message.author;
+      const userWarns = getWarns(user.id);
+      
+      if (userWarns.length === 0) {
+        await message.reply(`✅ **${user.username}** não possui nenhum aviso.`);
+        return;
+      }
+
+      const warnsEmbed = new EmbedBuilder()
+        .setColor('#ffff00')
+        .setTitle(`⚠️ Avisos de ${user.username}`)
+        .setDescription(userWarns.map((w, i) => `**${i + 1}.** Por <@${w.staffId}>: ${w.reason} *(<t:${Math.floor(new Date(w.timestamp).getTime() / 1000)}:R>)*`).join('\n'))
+        .setFooter({ text: `Total: ${userWarns.length} aviso(s)` });
+
+      await message.reply({ embeds: [warnsEmbed] });
+    }
+  },
+
+  unwarn: {
+    name: '!unwarn',
+    description: 'Remove o último aviso de um usuário',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+        await message.reply('❌ Sem permissão!');
+        return;
+      }
+      const user = message.mentions.users.first();
+      if (!user) return message.reply('❌ Mencione um usuário!');
+      
+      const userWarns = getWarns(user.id);
+      if (userWarns.length === 0) return message.reply('❌ Este usuário não tem avisos.');
+
+      removeWarn(user.id, userWarns.length - 1);
+      await message.reply(`✅ Último aviso de **${user.username}** foi removido.`);
+    }
+  },
+
+  clearwarns: {
+    name: '!clearwarns',
+    description: 'Limpa todos os avisos de um usuário',
+    execute: async (message) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
+        await message.reply('❌ Apenas administradores podem limpar todos os avisos!');
+        return;
+      }
+      const user = message.mentions.users.first();
+      if (!user) return message.reply('❌ Mencione um usuário!');
+      
+      clearWarns(user.id);
+      await message.reply(`✅ Todos os avisos de **${user.username}** foram limpos.`);
     }
   },
 
@@ -742,7 +804,7 @@ export const commands = {
         .setColor('#ff0000')
         .setTitle('🔨 Comandos da Diva - Moderação & Staff')
         .addFields(
-          { name: '⚖️ Controle', value: '`!ban @user` - Banir\n`!unban <ID>` - Desbanir\n`!kick @user` - Expulsar\n`!warn @user` - Avisar\n`!mute @user <tempo>` - Mutar\n`!unmute @user` - Desmutar', inline: true },
+          { name: '⚖️ Controle', value: '`!ban @user` - Banir\n`!unban <ID>` - Desbanir\n`!kick @user` - Expulsar\n`!warn @user` - Avisar\n`!unwarn @user` - Remover aviso\n`!warns @user` - Ver avisos\n`!clearwarns @user` - Limpar tudo', inline: true },
           { name: '🛠️ Chat', value: '`!purge <n>` - Limpar\n`!lock` - Trancar\n`!unlock` - Abrir\n`!slowmode <seg>` - Modo lento', inline: true }
         )
         .setFooter({ text: 'Página 2 de 6 - Requer permissões de Staff' });

@@ -7,6 +7,7 @@ import { startGiveaway } from './giveaway.js';
 import { executeRPSlash } from './rpCommands.js';
 import { isBlacklisted, addToBlacklist, removeFromBlacklist } from './blacklist.js';
 import { isAdmin, addAdmin, removeAdmin } from './admin.js';
+import { addWarn, getWarns, removeWarn, clearWarns } from './warns.js';
 import { getMultiplier, setMultiplier } from './multiplier.js';
 import { setRestartChannel } from './restartNotification.js';
 import { setTicketCategory, setSupportRole, sendTicketPanel, getTicketStats } from './tickets.js';
@@ -611,13 +612,64 @@ export const slashCommands = {
       }
       const user = interaction.options.getUser('usuario');
       const reason = interaction.options.getString('motivo') || 'Sem motivo';
+      
+      const count = addWarn(user.id, interaction.user.id, reason);
+      
       const warnEmbed = new EmbedBuilder()
         .setColor('#ffff00')
         .setTitle('⚠️ Usuário Avisado')
-        .setDescription(`${user.tag} recebeu um aviso.`)
+        .setDescription(`${user.tag} recebeu um aviso.\nTotal de avisos: **${count}**`)
         .addFields({ name: 'Motivo', value: reason });
+      
       await interaction.reply({ embeds: [warnEmbed] });
-      try { await user.send(`⚠️ Aviso em **${interaction.guild.name}**: ${reason}`); } catch (e) {}
+      try { await user.send(`⚠️ Aviso em **${interaction.guild.name}**: ${reason}\nTotal: ${count}`); } catch (e) {}
+    }
+  },
+
+  warns: {
+    data: new SlashCommandBuilder()
+      .setName('warns')
+      .setDescription('Ver avisos de um usuário')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Usuário para ver avisos')
+          .setRequired(false)
+      ),
+    execute: async (interaction) => {
+      const user = interaction.options.getUser('usuario') || interaction.user;
+      const userWarns = getWarns(user.id);
+      
+      if (userWarns.length === 0) {
+        await interaction.reply({ content: `✅ **${user.username}** não possui avisos.`, ephemeral: true });
+        return;
+      }
+
+      const warnsEmbed = new EmbedBuilder()
+        .setColor('#ffff00')
+        .setTitle(`⚠️ Avisos de ${user.username}`)
+        .setDescription(userWarns.map((w, i) => `**${i + 1}.** Por <@${w.staffId}>: ${w.reason}`).join('\n'));
+
+      await interaction.reply({ embeds: [warnsEmbed] });
+    }
+  },
+
+  clearwarns: {
+    data: new SlashCommandBuilder()
+      .setName('clearwarns')
+      .setDescription('Limpa todos os avisos de um usuário (Admin)')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Usuário para limpar avisos')
+          .setRequired(true)
+      ),
+    execute: async (interaction) => {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+        await interaction.reply({ content: '❌ Apenas Admins!', ephemeral: true });
+        return;
+      }
+      const user = interaction.options.getUser('usuario');
+      clearWarns(user.id);
+      await interaction.reply(`✅ Avisos de **${user.username}** limpos.`);
     }
   },
 
