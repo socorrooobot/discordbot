@@ -45,9 +45,9 @@ export const commands = {
     description: 'Mostra todos os comandos disponíveis',
     execute: async (message) => {
       const { EmbedBuilder } = await import('discord.js');
-      const cmdsEmbed = new EmbedBuilder()
+      const helpEmbed = new EmbedBuilder()
         .setColor('#00bfff')
-        .setTitle('📑 Todos os Comandos')
+        .setTitle('🎤 Todos os Comandos')
         .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
         .addFields(
           { name: '💬 Conversa', value: '`!ask`, `!chat`' },
@@ -60,7 +60,7 @@ export const commands = {
         )
         .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
 
-      await message.reply({ embeds: [cmdsEmbed] });
+      await message.reply({ embeds: [helpEmbed] });
     }
   },
 
@@ -72,7 +72,7 @@ export const commands = {
       const { EmbedBuilder } = await import('discord.js');
       const cmdsEmbed = new EmbedBuilder()
         .setColor('#00bfff')
-        .setTitle('📑 Todos os Comandos')
+        .setTitle('🎤 Todos os Comandos')
         .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
         .addFields(
           { name: '💬 Conversa', value: '`!ask`, `!chat`' },
