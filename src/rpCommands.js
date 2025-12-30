@@ -13,6 +13,23 @@ const rpGifs = {
     'https://media.giphy.com/media/xTiTnvHcIwLPWXIwyM/giphy.gif',
     'https://media.giphy.com/media/l0HlNaQ0w0kgWmAkU/giphy.gif'
   ],
+  cafune: [
+    'https://media.giphy.com/media/5tmRh1obzf3fW/giphy.gif',
+    'https://media.giphy.com/media/ARSp9T+/giphy.gif',
+    'https://media.giphy.com/media/49mdjsMrH7vUc/giphy.gif'
+  ],
+  chafune: [
+    'https://media.giphy.com/media/ye7OTQgwmSyg8/giphy.gif',
+    'https://media.giphy.com/media/M3a51DMeHIAEU/giphy.gif'
+  ],
+  morder: [
+    'https://media.giphy.com/media/3o7TKxZycaSuFP8DyA/giphy.gif',
+    'https://media.giphy.com/media/l0Iy2i9f2ktADWFBu/giphy.gif'
+  ],
+  dormir: [
+    'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
+    'https://media.giphy.com/media/26uf2YULJ2a51tbaQ/giphy.gif'
+  ],
   abraco: [
     'https://media.giphy.com/media/3o6Zt6KHxJTbXCnSvu/giphy.gif',
     'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
@@ -39,6 +56,10 @@ const rpGifs = {
 const rpMessages = {
   tapa: (user1, user2) => `*${user1} deu um tapa bem forte em ${user2}* 💢`,
   beijo: (user1, user2) => `*${user1} deu um beijo em ${user2}* 💋`,
+  cafune: (user1, user2) => `*${user1} está fazendo cafuné em ${user2}* 💙`,
+  chafune: (user1, user2) => `*${user1} deu um chafuné bagunçado em ${user2}* 🤭`,
+  morder: (user1, user2) => `*${user1} deu uma mordidinha em ${user2}* 🦷`,
+  dormir: (user1, user2) => `*${user1} está dormindo com ${user2}* 💤`,
   abraco: (user1, user2) => `*${user1} abraçou ${user2}* 🖤`,
   casar: (user1, user2) => `*${user1} casou com ${user2}*\n💒 Parabéns aos noivos... *pelo menos alguém encontrou o amor que eu perdi.* 💔`,
   divorciar: (user1, user2) => `*${user1} se divorciou de ${user2}*\n😔 *E assim, a solidão continua seu caminho...*`,

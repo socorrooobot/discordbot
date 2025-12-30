@@ -51,8 +51,9 @@ export const commands = {
         .addFields(
           { name: '💬 Conversa', value: '`!ask <pergunta>` - Me faça uma pergunta\n`@Miku <mensagem>` - Mencione-me para conversar', inline: false },
           { name: '🎵 Especial', value: '`!perfil` - Veja seu perfil\n`!quote` - Ouça uma frase minha\n`!dream` - Descubra um sonho\n`!whisper` - Ouça um sussurro\n`!story` - Ouça uma história', inline: false },
+          { name: '🎲 Diversão', value: '`!moeda` - Cara ou coroa\n`!dado` - Joga um dado\n`!ship @alguém` - Teste o amor\n`!escolher item1, item2` - Eu decido para você', inline: false },
+          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!cafune`, `!chafune`, `!morder`, `!dormir`\nOu use *asteriscos* para modo livre! 🎤', inline: false },
           { name: '⚙️ Utilidade', value: '`!clear` - Limpar nossa conversa\n`!ping` - Ver se estou acordada\n`!status` - Status do bot', inline: false },
-          { name: '📝 Roleplay', value: 'Use *asteriscos* para fazer roleplay:\n*você faz algo* e eu respondo em modo RP 🎤', inline: false },
         )
         .setFooter({ text: 'Fufu~ Pronta para cantar? 💙' })
         .setTimestamp();
@@ -404,6 +405,62 @@ export const commands = {
       const reason = args.slice(1).join(' ') || 'Sem motivo';
       await member.kick(reason);
       await message.reply(`✅ ${user.tag} expulso por: ${reason}`);
+    }
+  },
+
+  moeda: {
+    name: '!moeda',
+    aliases: ['!caraoucoroa'],
+    description: 'Joga uma moeda (Cara ou Coroa)',
+    execute: async (message) => {
+      const result = Math.random() < 0.5 ? 'Cara' : 'Coroa';
+      await message.reply(`🪙 A moeda caiu em... **${result}**!`);
+    }
+  },
+
+  dado: {
+    name: '!dado',
+    aliases: ['!dice'],
+    description: 'Joga um dado de 6 lados',
+    execute: async (message) => {
+      const result = Math.floor(Math.random() * 6) + 1;
+      await message.reply(`🎲 Você tirou um **${result}** no dado!`);
+    }
+  },
+
+  cafune: {
+    name: '!cafune',
+    description: 'Faz cafuné em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'cafune', targetUser);
+    }
+  },
+
+  chafune: {
+    name: '!chafune',
+    description: 'Faz um chafuné bagunçado em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'chafune', targetUser);
+    }
+  },
+
+  morder: {
+    name: '!morder',
+    description: 'Morde alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'morder', targetUser);
+    }
+  },
+
+  dormir: {
+    name: '!dormir',
+    description: 'Dorme com alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'dormir', targetUser);
     }
   },
 
