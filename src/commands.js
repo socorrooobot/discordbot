@@ -4006,29 +4006,8 @@ cmds: {
     }
   },
 
-  espelho: {
-    name: '!espelho',
-    aliases: ['!mirror', '!reflex'],
-    description: 'Olhe no espelho e veja o que ele reflete',
-    execute: async (message) => {
-      const reflections = [
-        '🪞 Você vê alguém cansado, mas resiliente.',
-        '🪞 O espelho reflete um brilho de curiosidade em seus olhos.',
-        '🪞 Uma sombra de melancolia paira, mas também uma faísca de esperança.',
-        '🪞 O reflexo mostra alguém que busca respostas.',
-        '🪞 Você vê um enigma, com camadas a serem descobertas.',
-        '🪞 O espelho mostra um guerreiro, marcado mas não quebrado.',
-      ];
-      const reflection = reflections[Math.floor(Math.random() * reflections.length)];
-      const mirrorEmbed = new EmbedBuilder()
-        .setColor('#a0a0a0')
-        .setTitle('🪞 O Que o Espelho Vê')
-        .setDescription(reflection)
-        .setFooter({ text: '*O reflexo é apenas uma parte da verdade.* 🖤' });
-      await message.reply({ embeds: [mirrorEmbed] });
-    }
-  },
-
+  o é apenas uma parte da verdade.* 🖤' });
+      await message.reply({ 
   ritual: {
     name: '!ritual',
     aliases: ['!rite', '!ceremony'],
@@ -4049,9 +4028,7 @@ cmds: {
         .setDescription(ritual)
         .setFooter({ text: '*Pequenos atos criam grandes mudanças.* 🖤' });
       await message.reply({ embeds: [ritualEmbed] });
-    }
-  },
-
+  
   oferenda: {
     name: '!oferenda',
     aliases: ['!offering', '!gift'],
@@ -4158,5 +4135,5 @@ ping: {
       helpEmbed.setFooter({ text: '*Cada comando esconde um segredo...* 🖤' });
 
       message.channel.send({ embeds: [helpEmbed] });
-    },
-      }
+    }
+  }
