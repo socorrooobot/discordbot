@@ -166,6 +166,10 @@ async function main() {
       // PRIMEIRO: Verificar se é um comando com prefixo !
       if (message.content.startsWith('!')) {
         try {
+          // Evitar processamento duplo se houver múltiplas instâncias ou eventos
+          if (message.client.lastProcessedMessageId === message.id) return;
+          message.client.lastProcessedMessageId = message.id;
+
           const wasHandled = await handleCommand(message, client);
           if (wasHandled) return; // Se comando foi executado, PARA AQUI
         } catch (error) {

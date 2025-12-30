@@ -44,30 +44,7 @@ export const commands = {
     aliases: ['!help'],
     description: 'Mostra todos os comandos disponíveis',
     execute: async (message) => {
-      const helpEmbed = new EmbedBuilder()
-        .setColor('#00bfff')
-        .setTitle('🎤 Comandos da Miku')
-        .setDescription('Vamos cantar juntos! Aqui está tudo que você pode fazer comigo...')
-        .addFields(
-          { name: '💬 Conversa', value: '`!ask <pergunta>` - Me faça uma pergunta\n`@Miku <mensagem>` - Mencione-me para conversar', inline: false },
-          { name: '🎵 Especial', value: '`!perfil` - Veja seu perfil\n`!quote` - Ouça uma frase minha\n`!dream` - Descubra um sonho\n`!whisper` - Ouça um sussurro\n`!story` - Ouça uma história', inline: false },
-          { name: '🎲 Diversão', value: '`!moeda`, `!dado`, `!8ball`, `!gayrate`, `!lovecalc`, `!kill`, `!reverse`, `!piada`, `!fato`, `!ship`, `!avatar`', inline: false },
-          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!lick`, `!nom`, `!feed`, `!tickle`, `!cuddle`, `!shrug`, `!highfive`, `!handshake`, `!angry`', inline: false },
-          { name: 'ℹ️ Informação', value: '`!userinfo @u`, `!serverinfo`, `!invite`, `!status`, `!perfil`', inline: false },
-          { name: '⚙️ Utilidade', value: '`!math <conta>`, `!clear`, `!ping`', inline: false },
-        )
-        .setFooter({ text: 'Fufu~ Pronta para cantar? 💙' })
-        .setTimestamp();
-
-      if (message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
-        helpEmbed.addFields({ 
-          name: '🛡️ Moderação', 
-          value: '`!ban @u`, `!kick @u`, `!mute @u 5m`, `!warn @u`, `!limpar_chat <num>`, `!lock`/`!unlock`, `!slowmode <seg>`', 
-          inline: false 
-        });
-      }
-
-      await message.reply({ embeds: [helpEmbed] });
+      return commands.cmds.execute(message);
     }
   },
 
