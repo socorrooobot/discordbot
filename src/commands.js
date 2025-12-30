@@ -51,9 +51,10 @@ export const commands = {
         .addFields(
           { name: '💬 Conversa', value: '`!ask <pergunta>` - Me faça uma pergunta\n`@Miku <mensagem>` - Mencione-me para conversar', inline: false },
           { name: '🎵 Especial', value: '`!perfil` - Veja seu perfil\n`!quote` - Ouça uma frase minha\n`!dream` - Descubra um sonho\n`!whisper` - Ouça um sussurro\n`!story` - Ouça uma história', inline: false },
-          { name: '🎲 Diversão', value: '`!moeda` - Cara ou coroa\n`!dado` - Joga um dado\n`!ship @alguém` - Teste o amor\n`!escolher item1, item2` - Eu decido para você', inline: false },
-          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!cafune`, `!chafune`, `!morder`, `!dormir`\nOu use *asteriscos* para modo livre! 🎤', inline: false },
-          { name: '⚙️ Utilidade', value: '`!clear` - Limpar nossa conversa\n`!ping` - Ver se estou acordada\n`!status` - Status do bot', inline: false },
+          { name: '🎲 Diversão', value: '`!moeda`, `!dado`, `!8ball <pergunta>`, `!ship @u`, `!avatar @u`', inline: false },
+          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!cafune`, `!chafune`, `!morder`, `!dormir`', inline: false },
+          { name: 'ℹ️ Informação', value: '`!userinfo @u`, `!serverinfo`, `!status`, `!perfil`', inline: false },
+          { name: '⚙️ Utilidade', value: '`!clear` - Limpar nossa conversa\n`!ping` - Ver se estou acordada', inline: false },
         )
         .setFooter({ text: 'Fufu~ Pronta para cantar? 💙' })
         .setTimestamp();
@@ -483,6 +484,113 @@ export const commands = {
     execute: async (message) => {
       const result = Math.random() < 0.5 ? 'Cara' : 'Coroa';
       await message.reply(`🪙 A moeda caiu em... **${result}**!`);
+    }
+  },
+
+  avatar: {
+    name: '!avatar',
+    description: 'Mostra o avatar de um usuário',
+    execute: async (message) => {
+      const user = message.mentions.users.first() || message.author;
+      const avatarEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle(`🖼️ Avatar de ${user.username}`)
+        .setImage(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .setFooter({ text: `Pedido por ${message.author.username}` });
+      await message.reply({ embeds: [avatarEmbed] });
+    }
+  },
+
+  userinfo: {
+    name: '!userinfo',
+    description: 'Mostra informações sobre um usuário',
+    execute: async (message) => {
+      const user = message.mentions.users.first() || message.author;
+      const member = await message.guild.members.fetch(user.id);
+      const infoEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle(`👤 Informações de ${user.username}`)
+        .setThumbnail(user.displayAvatarURL())
+        .addFields(
+          { name: 'Tag', value: user.tag, inline: true },
+          { name: 'ID', value: user.id, inline: true },
+          { name: 'Entrou no Servidor', value: member.joinedAt.toLocaleDateString('pt-BR'), inline: true },
+          { name: 'Conta Criada', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
+          { name: 'Cargos', value: member.roles.cache.map(r => r.name).slice(0, 5).join(', ') || 'Nenhum' }
+        );
+      await message.reply({ embeds: [infoEmbed] });
+    }
+  },
+
+  serverinfo: {
+    name: '!serverinfo',
+    description: 'Mostra informações sobre o servidor',
+    execute: async (message) => {
+      const { guild } = message;
+      const serverEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle(`🏰 ${guild.name}`)
+        .setThumbnail(guild.iconURL())
+        .addFields(
+          { name: 'Dono', value: `<@${guild.ownerId}>`, inline: true },
+          { name: 'Membros', value: `${guild.memberCount}`, inline: true },
+          { name: 'Cargos', value: `${guild.roles.cache.size}`, inline: true },
+          { name: 'Canais', value: `${guild.channels.cache.size}`, inline: true },
+          { name: 'Criado em', value: guild.createdAt.toLocaleDateString('pt-BR'), inline: true }
+        );
+      await message.reply({ embeds: [serverEmbed] });
+    }
+  },
+
+  '8ball': {
+    name: '!8ball',
+    description: 'Faça uma pergunta para a bola 8 mágica',
+    execute: async (message, args) => {
+      const question = args.join(' ');
+      if (!question) return message.reply('❌ Você precisa fazer uma pergunta!');
+      
+      const responses = [
+        'Sim.', 'Não.', 'Talvez.', 'Com certeza!', 'Minhas fontes dizem que não.',
+        'Não conte com isso.', 'Pergunte novamente mais tarde.', 'Sinais apontam que sim.',
+        'Não posso prever agora.', 'Definitivamente sim.', 'Minha resposta é não.'
+      ];
+      const result = responses[Math.floor(Math.random() * responses.length)];
+      
+      const ballEmbed = new EmbedBuilder()
+        .setColor('#000000')
+        .setTitle('🔮 Bola 8 Mágica')
+        .addFields(
+          { name: 'Pergunta', value: question },
+          { name: 'Resposta', value: result }
+        );
+      await message.reply({ embeds: [ballEmbed] });
+    }
+  },
+
+  slap: {
+    name: '!slap',
+    description: 'Dá um tapa em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'slap', targetUser);
+    }
+  },
+
+  pat: {
+    name: '!pat',
+    description: 'Faz carinho em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'pat', targetUser);
+    }
+  },
+
+  poke: {
+    name: '!poke',
+    description: 'Cutuca alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'poke', targetUser);
     }
   },
 

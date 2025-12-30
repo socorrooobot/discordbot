@@ -30,6 +30,20 @@ const rpGifs = {
     'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
     'https://media.giphy.com/media/26uf2YULJ2a51tbaQ/giphy.gif'
   ],
+  slap: [
+    'https://media.giphy.com/media/gSIz6OOT5ggSI/giphy.gif',
+    'https://media.giphy.com/media/Zau0yrl17uzdK/giphy.gif',
+    'https://media.giphy.com/media/68S5R6uXisjDO/giphy.gif'
+  ],
+  pat: [
+    'https://media.giphy.com/media/5tmRh1obzf3fW/giphy.gif',
+    'https://media.giphy.com/media/49mdjsMrH7vUc/giphy.gif',
+    'https://media.giphy.com/media/ARSp9T+/giphy.gif'
+  ],
+  poke: [
+    'https://media.giphy.com/media/pM6U3Uat90yPe/giphy.gif',
+    'https://media.giphy.com/media/6fWvA92G34X0A/giphy.gif'
+  ],
   abraco: [
     'https://media.giphy.com/media/3o6Zt6KHxJTbXCnSvu/giphy.gif',
     'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
@@ -60,6 +74,9 @@ const rpMessages = {
   chafune: (user1, user2) => `*${user1} deu um chafuné bagunçado em ${user2}* 🤭`,
   morder: (user1, user2) => `*${user1} deu uma mordidinha em ${user2}* 🦷`,
   dormir: (user1, user2) => `*${user1} está dormindo com ${user2}* 💤`,
+  slap: (user1, user2) => `*${user1} deu um tapa em ${user2}!* 😠`,
+  pat: (user1, user2) => `*${user1} faz carinho em ${user2}* 😊`,
+  poke: (user1, user2) => `*${user1} cutuca ${user2}* 👉`,
   abraco: (user1, user2) => `*${user1} abraçou ${user2}* 🖤`,
   casar: (user1, user2) => `*${user1} casou com ${user2}*\n💒 Parabéns aos noivos... *pelo menos alguém encontrou o amor que eu perdi.* 💔`,
   divorciar: (user1, user2) => `*${user1} se divorciou de ${user2}*\n😔 *E assim, a solidão continua seu caminho...*`,
