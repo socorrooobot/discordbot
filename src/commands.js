@@ -51,10 +51,10 @@ export const commands = {
         .addFields(
           { name: '💬 Conversa', value: '`!ask <pergunta>` - Me faça uma pergunta\n`@Miku <mensagem>` - Mencione-me para conversar', inline: false },
           { name: '🎵 Especial', value: '`!perfil` - Veja seu perfil\n`!quote` - Ouça uma frase minha\n`!dream` - Descubra um sonho\n`!whisper` - Ouça um sussurro\n`!story` - Ouça uma história', inline: false },
-          { name: '🎲 Diversão', value: '`!moeda`, `!dado`, `!8ball <pergunta>`, `!ship @u`, `!avatar @u`', inline: false },
-          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!cafune`, `!chafune`, `!morder`, `!dormir`', inline: false },
+          { name: '🎲 Diversão', value: '`!moeda`, `!dado`, `!8ball`, `!gayrate`, `!lovecalc`, `!kill`, `!reverse`, `!ship`, `!avatar`', inline: false },
+          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!lick`, `!nom`, `!feed`, `!tickle`, `!cuddle`, `!shrug`, `!cafune`, `!chafune`, `!morder`, `!dormir`', inline: false },
           { name: 'ℹ️ Informação', value: '`!userinfo @u`, `!serverinfo`, `!status`, `!perfil`', inline: false },
-          { name: '⚙️ Utilidade', value: '`!clear` - Limpar nossa conversa\n`!ping` - Ver se estou acordada', inline: false },
+          { name: '⚙️ Utilidade', value: '`!math <conta>`, `!clear`, `!ping`', inline: false },
         )
         .setFooter({ text: 'Fufu~ Pronta para cantar? 💙' })
         .setTimestamp();
@@ -564,6 +564,123 @@ export const commands = {
           { name: 'Resposta', value: result }
         );
       await message.reply({ embeds: [ballEmbed] });
+    }
+  },
+
+  gayrate: {
+    name: '!gayrate',
+    description: 'Calcula o quão gay você é',
+    execute: async (message) => {
+      const user = message.mentions.users.first() || message.author;
+      const rate = Math.floor(Math.random() * 101);
+      await message.reply(`🌈 **${user.username}** é **${rate}%** gay!`);
+    }
+  },
+
+  lovecalc: {
+    name: '!lovecalc',
+    description: 'Calcula o amor entre dois usuários',
+    execute: async (message, args) => {
+      const user1 = message.author;
+      const user2 = message.mentions.users.first();
+      if (!user2) return message.reply('❌ Mencione alguém!');
+      const rate = Math.floor(Math.random() * 101);
+      await message.reply(`❤️ O amor entre **${user1.username}** e **${user2.username}** é de **${rate}%**!`);
+    }
+  },
+
+  kill: {
+    name: '!kill',
+    description: 'Mata alguém (de mentirinha!)',
+    execute: async (message) => {
+      const user = message.mentions.users.first();
+      if (!user) return message.reply('❌ Mencione quem você quer eliminar!');
+      const ways = [
+        `empurrou **${user.username}** de um penhasco! 🏔️`,
+        `atropelou **${user.username}** com um caminhão de sorvete! 🍦`,
+        `fez **${user.username}** ouvir funk no volume máximo até explodir! 🔊`,
+        `esqueceu **${user.username}** no vácuo por 10 anos! 💨`
+      ];
+      const result = ways[Math.floor(Math.random() * ways.length)];
+      await message.reply(`💀 **${message.author.username}** ${result}`);
+    }
+  },
+
+  reverse: {
+    name: '!reverse',
+    description: 'Inverte um texto',
+    execute: async (message, args) => {
+      const text = args.join(' ');
+      if (!text) return message.reply('❌ Digite algo para inverter!');
+      await message.reply(text.split('').reverse().join(''));
+    }
+  },
+
+  math: {
+    name: '!math',
+    description: 'Resolve uma conta matemática',
+    execute: async (message, args) => {
+      const expr = args.join(' ');
+      if (!expr) return message.reply('❌ Digite a conta! Ex: `!math 2 + 2`');
+      try {
+        const result = eval(expr.replace(/[^-()\d/*+.]/g, ''));
+        await message.reply(`🧮 Resultado: **${result}**`);
+      } catch {
+        await message.reply('❌ Conta inválida!');
+      }
+    }
+  },
+
+  lick: {
+    name: '!lick',
+    description: 'Lambe alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'lick', targetUser);
+    }
+  },
+
+  nom: {
+    name: '!nom',
+    description: 'Dá um nom em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'nom', targetUser);
+    }
+  },
+
+  feed: {
+    name: '!feed',
+    description: 'Alimenta alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'feed', targetUser);
+    }
+  },
+
+  tickle: {
+    name: '!tickle',
+    description: 'Faz cócegas em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'tickle', targetUser);
+    }
+  },
+
+  cuddle: {
+    name: '!cuddle',
+    description: 'Se aconchega em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'cuddle', targetUser);
+    }
+  },
+
+  shrug: {
+    name: '!shrug',
+    description: 'Dá de ombros',
+    execute: async (message) => {
+      await executeRP(message, 'shrug', null);
     }
   },
 

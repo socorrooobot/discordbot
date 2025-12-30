@@ -44,6 +44,30 @@ const rpGifs = {
     'https://media.giphy.com/media/pM6U3Uat90yPe/giphy.gif',
     'https://media.giphy.com/media/6fWvA92G34X0A/giphy.gif'
   ],
+  lick: [
+    'https://media.giphy.com/media/Z68p4wC6kZ4Z2/giphy.gif',
+    'https://media.giphy.com/media/10mIs796Y8OayY/giphy.gif'
+  ],
+  nom: [
+    'https://media.giphy.com/media/U6Fr70T0g00I8/giphy.gif',
+    'https://media.giphy.com/media/12u5y93isI3O5G/giphy.gif'
+  ],
+  feed: [
+    'https://media.giphy.com/media/G1KpxHxsX9o4w/giphy.gif',
+    'https://media.giphy.com/media/yYpS7oO09U77O/giphy.gif'
+  ],
+  tickle: [
+    'https://media.giphy.com/media/3o7TKS3X3hWjM4K6K4/giphy.gif',
+    'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif'
+  ],
+  cuddle: [
+    'https://media.giphy.com/media/143v0Z476P8356/giphy.gif',
+    'https://media.giphy.com/media/l2Jhv9GPuis6mS8Xm/giphy.gif'
+  ],
+  shrug: [
+    'https://media.giphy.com/media/v76IbjUW3Prj2/giphy.gif',
+    'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif'
+  ],
   abraco: [
     'https://media.giphy.com/media/3o6Zt6KHxJTbXCnSvu/giphy.gif',
     'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
@@ -77,6 +101,12 @@ const rpMessages = {
   slap: (user1, user2) => `*${user1} deu um tapa em ${user2}!* 😠`,
   pat: (user1, user2) => `*${user1} faz carinho em ${user2}* 😊`,
   poke: (user1, user2) => `*${user1} cutuca ${user2}* 👉`,
+  lick: (user1, user2) => `*${user1} lambeu ${user2}!* 👅`,
+  nom: (user1, user2) => `*${user1} deu um nom em ${user2}!* 😋`,
+  feed: (user1, user2) => `*${user1} está alimentando ${user2}* 🍱`,
+  tickle: (user1, user2) => `*${user1} faz cócegas em ${user2}!* 😂`,
+  cuddle: (user1, user2) => `*${user1} se aconchega em ${user2}* 🥰`,
+  shrug: (user1) => `*${user1} dá de ombros...* 🤷`,
   abraco: (user1, user2) => `*${user1} abraçou ${user2}* 🖤`,
   casar: (user1, user2) => `*${user1} casou com ${user2}*\n💒 Parabéns aos noivos... *pelo menos alguém encontrou o amor que eu perdi.* 💔`,
   divorciar: (user1, user2) => `*${user1} se divorciou de ${user2}*\n😔 *E assim, a solidão continua seu caminho...*`,
