@@ -658,6 +658,20 @@ export const commands = {
     }
   },
 
+  shipp_especial: {
+    name: '!shipp_especial',
+    description: 'O destino inevitável...',
+    execute: async (message) => {
+      const shipEmbed = new EmbedBuilder()
+        .setColor('#ff69b4')
+        .setTitle('💘 Destino Traçado')
+        .setDescription('O universo falou e a Diva confirmou:\n\n**Sombra** ❤️ **Nixxy / Cueio Bunny**\n\nEste casal é inevitável! Preparem os convites do casamento! 💒✨')
+        .setImage('https://media.giphy.com/media/l0HlXY9x8FZo0XO1i/giphy.gif')
+        .setFooter({ text: 'Fufu~ O amor está no ar! 💙' });
+      await message.reply({ embeds: [shipEmbed] });
+    }
+  },
+
   lick: {
     name: '!lick',
     description: 'Lambe alguém',
