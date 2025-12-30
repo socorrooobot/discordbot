@@ -76,91 +76,22 @@ export const commands = {
     aliases: ['!comandos'],
     description: 'Lista simplificada de todos os comandos',
     execute: async (message) => {
-      const pages = [
-        {
-          title: '💬 Conversa & 🎵 Especial',
-          fields: [
-            { name: 'Conversa', value: '`!ask`, `@Miku`' },
-            { name: 'Especial', value: '`!perfil`, `!quote`, `!dream`, `!whisper`, `!story`, `!topxp`' }
-          ]
-        },
-        {
-          title: '🎲 Diversão',
-          fields: [
-            { name: 'Jogos & Sorte', value: '`!moeda`, `!dado`, `!8ball`, `!gayrate`, `!lovecalc`, `!kill`, `!reverse`, `!ship`, `!avatar`' },
-            { name: 'Especiais', value: '`!shipp_especial`, `!piada`, `!fato`' }
-          ]
-        },
-        {
-          title: '📝 Roleplay (Interação)',
-          fields: [
-            { name: 'Ações', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!lick`, `!nom`, `!feed`, `!tickle`, `!cuddle`, `!shrug`, `!highfive`, `!handshake`, `!angry`' }
-          ]
-        },
-        {
-          title: '💰 Economia',
-          fields: [
-            { name: 'Geral', value: '`!saldo`, `!daily`, `!trabalhar`, `!transferir`, `!rankmoney`, `!setmoney` (Admin)' },
-            { name: 'Apostas', value: '`!apostar`, `!slots` (Em breve)' }
-          ]
-        },
-        {
-          title: '⚙️ Utilidade & 🛡️ Staff',
-          fields: [
-            { name: 'Utilidade', value: '`!math`, `!clear`, `!ping`, `!invite`, `!status`' },
-            { name: 'Staff', value: '`!ban`, `!kick`, `!mute`, `!warn`, `!limpar_chat`, `!lock`, `!unlock`, `!slowmode`' }
-          ]
-        }
-      ];
+      const cmdsEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('📑 Todos os Comandos')
+        .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
+        .addFields(
+          { name: '💬 Conversa', value: '`!ask`, `!chat`' },
+          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`' },
+          { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`' },
+          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`' },
+          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`' },
+          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`' },
+          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`, `!clear`' }
+        )
+        .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
 
-      let currentPage = 0;
-
-      const createEmbed = (pageIdx) => {
-        const page = pages[pageIdx];
-        return new EmbedBuilder()
-          .setColor('#00bfff')
-          .setTitle(`📋 ${page.title}`)
-          .setDescription('Use os botões abaixo para navegar entre as categorias!')
-          .addFields(page.fields)
-          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length} | Fufu~ 💙` });
-      };
-
-      const row = new ActionRowBuilder()
-        .addComponents(
-          new ButtonBuilder()
-            .setCustomId('prev_cmds')
-            .setLabel('Anterior')
-            .setEmoji('⬅️')
-            .setStyle(ButtonStyle.Primary),
-          new ButtonBuilder()
-            .setCustomId('next_cmds')
-            .setLabel('Próximo')
-            .setEmoji('➡️')
-            .setStyle(ButtonStyle.Primary)
-        );
-
-      const response = await message.reply({
-        embeds: [createEmbed(currentPage)],
-        components: [row]
-      });
-
-      const collector = response.createMessageComponentCollector({
-        filter: i => i.user.id === message.author.id,
-        time: 120000
-      });
-
-      collector.on('collect', async i => {
-        if (i.customId === 'next_cmds') {
-          currentPage = (currentPage + 1) % pages.length;
-        } else if (i.customId === 'prev_cmds') {
-          currentPage = (currentPage - 1 + pages.length) % pages.length;
-        }
-        await i.update({ embeds: [createEmbed(currentPage)], components: [row] });
-      });
-
-      collector.on('end', () => {
-        response.edit({ components: [] }).catch(() => {});
-      });
+      await message.reply({ embeds: [cmdsEmbed] });
     }
   },
 
