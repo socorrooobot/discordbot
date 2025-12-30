@@ -76,25 +76,82 @@ export const commands = {
     aliases: ['!comandos'],
     description: 'Lista simplificada de todos os comandos',
     execute: async (message) => {
-      const cmdsEmbed = new EmbedBuilder()
-        .setColor('#00bfff')
-        .setTitle('📋 Lista de Comandos')
-        .setDescription('Aqui estão todos os meus comandos organizados!')
-        .addFields(
-          { name: '💬 Conversa', value: '`!ask`, `@Miku`' },
-          { name: '🎲 Diversão', value: '`!moeda`, `!dado`, `!8ball`, `!gayrate`, `!lovecalc`, `!kill`, `!reverse`, `!piada`, `!fato`, `!ship`, `!avatar`' },
-          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!lick`, `!nom`, `!feed`, `!tickle`, `!cuddle`, `!shrug`, `!highfive`, `!handshake`, `!angry`' },
-          { name: '🎵 Especial', value: '`!perfil`, `!quote`, `!dream`, `!whisper`, `!story`, `!topxp`' },
-          { name: 'ℹ️ Informação', value: '`!userinfo`, `!serverinfo`, `!invite`, `!status`' },
-          { name: '⚙️ Utilidade', value: '`!math`, `!clear`, `!ping`' }
-        )
-        .setFooter({ text: 'Use !ajuda para detalhes de cada comando!' });
+      const pages = [
+        {
+          title: '💬 Conversa & 🎵 Especial',
+          fields: [
+            { name: 'Conversa', value: '`!ask`, `@Miku`' },
+            { name: 'Especial', value: '`!perfil`, `!quote`, `!dream`, `!whisper`, `!story`, `!topxp`' }
+          ]
+        },
+        {
+          title: '🎲 Diversão',
+          fields: [
+            { name: 'Jogos & Sorte', value: '`!moeda`, `!dado`, `!8ball`, `!gayrate`, `!lovecalc`, `!kill`, `!reverse`, `!ship`, `!avatar`' },
+            { name: 'Especiais', value: '`!shipp_especial`, `!piada`, `!fato`' }
+          ]
+        },
+        {
+          title: '📝 Roleplay (Interação)',
+          fields: [
+            { name: 'Ações', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!lick`, `!nom`, `!feed`, `!tickle`, `!cuddle`, `!shrug`, `!highfive`, `!handshake`, `!angry`' }
+          ]
+        },
+        {
+          title: '⚙️ Utilidade & 🛡️ Staff',
+          fields: [
+            { name: 'Utilidade', value: '`!math`, `!clear`, `!ping`, `!invite`, `!status`' },
+            { name: 'Staff (Se houver permissão)', value: '`!ban`, `!kick`, `!mute`, `!warn`, `!limpar_chat`, `!lock`, `!unlock`, `!slowmode`' }
+          ]
+        }
+      ];
 
-      if (message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
-        cmdsEmbed.addFields({ name: '🛡️ Staff', value: '`!ban`, `!kick`, `!mute`, `!warn`, `!limpar_chat`, `!lock`, `!unlock`, `!slowmode`' });
-      }
+      let currentPage = 0;
 
-      await message.reply({ embeds: [cmdsEmbed] });
+      const createEmbed = (pageIdx) => {
+        const page = pages[pageIdx];
+        return new EmbedBuilder()
+          .setColor('#00bfff')
+          .setTitle(`📋 ${page.title}`)
+          .setDescription('Use os botões abaixo para navegar entre as categorias!')
+          .addFields(page.fields)
+          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length}` });
+      };
+
+      const row = new ActionRowBuilder()
+        .addComponents(
+          new ButtonBuilder()
+            .setCustomId('prev_cmds')
+            .setLabel('⬅️')
+            .setStyle(ButtonStyle.Primary),
+          new ButtonBuilder()
+            .setCustomId('next_cmds')
+            .setLabel('➡️')
+            .setStyle(ButtonStyle.Primary)
+        );
+
+      const response = await message.reply({
+        embeds: [createEmbed(currentPage)],
+        components: [row]
+      });
+
+      const collector = response.createMessageComponentCollector({
+        filter: i => i.user.id === message.author.id,
+        time: 60000
+      });
+
+      collector.on('collect', async i => {
+        if (i.customId === 'next_cmds') {
+          currentPage = (currentPage + 1) % pages.length;
+        } else if (i.customId === 'prev_cmds') {
+          currentPage = (currentPage - 1 + pages.length) % pages.length;
+        }
+        await i.update({ embeds: [createEmbed(currentPage)], components: [row] });
+      });
+
+      collector.on('end', () => {
+        response.edit({ components: [] }).catch(() => {});
+      });
     }
   },
 
