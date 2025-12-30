@@ -44,7 +44,23 @@ export const commands = {
     aliases: ['!help'],
     description: 'Mostra todos os comandos disponíveis',
     execute: async (message) => {
-      return commands.cmds.execute(message);
+      const { EmbedBuilder } = await import('discord.js');
+      const cmdsEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('📑 Todos os Comandos')
+        .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
+        .addFields(
+          { name: '💬 Conversa', value: '`!ask`, `!chat`' },
+          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`' },
+          { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`' },
+          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`' },
+          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`' },
+          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`' },
+          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`, `!clear`' }
+        )
+        .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
+
+      await message.reply({ embeds: [cmdsEmbed] });
     }
   },
 
