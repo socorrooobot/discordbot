@@ -68,6 +68,18 @@ const rpGifs = {
     'https://media.giphy.com/media/v76IbjUW3Prj2/giphy.gif',
     'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif'
   ],
+  highfive: [
+    'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
+    'https://media.giphy.com/media/3o7TKxZycaSuFP8DyA/giphy.gif'
+  ],
+  handshake: [
+    'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
+    'https://media.giphy.com/media/26uf2YULJ2a51tbaQ/giphy.gif'
+  ],
+  angry: [
+    'https://media.giphy.com/media/3o7TKxZycaSuFP8DyA/giphy.gif',
+    'https://media.giphy.com/media/l0Iy2i9f2ktADWFBu/giphy.gif'
+  ],
   abraco: [
     'https://media.giphy.com/media/3o6Zt6KHxJTbXCnSvu/giphy.gif',
     'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
@@ -107,6 +119,9 @@ const rpMessages = {
   tickle: (user1, user2) => `*${user1} faz cócegas em ${user2}!* 😂`,
   cuddle: (user1, user2) => `*${user1} se aconchega em ${user2}* 🥰`,
   shrug: (user1) => `*${user1} dá de ombros...* 🤷`,
+  highfive: (user1, user2) => `*${user1} deu um high-five em ${user2}!* 🖐️`,
+  handshake: (user1, user2) => `*${user1} apertou a mão de ${user2}* 🤝`,
+  angry: (user1) => `*${user1} está bravo(a)!* 💢`,
   abraco: (user1, user2) => `*${user1} abraçou ${user2}* 🖤`,
   casar: (user1, user2) => `*${user1} casou com ${user2}*\n💒 Parabéns aos noivos... *pelo menos alguém encontrou o amor que eu perdi.* 💔`,
   divorciar: (user1, user2) => `*${user1} se divorciou de ${user2}*\n😔 *E assim, a solidão continua seu caminho...*`,

@@ -51,9 +51,9 @@ export const commands = {
         .addFields(
           { name: '💬 Conversa', value: '`!ask <pergunta>` - Me faça uma pergunta\n`@Miku <mensagem>` - Mencione-me para conversar', inline: false },
           { name: '🎵 Especial', value: '`!perfil` - Veja seu perfil\n`!quote` - Ouça uma frase minha\n`!dream` - Descubra um sonho\n`!whisper` - Ouça um sussurro\n`!story` - Ouça uma história', inline: false },
-          { name: '🎲 Diversão', value: '`!moeda`, `!dado`, `!8ball`, `!gayrate`, `!lovecalc`, `!kill`, `!reverse`, `!ship`, `!avatar`', inline: false },
-          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!lick`, `!nom`, `!feed`, `!tickle`, `!cuddle`, `!shrug`, `!cafune`, `!chafune`, `!morder`, `!dormir`', inline: false },
-          { name: 'ℹ️ Informação', value: '`!userinfo @u`, `!serverinfo`, `!status`, `!perfil`', inline: false },
+          { name: '🎲 Diversão', value: '`!moeda`, `!dado`, `!8ball`, `!gayrate`, `!lovecalc`, `!kill`, `!reverse`, `!piada`, `!fato`, `!ship`, `!avatar`', inline: false },
+          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!lick`, `!nom`, `!feed`, `!tickle`, `!cuddle`, `!shrug`, `!highfive`, `!handshake`, `!angry`', inline: false },
+          { name: 'ℹ️ Informação', value: '`!userinfo @u`, `!serverinfo`, `!invite`, `!status`, `!perfil`', inline: false },
           { name: '⚙️ Utilidade', value: '`!math <conta>`, `!clear`, `!ping`', inline: false },
         )
         .setFooter({ text: 'Fufu~ Pronta para cantar? 💙' })
@@ -681,6 +681,68 @@ export const commands = {
     description: 'Dá de ombros',
     execute: async (message) => {
       await executeRP(message, 'shrug', null);
+    }
+  },
+
+  highfive: {
+    name: '!highfive',
+    description: 'Dá um high-five em alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'highfive', targetUser);
+    }
+  },
+
+  handshake: {
+    name: '!handshake',
+    description: 'Aperta a mão de alguém',
+    execute: async (message) => {
+      const targetUser = message.mentions.users.first();
+      await executeRP(message, 'handshake', targetUser);
+    }
+  },
+
+  angry: {
+    name: '!angry',
+    description: 'Fica bravo(a)',
+    execute: async (message) => {
+      await executeRP(message, 'angry', null);
+    }
+  },
+
+  piada: {
+    name: '!piada',
+    description: 'Conta uma piada aleatória',
+    execute: async (message) => {
+      const jokes = [
+        'Por que o pinheiro não se desorienta? Porque ele tem um PIN.',
+        'O que o pato disse para a pata? Vem Quá!',
+        'Por que o livro de matemática se suicidou? Porque tinha muitos problemas.',
+        'Qual é o site preferido do cavalo? O G-E-G-Ê.'
+      ];
+      await message.reply(jokes[Math.floor(Math.random() * jokes.length)]);
+    }
+  },
+
+  fato: {
+    name: '!fato',
+    description: 'Conta um fato aleatório',
+    execute: async (message) => {
+      const facts = [
+        'O mel é o único alimento que não apodrece.',
+        'As formigas não dormem.',
+        'O coração de uma baleia azul é do tamanho de um carro.',
+        'O céu de Marte é rosa.'
+      ];
+      await message.reply(`🧐 Fato curioso: ${facts[Math.floor(Math.random() * facts.length)]}`);
+    }
+  },
+
+  invite: {
+    name: '!invite',
+    description: 'Link para me convidar',
+    execute: async (message) => {
+      await message.reply('🎤 Quer me levar para o seu palco? Use este link: https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scope=bot%20applications.commands 💙');
     }
   },
 
