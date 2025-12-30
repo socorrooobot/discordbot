@@ -76,6 +76,7 @@ export const commands = {
     aliases: ['!comandos'],
     description: 'Lista simplificada de todos os comandos',
     execute: async (message) => {
+      const { EmbedBuilder } = await import('discord.js');
       const cmdsEmbed = new EmbedBuilder()
         .setColor('#00bfff')
         .setTitle('📑 Todos os Comandos')
