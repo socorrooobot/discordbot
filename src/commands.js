@@ -58,6 +58,14 @@ export const commands = {
         .setFooter({ text: 'Fufu~ Pronta para cantar? 💙' })
         .setTimestamp();
 
+      if (message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+        helpEmbed.addFields({ 
+          name: '🛡️ Moderação', 
+          value: '`!ban @u`, `!kick @u`, `!mute @u 5m`, `!warn @u`, `!limpar_chat <num>`, `!lock`/`!unlock`, `!slowmode <seg>`', 
+          inline: false 
+        });
+      }
+
       await message.reply({ embeds: [helpEmbed] });
     }
   },
@@ -405,6 +413,66 @@ export const commands = {
       const reason = args.slice(1).join(' ') || 'Sem motivo';
       await member.kick(reason);
       await message.reply(`✅ ${user.tag} expulso por: ${reason}`);
+    }
+  },
+
+  clear_msgs: {
+    name: '!limpar_chat',
+    aliases: ['!purge', '!clean'],
+    description: 'Limpa mensagens do chat',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
+        await message.reply('❌ Você não tem permissão para gerenciar mensagens!');
+        return;
+      }
+      const amount = parseInt(args[0]);
+      if (isNaN(amount) || amount < 1 || amount > 100) {
+        await message.reply('❌ Especifique uma quantidade entre 1 e 100!');
+        return;
+      }
+      await message.channel.bulkDelete(amount, true);
+      const sent = await message.channel.send(`✅ Limpei **${amount}** mensagens!`);
+      setTimeout(() => sent.delete(), 3000);
+    }
+  },
+
+  slowmode: {
+    name: '!slowmode',
+    description: 'Define o modo lento do canal',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        await message.reply('❌ Sem permissão!');
+        return;
+      }
+      const time = parseInt(args[0]) || 0;
+      await message.channel.setRateLimitPerUser(time);
+      await message.reply(`✅ Modo lento definido para **${time}s**!`);
+    }
+  },
+
+  lock: {
+    name: '!lock',
+    description: 'Tranca o canal',
+    execute: async (message) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        await message.reply('❌ Sem permissão!');
+        return;
+      }
+      await message.channel.permissionOverwrites.edit(message.guild.roles.everyone, { SendMessages: false });
+      await message.reply('🔒 Canal trancado!');
+    }
+  },
+
+  unlock: {
+    name: '!unlock',
+    description: 'Destranca o canal',
+    execute: async (message) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        await message.reply('❌ Sem permissão!');
+        return;
+      }
+      await message.channel.permissionOverwrites.edit(message.guild.roles.everyone, { SendMessages: null });
+      await message.reply('🔓 Canal destrancado!');
     }
   },
 
