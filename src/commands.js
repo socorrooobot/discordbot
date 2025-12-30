@@ -4159,4 +4159,4 @@ ping: {
 
       message.channel.send({ embeds: [helpEmbed] });
     },
-  },
+      }
