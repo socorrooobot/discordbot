@@ -47,7 +47,7 @@ export const commands = {
       const { EmbedBuilder } = await import('discord.js');
       const helpEmbed = new EmbedBuilder()
         .setColor('#00bfff')
-        .setTitle('📑 Todos os Comandos')
+        .setTitle('📑 Comandos da Miku')
         .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
         .addFields(
           { name: '💬 Conversa', value: '`!ask`, `!chat`' },
@@ -72,7 +72,7 @@ export const commands = {
       const { EmbedBuilder } = await import('discord.js');
       const cmdsEmbed = new EmbedBuilder()
         .setColor('#00bfff')
-        .setTitle('📑 Todos os Comandos')
+        .setTitle('📑 Comandos da Miku')
         .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
         .addFields(
           { name: '💬 Conversa', value: '`!ask`, `!chat`' },
