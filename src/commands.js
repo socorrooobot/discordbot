@@ -98,10 +98,17 @@ export const commands = {
           ]
         },
         {
+          title: '💰 Economia',
+          fields: [
+            { name: 'Geral', value: '`!saldo`, `!daily`, `!trabalhar`, `!transferir`, `!rankmoney`, `!setmoney` (Admin)' },
+            { name: 'Apostas', value: '`!apostar`, `!slots` (Em breve)' }
+          ]
+        },
+        {
           title: '⚙️ Utilidade & 🛡️ Staff',
           fields: [
             { name: 'Utilidade', value: '`!math`, `!clear`, `!ping`, `!invite`, `!status`' },
-            { name: 'Staff (Se houver permissão)', value: '`!ban`, `!kick`, `!mute`, `!warn`, `!limpar_chat`, `!lock`, `!unlock`, `!slowmode`' }
+            { name: 'Staff', value: '`!ban`, `!kick`, `!mute`, `!warn`, `!limpar_chat`, `!lock`, `!unlock`, `!slowmode`' }
           ]
         }
       ];
@@ -115,18 +122,20 @@ export const commands = {
           .setTitle(`📋 ${page.title}`)
           .setDescription('Use os botões abaixo para navegar entre as categorias!')
           .addFields(page.fields)
-          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length}` });
+          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length} | Fufu~ 💙` });
       };
 
       const row = new ActionRowBuilder()
         .addComponents(
           new ButtonBuilder()
             .setCustomId('prev_cmds')
-            .setLabel('⬅️')
+            .setLabel('Anterior')
+            .setEmoji('⬅️')
             .setStyle(ButtonStyle.Primary),
           new ButtonBuilder()
             .setCustomId('next_cmds')
-            .setLabel('➡️')
+            .setLabel('Próximo')
+            .setEmoji('➡️')
             .setStyle(ButtonStyle.Primary)
         );
 
@@ -137,7 +146,7 @@ export const commands = {
 
       const collector = response.createMessageComponentCollector({
         filter: i => i.user.id === message.author.id,
-        time: 60000
+        time: 120000
       });
 
       collector.on('collect', async i => {

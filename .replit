@@ -7,7 +7,7 @@ integrations = ["javascript_openai:1.0.0", "discord:1.0.0"]
 channel = "stable-25_05"
 
 [workflows]
-runButton = "Discord Bot Debug"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
@@ -22,12 +22,12 @@ args = "Discord Bot"
 name = "Discord Bot"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm start"
-
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node src/index.js"
 
 [[workflows.workflow]]
 name = "Discord Bot Debug"
