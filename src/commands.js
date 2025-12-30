@@ -71,6 +71,33 @@ export const commands = {
     }
   },
 
+  cmds: {
+    name: '!cmds',
+    aliases: ['!comandos'],
+    description: 'Lista simplificada de todos os comandos',
+    execute: async (message) => {
+      const cmdsEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('📋 Lista de Comandos')
+        .setDescription('Aqui estão todos os meus comandos organizados!')
+        .addFields(
+          { name: '💬 Conversa', value: '`!ask`, `@Miku`' },
+          { name: '🎲 Diversão', value: '`!moeda`, `!dado`, `!8ball`, `!gayrate`, `!lovecalc`, `!kill`, `!reverse`, `!piada`, `!fato`, `!ship`, `!avatar`' },
+          { name: '📝 Roleplay', value: '`!abraco`, `!beijo`, `!tapa`, `!slap`, `!pat`, `!poke`, `!lick`, `!nom`, `!feed`, `!tickle`, `!cuddle`, `!shrug`, `!highfive`, `!handshake`, `!angry`' },
+          { name: '🎵 Especial', value: '`!perfil`, `!quote`, `!dream`, `!whisper`, `!story`, `!topxp`' },
+          { name: 'ℹ️ Informação', value: '`!userinfo`, `!serverinfo`, `!invite`, `!status`' },
+          { name: '⚙️ Utilidade', value: '`!math`, `!clear`, `!ping`' }
+        )
+        .setFooter({ text: 'Use !ajuda para detalhes de cada comando!' });
+
+      if (message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+        cmdsEmbed.addFields({ name: '🛡️ Staff', value: '`!ban`, `!kick`, `!mute`, `!warn`, `!limpar_chat`, `!lock`, `!unlock`, `!slowmode`' });
+      }
+
+      await message.reply({ embeds: [cmdsEmbed] });
+    }
+  },
+
   ping: {
     name: '!ping',
     description: 'Verifica se o bot está respondendo',
