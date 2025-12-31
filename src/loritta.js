@@ -6,8 +6,8 @@ export async function getUserSonhos(userId, apiKey) {
   try {
     const response = await axios.get(`${API_BASE}/v1/users/${userId}`, {
       headers: { 
-        'Authorization': apiKey,
-        'User-Agent': 'DivaBot (https://replit.com, 1.0.0)'
+        'Authorization': `Bot ${apiKey}`,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
       }
     });
     return response.data.sonhos;
@@ -28,9 +28,9 @@ export async function requestSonhosTransfer(guildId, channelId, userId, amount, 
       },
       {
         headers: {
-          'Authorization': apiKey,
+          'Authorization': `Bot ${apiKey}`,
           'Content-Type': 'application/json',
-          'User-Agent': 'DivaBot (https://replit.com, 1.0.0)'
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
       }
     );
