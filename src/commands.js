@@ -39,7 +39,7 @@ const whispers = [
 ];
 
 export const commands = {
-  help: {
+  ajuda: {
     name: '!ajuda',
     aliases: ['!help'],
     description: 'Mostra todos os comandos disponíveis',
@@ -64,28 +64,29 @@ export const commands = {
     }
   },
 
-  cmds: {
-    name: '!cmds',
-    aliases: ['!comandos'],
+  help: {
+    name: '!help',
+    execute: async (message) => {
+      const { commands } = await import('./commands.js');
+      return commands.ajuda.execute(message);
+    }
+  },
+
+  comandos: {
+    name: '!comandos',
+    aliases: ['!cmds'],
     description: 'Lista simplificada de todos os comandos',
     execute: async (message) => {
-      const { EmbedBuilder } = await import('discord.js');
-      const cmdsEmbed = new EmbedBuilder()
-        .setColor('#00bfff')
-        .setTitle('📑 Comandos da Miku')
-        .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
-        .addFields(
-          { name: '💬 Conversa', value: '`!ask`, `!chat`, `!clear`' },
-          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`, `!topxp`, `!serverinfo`' },
-          { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`, `!moeda`, `!8ball`, `!gayrate`, `!lovecalc`' },
-          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`, `!topmoney`' },
-          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`, `!miku`, `!tapa`, `!beijo`, `!abraco`, `!cafune`, `!casar`, `!divorciar`, `!danca`' },
-          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`, `!warn`, `!warns`, `!unwarn`, `!clearwarns`, `!slowmode`' },
-          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`' }
-        )
-        .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
+      const { commands } = await import('./commands.js');
+      return commands.ajuda.execute(message);
+    }
+  },
 
-      await message.reply({ embeds: [cmdsEmbed] });
+  cmds: {
+    name: '!cmds',
+    execute: async (message) => {
+      const { commands } = await import('./commands.js');
+      return commands.ajuda.execute(message);
     }
   },
 
