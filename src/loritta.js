@@ -5,7 +5,10 @@ const API_BASE = 'https://api.loritta.website';
 export async function getUserSonhos(userId, apiKey) {
   try {
     const response = await axios.get(`${API_BASE}/v1/users/${userId}`, {
-      headers: { 'Authorization': apiKey }
+      headers: { 
+        'Authorization': apiKey,
+        'User-Agent': 'DivaBot (https://replit.com, 1.0.0)'
+      }
     });
     return response.data.sonhos;
   } catch (error) {
@@ -26,7 +29,8 @@ export async function requestSonhosTransfer(guildId, channelId, userId, amount, 
       {
         headers: {
           'Authorization': apiKey,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'User-Agent': 'DivaBot (https://replit.com, 1.0.0)'
         }
       }
     );
