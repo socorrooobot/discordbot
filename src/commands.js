@@ -50,13 +50,13 @@ export const commands = {
         .setTitle('📑 Comandos da Miku')
         .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
         .addFields(
-          { name: '💬 Conversa', value: '`!ask`, `!chat`' },
-          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`' },
-          { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`' },
-          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`' },
-          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`' },
-          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`' },
-          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`, `!clear`' }
+          { name: '💬 Conversa', value: '`!ask`, `!chat`, `!clear`' },
+          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`, `!topxp`, `!serverinfo`' },
+          { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`, `!moeda`, `!8ball`, `!gayrate`, `!lovecalc`' },
+          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`, `!topmoney`' },
+          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`, `!miku`, `!tapa`, `!beijo`, `!abraco`, `!cafune`, `!casar`, `!divorciar`, `!danca`' },
+          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`, `!warn`, `!warns`, `!unwarn`, `!clearwarns`, `!slowmode`' },
+          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`' }
         )
         .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
 
