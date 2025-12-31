@@ -84,19 +84,22 @@ function updateUser(userId, userData) {
   saveXP(data);
 }
 
-// Calcular nível baseado em XP total
+// Calcular nível baseado em XP total (Fórmula Progressiva)
+// A cada nível, o XP necessário aumenta
 function calculateLevel(totalXP) {
-  return Math.floor(totalXP / XP_PER_LEVEL) + 1;
+  // Fórmula: XP = 100 * (level^2)
+  // level = sqrt(totalXP / 100)
+  return Math.floor(Math.sqrt(totalXP / XP_PER_LEVEL)) + 1;
 }
 
-// Calcular XP necessário para o nível atual
+// Calcular XP necessário para o início do nível atual
 function getXPForLevel(level) {
-  return (level - 1) * XP_PER_LEVEL;
+  return Math.pow(level - 1, 2) * XP_PER_LEVEL;
 }
 
-// Calcular XP para o próximo nível
+// Calcular XP necessário para atingir o próximo nível (início do próximo nível)
 function getXPForNextLevel(level) {
-  return level * XP_PER_LEVEL;
+  return Math.pow(level, 2) * XP_PER_LEVEL;
 }
 
 // Adicionar XP
