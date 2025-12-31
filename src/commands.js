@@ -90,6 +90,25 @@ export const commands = {
     }
   },
 
+  teste: {
+    name: '!teste',
+    description: 'Um comando de teste para aprender a base',
+    execute: async (message, args) => {
+      // 1. Você pode pegar o que o usuário escreveu depois do comando
+      const oQueFoiDito = args.join(' ');
+      
+      // 2. Você pode responder a mensagem
+      if (!oQueFoiDito) {
+        return message.reply('Oi! Eu sou um comando de teste. Tente digitar algo depois de `!teste`.');
+      }
+      
+      // 3. Você pode usar o autor da mensagem
+      const nomeDoUsuario = message.author.username;
+      
+      await message.reply(`Olá ${nomeDoUsuario}! Você disse: "${oQueFoiDito}". Viu como é fácil? 💙`);
+    }
+  },
+
   ping: {
     name: '!ping',
     description: 'Verifica se o bot está respondendo',
