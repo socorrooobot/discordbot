@@ -69,11 +69,19 @@
       "claimedBy": "1420187478148517909",
       "claimedAt": "2025-12-30T16:09:57.361Z",
       "closedBy": "1424065435988656128"
+    },
+    "ticket-9": {
+      "userId": "657739548507373618",
+      "channelId": "1455987006101524536",
+      "status": "closed",
+      "createdAt": "2025-12-31T18:12:33.634Z",
+      "closedAt": "2025-12-31T18:12:38.681Z",
+      "closedBy": "657739548507373618"
     }
   },
   "config": {
     "categoryId": null,
     "supportRoleId": "1439242411338498141",
-    "ticketCounter": 8
+    "ticketCounter": 9
   }
 }

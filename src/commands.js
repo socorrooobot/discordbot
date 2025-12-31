@@ -1,6 +1,9 @@
 import { chat, clearHistory } from './gemini.js';
 import { EmbedBuilder, PermissionFlagsBits, AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble, setBalance, getTimeUntilDaily } from './economy.js';
+import { getUserSonhos, requestSonhosTransfer } from './loritta.js';
+
+const LORITTA_API_KEY = 'lorixp_Hi3bfDCzAewPEU8YgkzANNRU5F2nn3Crcpb2hzRUfPh9';
 import { getUserInfo, getXPLeaderboard, getUserRank, addXPDirect, removeXPDirect } from './xp.js';
 import { setAFK, removeAFK, isAFK } from './afk.js';
 import { executeRP } from './rpCommands.js';
