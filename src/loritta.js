@@ -6,7 +6,7 @@ export async function getUserSonhos(userId, apiKey) {
   try {
     const response = await axios.get(`${API_BASE}/v1/users/${userId}`, {
       headers: { 
-        'Authorization': `Bot ${apiKey}`,
+        'Authorization': apiKey,
         'User-Agent': 'DivaBot (https://replit.com, 1.0.0)'
       }
     });
@@ -28,7 +28,7 @@ export async function requestSonhosTransfer(guildId, channelId, userId, amount, 
       },
       {
         headers: {
-          'Authorization': `Bot ${apiKey}`,
+          'Authorization': apiKey,
           'Content-Type': 'application/json',
           'User-Agent': 'DivaBot (https://replit.com, 1.0.0)'
         }
