@@ -63,11 +63,12 @@
     "ticket-8": {
       "userId": "1118324436408487946",
       "channelId": "1455593720320889029",
-      "status": "open",
+      "status": "closed",
       "createdAt": "2025-12-30T16:09:47.164Z",
-      "closedAt": null,
+      "closedAt": "2025-12-30T21:29:21.132Z",
       "claimedBy": "1420187478148517909",
-      "claimedAt": "2025-12-30T16:09:57.361Z"
+      "claimedAt": "2025-12-30T16:09:57.361Z",
+      "closedBy": "1424065435988656128"
     }
   },
   "config": {

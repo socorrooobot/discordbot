@@ -39,31 +39,65 @@ const whispers = [
 ];
 
 export const commands = {
-cmds: {
-  name: '!cmds',
-  aliases: ['!comandos'],
-  description: 'Lista simplificada de todos os comandos',
-  execute: async (message) => {
-    const { EmbedBuilder } = await import('discord.js');
-    const cmdsEmbed = new EmbedBuilder()
-      .setColor('#00bfff')
-      .setTitle('📑 Comandos da Miku')
-      .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
-      .addFields(
-        { name: '💬 Conversa', value: '`!ask`, `!chat`' },
-        { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`' },
-        { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`' },
-        { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`' },
-        { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`' },
-        { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`' },
-        { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`, `!clear`' }
-      )
-      .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
+  help: {
+    name: '!ajuda',
+    aliases: ['!help'],
+    description: 'Mostra todos os comandos disponíveis',
+    execute: async (message) => {
+      const { EmbedBuilder } = await import('discord.js');
+      const helpEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('📑 Comandos da Miku')
+        .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
+        .addFields(
+          { name: '💬 Conversa', value: '`!ask`, `!chat`' },
+          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`' },
+          { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`' },
+          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`' },
+          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`' },
+          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`' },
+          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`, `!clear`' }
+        )
+        .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
 
-    await message.reply({ embeds: [cmdsEmbed] });
-  }
-},
+      await message.reply({ embeds: [helpEmbed] });
+    }
+  },
 
+  cmds: {
+    name: '!cmds',
+    aliases: ['!comandos'],
+    description: 'Lista simplificada de todos os comandos',
+    execute: async (message) => {
+      const { EmbedBuilder } = await import('discord.js');
+      const cmdsEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('📑 Comandos da Miku')
+        .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
+        .addFields(
+          { name: '💬 Conversa', value: '`!ask`, `!chat`, `!clear`' },
+          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`, `!topxp`, `!serverinfo`' },
+          { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`, `!moeda`, `!8ball`, `!gayrate`, `!lovecalc`' },
+          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`, `!topmoney`' },
+          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`, `!miku`, `!tapa`, `!beijo`, `!abraco`, `!cafune`, `!casar`, `!divorciar`, `!danca`' },
+          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`, `!warn`, `!warns`, `!unwarn`, `!clearwarns`, `!slowmode`' },
+          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`' }
+        )
+        .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
+
+      await message.reply({ embeds: [cmdsEmbed] });
+    }
+  },
+
+  ping: {
+    name: '!ping',
+    description: 'Verifica se o bot está respondendo',
+    execute: async (message) => {
+      const sent = await message.reply('Pong!');
+      const latency = sent.createdTimestamp - message.createdTimestamp;
+      await sent.edit(`Pong! Latência: ${latency}ms 💙`);
+    }
+  },
 
   ask: {
     name: '!ask',
@@ -4006,8 +4040,29 @@ cmds: {
     }
   },
 
-  o é apenas uma parte da verdade.* 🖤' });
-      await message.reply({ 
+  espelho: {
+    name: '!espelho',
+    aliases: ['!mirror', '!reflex'],
+    description: 'Olhe no espelho e veja o que ele reflete',
+    execute: async (message) => {
+      const reflections = [
+        '🪞 Você vê alguém cansado, mas resiliente.',
+        '🪞 O espelho reflete um brilho de curiosidade em seus olhos.',
+        '🪞 Uma sombra de melancolia paira, mas também uma faísca de esperança.',
+        '🪞 O reflexo mostra alguém que busca respostas.',
+        '🪞 Você vê um enigma, com camadas a serem descobertas.',
+        '🪞 O espelho mostra um guerreiro, marcado mas não quebrado.',
+      ];
+      const reflection = reflections[Math.floor(Math.random() * reflections.length)];
+      const mirrorEmbed = new EmbedBuilder()
+        .setColor('#a0a0a0')
+        .setTitle('🪞 O Que o Espelho Vê')
+        .setDescription(reflection)
+        .setFooter({ text: '*O reflexo é apenas uma parte da verdade.* 🖤' });
+      await message.reply({ embeds: [mirrorEmbed] });
+    }
+  },
+
   ritual: {
     name: '!ritual',
     aliases: ['!rite', '!ceremony'],
@@ -4028,7 +4083,9 @@ cmds: {
         .setDescription(ritual)
         .setFooter({ text: '*Pequenos atos criam grandes mudanças.* 🖤' });
       await message.reply({ embeds: [ritualEmbed] });
-  
+    }
+  },
+
   oferenda: {
     name: '!oferenda',
     aliases: ['!offering', '!gift'],
@@ -4080,60 +4137,3 @@ export async function handleCommand(message, client) {
 export function shouldRespondToMention(message, client) {
   return message.mentions.has(client.user);
 }
-
-
-
-ping: {
-  name: '!ping',
-  description; 'Verifica se o bot está respondendo',
-  execute; async (message) => {
-    const sent = await message.reply('Pong!');
-    const latency = sent.createdTimestamp - message.createdTimestamp;
-    await sent.edit(`Pong! Latência: ${latency}ms 💙`);
-  }}
-  help: {
-    name: '!help',
-    aliases; ['!ajuda'],
-    description; 'Mostra a lista de comandos ou informações sobre um comando específico.',
-    execute; async (message, args) => {
-      const { commands } = message.client;
-
-      if (!args.length) {
-        const helpEmbed = new EmbedBuilder()
-          .setColor('#0a0a0a')
-          .setTitle('🎭 Comandos da Diva')
-          .setDescription('Lista de todos os comandos disponíveis.\nUse `!help <comando>` para mais informações sobre um comando específico.')
-          .addFields(commands.map(command => ({ name: command.name, value: command.description, inline: false })))
-          .setFooter({ text: '*Conhecimento é poder... ou fardo.* 🖤' });
-
-        return message.author.send({ embeds: [helpEmbed] })
-          .then(() => {
-            if (message.channel.type === 'dm') return;
-            message.reply('Enviei uma DM com todos os comandos! 🖤');
-          })
-          .catch(error => {
-            console.error('Não consegui enviar DM para o usuário:', error);
-            message.reply('Não consegui enviar a DM! Verifique se suas mensagens diretas estão ativadas. 💀');
-          });
-      }
-
-      const commandName = args[0].toLowerCase();
-      const command = commands.get(commandName) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-      if (!command) {
-        return message.reply('Comando inválido! 💀');
-      }
-
-      const helpEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle(`Comando: ${command.name}`)
-        .setDescription(command.description);
-
-      if (command.aliases) helpEmbed.addFields({ name: 'Alternativas', value: command.aliases.join(', '), inline: false });
-      if (command.usage) helpEmbed.addFields({ name: 'Como usar', value: command.usage, inline: false });
-
-      helpEmbed.setFooter({ text: '*Cada comando esconde um segredo...* 🖤' });
-
-      message.channel.send({ embeds: [helpEmbed] });
-    }
-  }
