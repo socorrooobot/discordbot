@@ -56,7 +56,7 @@ export const commands = {
           { name: '💬 Conversa', value: '`!ask`, `!chat`, `!clear`' },
           { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`, `!topxp`, `!serverinfo`' },
           { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`, `!moeda`, `!8ball`, `!gayrate`, `!lovecalc`' },
-          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`, `!topmoney`' },
+          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`, `!topmoney`, `!transferirsonhos`, `!versonhos`' },
           { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`, `!miku`, `!tapa`, `!beijo`, `!abraco`, `!cafune`, `!casar`, `!divorciar`, `!danca`' },
           { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`, `!warn`, `!warns`, `!unwarn`, `!clearwarns`, `!slowmode`' },
           { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`' }
@@ -649,6 +649,61 @@ export const commands = {
         await message.reply(`🧮 Resultado: **${result}**`);
       } catch {
         await message.reply('❌ Conta inválida!');
+      }
+    }
+  },
+
+  transferir_sonhos: {
+    name: '!transferirsonhos',
+    aliases: ['!sonhos'],
+    description: 'Transforma seus Akita Neru em Sonhos da Loritta',
+    execute: async (message, args) => {
+      const amount = parseInt(args[0]);
+      if (isNaN(amount) || amount <= 0) {
+        return message.reply('❌ Digite uma quantidade válida! Ex: `!transferirsonhos 100`');
+      }
+
+      const balance = getBalance(message.author.id);
+      if (balance < amount) {
+        return message.reply(`❌ Você não tem Akita Neru suficientes! Seu saldo: **${balance}**`);
+      }
+
+      await message.channel.sendTyping();
+      
+      try {
+        const success = await requestSonhosTransfer(
+          message.guild.id,
+          message.channel.id,
+          message.author.id,
+          amount,
+          `Transferência de Akita Neru por Diva Bot`,
+          LORITTA_API_KEY
+        );
+
+        if (success) {
+          removeBalance(message.author.id, amount);
+          await message.reply(`✅ **Sucesso!** Você transferiu **${amount} Akita Neru** para **${amount} Sonhos** na Loritta! 🌟`);
+        } else {
+          await message.reply('❌ Houve um erro na API da Loritta. Verifique se o bot Loritta está no servidor e se eu tenho as permissões necessárias!');
+        }
+      } catch (error) {
+        console.error('Sonhos transfer error:', error);
+        await message.reply('❌ Não consegui completar a transferência no momento. Tente novamente mais tarde!');
+      }
+    }
+  },
+
+  ver_sonhos: {
+    name: '!versonhos',
+    description: 'Veja quantos Sonhos você tem na Loritta',
+    execute: async (message) => {
+      await message.channel.sendTyping();
+      const sonhos = await getUserSonhos(message.author.id, LORITTA_API_KEY);
+      
+      if (sonhos !== null) {
+        await message.reply(`✨ Você tem **${sonhos} Sonhos** na Loritta!`);
+      } else {
+        await message.reply('❌ Não consegui consultar seus sonhos. Verifique se seu perfil na Loritta é público!');
       }
     }
   },
