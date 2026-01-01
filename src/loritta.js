@@ -24,7 +24,8 @@ export async function requestSonhosTransfer(guildId, channelId, userId, amount, 
       {
         userId: userId,
         amount: amount,
-        reason: reason
+        reason: reason,
+        type: 'PAYMENT'
       },
       {
         headers: {

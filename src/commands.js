@@ -3871,7 +3871,7 @@ export const commands = {
         .setColor('#ffff00')
         .setTitle('👑 Lista de Admins')
         .setDescription(adminsList.length > 0
-          ? adminsList.map((id, i) => `${i + 1}. <@${id}> (\`${id}\`)`).join('\n')
+          ? adminsList.map((id, i) => `$llorilo{i + 1}. <@${id}> (\`${id}\`)`).join('\n')
           : 'Nenhum admin configurado!')
         .setFooter({ text: `Total: ${adminsList.length}` });
 
