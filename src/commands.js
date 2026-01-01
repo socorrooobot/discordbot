@@ -3,7 +3,7 @@ import { EmbedBuilder, PermissionFlagsBits, AttachmentBuilder, ActionRowBuilder,
 import { getBalance, addBalance, removeBalance, transfer, dailyReward, getLeaderboard, work, gamble, setBalance, getTimeUntilDaily } from './economy.js';
 import { getUserSonhos, requestSonhosTransfer } from './loritta.js';
 
-const LORITTA_API_KEY = 'lorixp_EucU5D22Ub787rf7L2LsbzNAffNyTPxDeEcHQVmbuDXv';
+const LORITTA_API_KEY = process.env.LORITTA_API_KEY;
 import { getUserInfo, getXPLeaderboard, getUserRank, addXPDirect, removeXPDirect } from './xp.js';
 import { setAFK, removeAFK, isAFK } from './afk.js';
 import { executeRP } from './rpCommands.js';
