@@ -1,95 +1,83 @@
+<div class="row">
+    <div class="col-12 text-center mb-5">
+        <h1 class="display-4 fw-bold text-white"><i class="bi bi-trophy me-2 text-warning"></i> Ranking de Almas</h1>
+        <p class="lead text-muted">Os usuários mais ativos e poderosos do ecossistema.</p>
+    </div>
+</div>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XP - Miku Diva Bot</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                🎤 Miku Diva Dashboard
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="bi bi-house"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/economy"><i class="bi bi-cash-coin"></i> Economia</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/xp"><i class="bi bi-star"></i> XP</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admins"><i class="bi bi-shield"></i> Admins</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/servers"><i class="bi bi-discord"></i> Servidores</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <img src="<%= user.displayAvatarURL() %>" alt="Avatar" class="rounded-circle me-2" width="32" height="32">
-                    <span class="text-white me-3"><%= user.username %></span>
-                    <a href="/logout" class="btn btn-outline-light btn-sm">Sair</a>
-                </div>
+<div class="card mb-5 border-0 shadow-lg bg-dark text-white">
+    <div class="card-header bg-transparent border-secondary py-3">
+        <h5 class="mb-0"><i class="bi bi-lightning-charge-fill me-2 text-warning"></i> Multiplicador de Experiência</h5>
+    </div>
+    <div class="card-body p-4">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted fw-bold mb-1">Taxa de XP Atual</h6>
+                <h2 class="display-5 fw-bold text-warning"><%= xpMultiplier %>x</h2>
             </div>
-        </div>
-    </nav>
-
-    <div class="container-fluid py-4">
-        <h1 class="mb-4">⭐ Gerenciar XP</h1>
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5>Multiplicador de XP: <%= xpMultiplier %>x</h5>
-                <form method="POST" action="/xp/multiplier" class="d-flex gap-2 align-items-end">
-                    <div>
-                        <label class="form-label">Novo Multiplicador</label>
-                        <input type="number" name="multiplier" step="0.1" value="<%= xpMultiplier %>" class="form-control" required>
+            <div class="col-md-6">
+                <form method="POST" action="/xp/multiplier">
+                    <label class="form-label text-muted small fw-bold">Novo Multiplicador de XP</label>
+                    <div class="input-group">
+                        <input type="number" name="multiplier" step="0.1" value="<%= xpMultiplier %>" class="form-control bg-black border-secondary text-white" required>
+                        <button type="submit" class="btn btn-warning px-4 fw-bold">Atualizar</button>
                     </div>
-                    <button type="submit" class="btn btn-primary">Atualizar</button>
                 </form>
             </div>
         </div>
+    </div>
+</div>
 
+<div class="card border-0 shadow-lg bg-dark text-white">
+    <div class="card-header bg-transparent border-secondary py-3">
+        <h5 class="mb-0"><i class="bi bi-star-fill me-2 text-warning"></i> Melhores do Rank</h5>
+    </div>
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-dark table-hover">
-                <thead>
+            <table class="table table-dark table-hover mb-0 align-middle">
+                <thead class="bg-black">
                     <tr>
-                        <th>Rank</th>
-                        <th>Usuário</th>
-                        <th>Nível</th>
-                        <th>XP Atual</th>
-                        <th>XP Total</th>
+                        <th class="ps-4 py-3 text-center" style="width: 80px">Rank</th>
+                        <th class="py-3">Usuário</th>
+                        <th class="py-3 text-center">Nível</th>
+                        <th class="py-3 text-center">XP Atual</th>
+                        <th class="py-3 pe-4 text-center">XP Acumulado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% users.forEach((userItem, index) => { %>
-                    <tr>
-                        <td><%= index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1) %></td>
-                        <td>
-                            <img src="<%= userItem.avatar %>" width="32" class="rounded-circle me-2">
-                            <%= userItem.username %>
+                    <tr class="<%= index === 0 ? 'table-active' : '' %>">
+                        <td class="ps-4 text-center">
+                            <span class="fs-4">
+                                <% if(index === 0) { %>🥇<% } 
+                                   else if(index === 1) { %>🥈<% } 
+                                   else if(index === 2) { %>🥉<% } 
+                                   else { %><strong>#<%= index + 1 %></strong><% } %>
+                            </span>
                         </td>
-                        <td>Nível <%= userItem.level %></td>
-                        <td><%= userItem.xp %> XP</td>
-                        <td><%= userItem.totalXP %> XP</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="<%= userItem.avatar %>" width="40" class="rounded-circle me-3 border border-secondary shadow">
+                                <div>
+                                    <div class="fw-bold"><%= userItem.username %></div>
+                                    <small class="text-muted"><%= userItem.id %></small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-primary px-3 py-2">Nível <%= userItem.level %></span>
+                        </td>
+                        <td class="text-center text-info fw-bold">
+                            <%= userItem.xp.toLocaleString() %> XP
+                        </td>
+                        <td class="pe-4 text-center">
+                            <div class="small text-muted mb-1">Total</div>
+                            <div class="fw-bold text-white"><%= userItem.totalXP.toLocaleString() %> XP</div>
+                        </td>
                     </tr>
                     <% }); %>
                 </tbody>
             </table>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>

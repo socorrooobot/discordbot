@@ -48,6 +48,7 @@ export function startDashboard(client) {
     
     if (verifyAdminPassword(userId, password)) {
       req.session.userId = userId;
+      req.session.userObject = await client.users.fetch(userId);
       return res.redirect('/');
     }
     
@@ -74,7 +75,14 @@ export function startDashboard(client) {
 
     const user = await client.users.fetch(req.session.userId);
     
-    res.render('index', { stats, user, client });
+    // Usando render com layout manual para evitar erro de include no EJS
+    res.render('index', { stats, user, client, activePage: 'home' }, (err, html) => {
+      if (err) {
+        console.error('Erro ao renderizar index:', err);
+        return res.status(500).send(err.message);
+      }
+      res.render('layout', { body: html, user, activePage: 'home', title: 'Dashboard' });
+    });
   });
 
   // Gerenciar Economia
@@ -102,7 +110,11 @@ export function startDashboard(client) {
     res.render('economy', { 
       users, 
       multiplier: getMultiplier(),
-      user: await client.users.fetch(req.session.userId)
+      user: await client.users.fetch(req.session.userId),
+      activePage: 'economy'
+    }, (err, html) => {
+      if (err) return res.status(500).send(err.message);
+      res.render('layout', { body: html, user: req.session.userObject, activePage: 'economy', title: 'Economia' });
     });
   });
 
@@ -150,7 +162,11 @@ export function startDashboard(client) {
     res.render('xp', { 
       users,
       xpMultiplier: getXPMultiplier(),
-      user: await client.users.fetch(req.session.userId)
+      user: await client.users.fetch(req.session.userId),
+      activePage: 'xp'
+    }, (err, html) => {
+      if (err) return res.status(500).send(err.message);
+      res.render('layout', { body: html, user: req.session.userObject, activePage: 'xp', title: 'Ranking XP' });
     });
   });
 
@@ -180,7 +196,11 @@ export function startDashboard(client) {
 
     res.render('admins', { 
       admins,
-      user: await client.users.fetch(req.session.userId)
+      user: await client.users.fetch(req.session.userId),
+      activePage: 'admins'
+    }, (err, html) => {
+      if (err) return res.status(500).send(err.message);
+      res.render('layout', { body: html, user: req.session.userObject, activePage: 'admins', title: 'Administradores' });
     });
   });
 
@@ -210,7 +230,11 @@ export function startDashboard(client) {
 
     res.render('servers', { 
       servers,
-      user: await client.users.fetch(req.session.userId)
+      user: await client.users.fetch(req.session.userId),
+      activePage: 'servers'
+    }, (err, html) => {
+      if (err) return res.status(500).send(err.message);
+      res.render('layout', { body: html, user: req.session.userObject, activePage: 'servers', title: 'Servidores' });
     });
   });
 

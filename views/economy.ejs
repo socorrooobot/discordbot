@@ -1,96 +1,81 @@
+<div class="row">
+    <div class="col-12 text-center mb-5">
+        <h1 class="display-4 fw-bold text-white"><i class="bi bi-piggy-bank me-2 text-primary"></i> Gerenciar Economia</h1>
+        <p class="lead text-muted">Controle o fluxo de Akita Neru em todos os servidores.</p>
+    </div>
+</div>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Economia - Miku Diva Bot</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                🎤 Miku Diva Dashboard
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="bi bi-house"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/economy"><i class="bi bi-cash-coin"></i> Economia</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/xp"><i class="bi bi-star"></i> XP</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admins"><i class="bi bi-shield"></i> Admins</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/servers"><i class="bi bi-discord"></i> Servidores</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <img src="<%= user.displayAvatarURL() %>" alt="Avatar" class="rounded-circle me-2" width="32" height="32">
-                    <span class="text-white me-3"><%= user.username %></span>
-                    <a href="/logout" class="btn btn-outline-light btn-sm">Sair</a>
-                </div>
+<div class="card mb-5 border-0 shadow-lg bg-dark text-white">
+    <div class="card-header bg-transparent border-secondary py-3">
+        <h5 class="mb-0"><i class="bi bi-gear-fill me-2 text-primary"></i> Configurações Globais</h5>
+    </div>
+    <div class="card-body p-4">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h6 class="text-uppercase text-muted fw-bold mb-1">Multiplicador Atual</h6>
+                <h2 class="display-5 fw-bold text-info"><%= multiplier %>x</h2>
             </div>
-        </div>
-    </nav>
-
-    <div class="container-fluid py-4">
-        <h1 class="mb-4">💰 Gerenciar Economia</h1>
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5>Multiplicador Global: <%= multiplier %>x</h5>
-                <form method="POST" action="/economy/multiplier" class="d-flex gap-2 align-items-end">
-                    <div>
-                        <label class="form-label">Novo Multiplicador</label>
-                        <input type="number" name="multiplier" step="0.1" value="<%= multiplier %>" class="form-control" required>
+            <div class="col-md-6">
+                <form method="POST" action="/economy/multiplier">
+                    <label class="form-label text-muted small fw-bold">Novo Multiplicador de Ganhos</label>
+                    <div class="input-group">
+                        <input type="number" name="multiplier" step="0.1" value="<%= multiplier %>" class="form-control bg-black border-secondary text-white" required>
+                        <button type="submit" class="btn btn-primary px-4">Atualizar</button>
                     </div>
-                    <button type="submit" class="btn btn-primary">Atualizar</button>
                 </form>
             </div>
         </div>
+    </div>
+</div>
 
+<div class="card border-0 shadow-lg bg-dark text-white">
+    <div class="card-header bg-transparent border-secondary py-3">
+        <h5 class="mb-0"><i class="bi bi-table me-2 text-primary"></i> Usuários e Saldos</h5>
+    </div>
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-dark table-hover">
-                <thead>
+            <table class="table table-dark table-hover mb-0 align-middle">
+                <thead class="bg-black">
                     <tr>
-                        <th>Usuário</th>
-                        <th>Saldo</th>
-                        <th>Último Daily</th>
-                        <th>Ações</th>
+                        <th class="ps-4 py-3">Usuário</th>
+                        <th class="py-3">Saldo Atual</th>
+                        <th class="py-3">Último Daily</th>
+                        <th class="py-3 pe-4 text-center">Ações de Admin</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% users.forEach(userItem => { %>
                     <tr>
-                        <td>
-                            <img src="<%= userItem.avatar %>" width="32" class="rounded-circle me-2">
-                            <%= userItem.username %>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <img src="<%= userItem.avatar %>" width="40" class="rounded-circle me-3 border border-secondary">
+                                <div>
+                                    <div class="fw-bold"><%= userItem.username %></div>
+                                    <small class="text-muted"><%= userItem.id %></small>
+                                </div>
+                            </div>
                         </td>
-                        <td>💵 <%= userItem.balance %> Akita Neru</td>
-                        <td><%= userItem.lastDaily ? new Date(userItem.lastDaily).toLocaleString('pt-BR') : 'Nunca' %></td>
                         <td>
-                            <form method="POST" action="/economy/add" class="d-inline">
-                                <input type="hidden" name="userId" value="<%= userItem.id %>">
-                                <input type="number" name="amount" placeholder="Valor" style="width: 100px" required>
-                                <button type="submit" class="btn btn-sm btn-success">Adicionar</button>
-                            </form>
-                            <form method="POST" action="/economy/remove" class="d-inline ms-2">
-                                <input type="hidden" name="userId" value="<%= userItem.id %>">
-                                <input type="number" name="amount" placeholder="Valor" style="width: 100px" required>
-                                <button type="submit" class="btn btn-sm btn-danger">Remover</button>
-                            </form>
+                            <span class="badge bg-success-subtle text-success border border-success px-3 py-2">
+                                💵 <%= userItem.balance.toLocaleString() %> Neru
+                            </span>
+                        </td>
+                        <td class="text-muted">
+                            <%= userItem.lastDaily ? new Date(userItem.lastDaily).toLocaleString('pt-BR') : 'Nunca' %>
+                        </td>
+                        <td class="pe-4 text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <form method="POST" action="/economy/add" class="d-flex gap-1">
+                                    <input type="hidden" name="userId" value="<%= userItem.id %>">
+                                    <input type="number" name="amount" placeholder="Valor" class="form-control form-control-sm bg-black border-secondary text-white text-center" style="width: 80px" required>
+                                    <button type="submit" class="btn btn-sm btn-success">Add</button>
+                                </form>
+                                <form method="POST" action="/economy/remove" class="d-flex gap-1">
+                                    <input type="hidden" name="userId" value="<%= userItem.id %>">
+                                    <input type="number" name="amount" placeholder="Valor" class="form-control form-control-sm bg-black border-secondary text-white text-center" style="width: 80px" required>
+                                    <button type="submit" class="btn btn-sm btn-danger">Rem</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <% }); %>
@@ -98,7 +83,4 @@
             </table>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
