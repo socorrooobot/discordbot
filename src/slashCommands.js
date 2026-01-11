@@ -4,6 +4,7 @@ import { cinemaCommands } from './cinema.js';
 import { timeCapsuleCommands } from './timecapsule.js';
 import { horoscopeCommands } from './horoscope.js';
 import { petCommands } from './pets.js';
+import { duelCommands } from './duels.js';
 import { chat } from './gemini.js';
 import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer, addBalance, removeBalance, setBalance } from './economy.js';
 import { getUserInfo, getXPLeaderboard, addXPDirect, removeXPDirect } from './xp.js';
@@ -18,6 +19,17 @@ import { setRestartChannel } from './restartNotification.js';
 import { setTicketCategory, setSupportRole, sendTicketPanel, getTicketStats } from './tickets.js';
 
 export const slashCommands = {
+  [duelCommands.challenge.name]: {
+    data: new SlashCommandBuilder()
+      .setName(duelCommands.challenge.name)
+      .setDescription(duelCommands.challenge.description)
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Quem você quer desafiar?')
+          .setRequired(true)
+      ),
+    execute: duelCommands.challenge.execute
+  },
   [petCommands.adopt.name]: {
     data: new SlashCommandBuilder()
       .setName(petCommands.adopt.name)
@@ -412,7 +424,7 @@ export const slashCommands = {
       .setDescription('Dance com alguém')
       .addUserOption(option =>
         option.setName('usuario')
-          .setDescription('Com whom você quer dançar')
+          .setDescription('Com quem você quer dançar')
           .setRequired(true)
       ),
     execute: async (interaction) => {
@@ -495,7 +507,18 @@ export const slashCommands = {
   transfer: {
     data: new SlashCommandBuilder()
       .setName('transfer')
-      .setDescription('Transfira moedas para alguém'),
+      .setDescription('Transfira moedas para alguém')
+      .addUserOption(option =>
+        option.setName('usuario')
+          .setDescription('Quem vai receber?')
+          .setRequired(true)
+      )
+      .addIntegerOption(option =>
+        option.setName('valor')
+          .setDescription('Quantos Akita Neru?')
+          .setRequired(true)
+          .setMinValue(1)
+      ),
     execute: async (interaction) => {
       const user = interaction.options.getUser('usuario');
       const amount = interaction.options.getInteger('valor');
@@ -719,6 +742,7 @@ export const slashCommands = {
         .setDescription('Aqui estão todos os comandos que você pode usar para interagir comigo!')
         .addFields(
           { name: '✨ Economia & XP', value: '`/balance`, `/daily`, `/top`, `/perfil`, `/topxp`, `/work`, `/gamble`, `/transfer`', inline: false },
+          { name: '⚔️ Batalhas & RPG', value: '`/desafiar` - Duelos interativos', inline: false },
           { name: '🎭 Roleplay & Interação', value: '`/tapa`, `/beijo`, `/abraco`, `/casar`, `/divorciar`, `/danca`, `/afk`, `/ask`', inline: false },
           { name: '🛠️ Utilidades & Diversão', value: '`/ping`, `/serverinfo`, `/userinfo`, `/avatar`, `/dice`, `/coin`, `/giveaway`', inline: false },
           { name: '⏳ Novidades Temporais', value: '`/capsula_do_tempo` - Mensagens para o futuro', inline: false },

@@ -277,6 +277,13 @@ async function main() {
         return;
       }
 
+      // Sistema de Duelo
+      if (interaction.customId.startsWith('duel_')) {
+        const { handleDuelInteraction } = await import('./duels.js');
+        await handleDuelInteraction(interaction);
+        return;
+      }
+
       // Sistema de Casamento/Divórcio
       if (interaction.customId === 'cancel_marriage') {
         await interaction.update({ content: '💔 Casamento cancelado!', components: [], embeds: [] });
