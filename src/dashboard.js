@@ -107,14 +107,15 @@ export function startDashboard(client) {
 
     users.sort((a, b) => b.balance - a.balance);
 
+    const currentUser = await client.users.fetch(req.session.userId);
     res.render('economy', { 
       users, 
       multiplier: getMultiplier(),
-      user: await client.users.fetch(req.session.userId),
+      user: currentUser,
       activePage: 'economy'
     }, (err, html) => {
       if (err) return res.status(500).send(err.message);
-      res.render('layout', { body: html, user: req.session.userObject, activePage: 'economy', title: 'Economia' });
+      res.render('layout', { body: html, user: currentUser, activePage: 'economy', title: 'Economia' });
     });
   });
 
@@ -159,14 +160,15 @@ export function startDashboard(client) {
 
     users.sort((a, b) => b.level - a.level || b.totalXP - a.totalXP);
 
+    const currentUser = await client.users.fetch(req.session.userId);
     res.render('xp', { 
       users,
       xpMultiplier: getXPMultiplier(),
-      user: await client.users.fetch(req.session.userId),
+      user: currentUser,
       activePage: 'xp'
     }, (err, html) => {
       if (err) return res.status(500).send(err.message);
-      res.render('layout', { body: html, user: req.session.userObject, activePage: 'xp', title: 'Ranking XP' });
+      res.render('layout', { body: html, user: currentUser, activePage: 'xp', title: 'Ranking XP' });
     });
   });
 
@@ -194,13 +196,14 @@ export function startDashboard(client) {
       }
     }
 
+    const currentUser = await client.users.fetch(req.session.userId);
     res.render('admins', { 
       admins,
-      user: await client.users.fetch(req.session.userId),
+      user: currentUser,
       activePage: 'admins'
     }, (err, html) => {
       if (err) return res.status(500).send(err.message);
-      res.render('layout', { body: html, user: req.session.userObject, activePage: 'admins', title: 'Administradores' });
+      res.render('layout', { body: html, user: currentUser, activePage: 'admins', title: 'Administradores' });
     });
   });
 
@@ -228,13 +231,14 @@ export function startDashboard(client) {
       owner: guild.ownerId
     }));
 
+    const currentUser = await client.users.fetch(req.session.userId);
     res.render('servers', { 
       servers,
-      user: await client.users.fetch(req.session.userId),
+      user: currentUser,
       activePage: 'servers'
     }, (err, html) => {
       if (err) return res.status(500).send(err.message);
-      res.render('layout', { body: html, user: req.session.userObject, activePage: 'servers', title: 'Servidores' });
+      res.render('layout', { body: html, user: currentUser, activePage: 'servers', title: 'Servidores' });
     });
   });
 
