@@ -2,6 +2,8 @@ import { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, But
 import { confessionCommands } from './confessions.js';
 import { cinemaCommands } from './cinema.js';
 import { timeCapsuleCommands } from './timecapsule.js';
+import { horoscopeCommands } from './horoscope.js';
+import { petCommands } from './pets.js';
 import { chat } from './gemini.js';
 import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer, addBalance, removeBalance, setBalance } from './economy.js';
 import { getUserInfo, getXPLeaderboard, addXPDirect, removeXPDirect } from './xp.js';
@@ -16,6 +18,43 @@ import { setRestartChannel } from './restartNotification.js';
 import { setTicketCategory, setSupportRole, sendTicketPanel, getTicketStats } from './tickets.js';
 
 export const slashCommands = {
+  [petCommands.adopt.name]: {
+    data: new SlashCommandBuilder()
+      .setName(petCommands.adopt.name)
+      .setDescription(petCommands.adopt.description),
+    execute: petCommands.adopt.execute
+  },
+  [petCommands.status.name]: {
+    data: new SlashCommandBuilder()
+      .setName(petCommands.status.name)
+      .setDescription(petCommands.status.description),
+    execute: petCommands.status.execute
+  },
+  [horoscopeCommands.get.name]: {
+    data: new SlashCommandBuilder()
+      .setName(horoscopeCommands.get.name)
+      .setDescription(horoscopeCommands.get.description)
+      .addStringOption(option =>
+        option.setName('signo')
+          .setDescription('Seu signo do zodíaco')
+          .setRequired(true)
+          .addChoices(
+            { name: 'Áries', value: 'Áries' },
+            { name: 'Touro', value: 'Touro' },
+            { name: 'Gêmeos', value: 'Gêmeos' },
+            { name: 'Câncer', value: 'Câncer' },
+            { name: 'Leão', value: 'Leão' },
+            { name: 'Virgem', value: 'Virgem' },
+            { name: 'Libra', value: 'Libra' },
+            { name: 'Escorpião', value: 'Escorpião' },
+            { name: 'Sagitário', value: 'Sagitário' },
+            { name: 'Capricórnio', value: 'Capricórnio' },
+            { name: 'Aquário', value: 'Aquário' },
+            { name: 'Peixes', value: 'Peixes' }
+          )
+      ),
+    execute: horoscopeCommands.get.execute
+  },
   [confessionCommands.setup.name]: {
     data: new SlashCommandBuilder()
       .setName(confessionCommands.setup.name)
@@ -373,7 +412,7 @@ export const slashCommands = {
       .setDescription('Dance com alguém')
       .addUserOption(option =>
         option.setName('usuario')
-          .setDescription('Com quem você quer dançar')
+          .setDescription('Com whom você quer dançar')
           .setRequired(true)
       ),
     execute: async (interaction) => {
@@ -456,18 +495,7 @@ export const slashCommands = {
   transfer: {
     data: new SlashCommandBuilder()
       .setName('transfer')
-      .setDescription('Transfira moedas para alguém')
-      .addUserOption(option =>
-        option.setName('usuario')
-          .setDescription('Quem vai receber?')
-          .setRequired(true)
-      )
-      .addIntegerOption(option =>
-        option.setName('valor')
-          .setDescription('Quantos Akita Neru?')
-          .setRequired(true)
-          .setMinValue(1)
-      ),
+      .setDescription('Transfira moedas para alguém'),
     execute: async (interaction) => {
       const user = interaction.options.getUser('usuario');
       const amount = interaction.options.getInteger('valor');
@@ -696,6 +724,7 @@ export const slashCommands = {
           { name: '⏳ Novidades Temporais', value: '`/capsula_do_tempo` - Mensagens para o futuro', inline: false },
           { name: '🎬 Clube de Cinema', value: '`/sugerir_filme`, `/votar_filme` - Cinema em grupo', inline: false },
           { name: '🤫 Segredos', value: '`/confessar` - Envie mensagens anônimas', inline: false },
+          { name: '🐾 Misticismo & Pets', value: '`/horoscopo`, `/adotar_pet`, `/meu_pet` - Explore o sobrenatural', inline: false },
           { name: '🛡️ Moderação', value: '`/warn`, `/warns`, `/clearwarns` (Apenas Staff)', inline: false }
         )
         .setFooter({ text: '*O conhecimento é a única coisa que ninguém pode tirar de você.* 💀' });
