@@ -1,4 +1,5 @@
-import { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } from 'discord.js';
+import { cinemaCommands } from './cinema.js';
 import { chat } from './gemini.js';
 import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer, addBalance, removeBalance, setBalance } from './economy.js';
 import { getUserInfo, getXPLeaderboard, addXPDirect, removeXPDirect } from './xp.js';
@@ -13,6 +14,23 @@ import { setRestartChannel } from './restartNotification.js';
 import { setTicketCategory, setSupportRole, sendTicketPanel, getTicketStats } from './tickets.js';
 
 export const slashCommands = {
+  [cinemaCommands.suggest.name]: {
+    data: new SlashCommandBuilder()
+      .setName(cinemaCommands.suggest.name)
+      .setDescription(cinemaCommands.suggest.description)
+      .addStringOption(option =>
+        option.setName('filme')
+          .setDescription('Nome do filme')
+          .setRequired(true)
+      ),
+    execute: cinemaCommands.suggest.execute
+  },
+  [cinemaCommands.vote.name]: {
+    data: new SlashCommandBuilder()
+      .setName(cinemaCommands.vote.name)
+      .setDescription(cinemaCommands.vote.description),
+    execute: cinemaCommands.vote.execute
+  },
   ask: {
     data: new SlashCommandBuilder()
       .setName('ask')

@@ -267,6 +267,13 @@ async function main() {
         return;
       }
 
+      // Sistema de Cinema
+      if (interaction.customId.startsWith('vote_movie_')) {
+        const { handleCinemaVote } = await import('./cinema.js');
+        await handleCinemaVote(interaction);
+        return;
+      }
+
       // Sistema de Casamento/Divórcio
       if (interaction.customId === 'cancel_marriage') {
         await interaction.update({ content: '💔 Casamento cancelado!', components: [], embeds: [] });
