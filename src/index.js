@@ -56,11 +56,14 @@ async function main() {
         client.user.setActivity(activities[currentActivity].text, { type: activities[currentActivity].type });
       }, 30000);
 
-      // Sistema de notificação de daily disponível
+      // Sistema de daily disponível
       const notifiedUsers = new Set();
+      
+      const { checkCapsules } = await import('./timecapsule.js');
 
       setInterval(async () => {
         try {
+          await checkCapsules(client);
           const users = getAllUsers();
 
           for (const [userId, userData] of Object.entries(users)) {

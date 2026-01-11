@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } from 'discord.js';
 import { cinemaCommands } from './cinema.js';
+import { timeCapsuleCommands } from './timecapsule.js';
 import { chat } from './gemini.js';
 import { getBalance, dailyReward, getLeaderboard, work, gamble, transfer, addBalance, removeBalance, setBalance } from './economy.js';
 import { getUserInfo, getXPLeaderboard, addXPDirect, removeXPDirect } from './xp.js';
@@ -30,6 +31,24 @@ export const slashCommands = {
       .setName(cinemaCommands.vote.name)
       .setDescription(cinemaCommands.vote.description),
     execute: cinemaCommands.vote.execute
+  },
+  [timeCapsuleCommands.create.name]: {
+    data: new SlashCommandBuilder()
+      .setName(timeCapsuleCommands.create.name)
+      .setDescription(timeCapsuleCommands.create.description)
+      .addStringOption(option =>
+        option.setName('mensagem')
+          .setDescription('O que você quer dizer para o seu eu do futuro?')
+          .setRequired(true)
+      )
+      .addIntegerOption(option =>
+        option.setName('dias')
+          .setDescription('Daqui a quantos dias devo te entregar?')
+          .setRequired(true)
+          .setMinValue(1)
+          .setMaxValue(365)
+      ),
+    execute: timeCapsuleCommands.create.execute
   },
   ask: {
     data: new SlashCommandBuilder()
