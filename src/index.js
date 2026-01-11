@@ -188,7 +188,7 @@ async function main() {
         const question = message.content.replace(/<@!?\d+>/g, '').trim();
         if (!question) {
           try {
-            await message.reply('Oi! Me pergunte qualquer coisa ou use `!ajuda` para ver meus comandos.');
+            await message.reply('Oi! Me pergunte qualquer coisa ou use `!ajuda` para ver meus comandos. Como não tenho permissão de ler todas as mensagens sem ser mencionada, por favor me marque sempre que quiser conversar! 💙');
           } catch (error) {
             console.error('Erro ao responder menção vazia:', error);
           }
