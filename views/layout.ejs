@@ -10,36 +10,36 @@
 </head>
 <body>
     <% if (typeof user !== 'undefined' && user) { %>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                🎤 Miku Diva Dashboard
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <span class="fs-4 me-2">🎤</span> MIKU DIVA
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link <%= activePage === 'home' ? 'active' : '' %>" href="/"><i class="bi bi-house"></i> Home</a>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link rounded px-3 <%= activePage === 'home' ? 'active bg-primary text-white' : '' %>" href="/"><i class="bi bi-house-door me-1"></i> Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <%= activePage === 'economy' ? 'active' : '' %>" href="/economy"><i class="bi bi-cash-coin"></i> Economia</a>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link rounded px-3 <%= activePage === 'economy' ? 'active bg-primary text-white' : '' %>" href="/economy"><i class="bi bi-piggy-bank me-1"></i> Economia</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <%= activePage === 'xp' ? 'active' : '' %>" href="/xp"><i class="bi bi-star"></i> XP</a>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link rounded px-3 <%= activePage === 'xp' ? 'active bg-primary text-white' : '' %>" href="/xp"><i class="bi bi-trophy me-1"></i> Ranking</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <%= activePage === 'admins' ? 'active' : '' %>" href="/admins"><i class="bi bi-shield"></i> Admins</a>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link rounded px-3 <%= activePage === 'admins' ? 'active bg-primary text-white' : '' %>" href="/admins"><i class="bi bi-shield-lock me-1"></i> Staff</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <%= activePage === 'servers' ? 'active' : '' %>" href="/servers"><i class="bi bi-discord"></i> Servidores</a>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link rounded px-3 <%= activePage === 'servers' ? 'active bg-primary text-white' : '' %>" href="/servers"><i class="bi bi-cpu me-1"></i> Instâncias</a>
                     </li>
                 </ul>
-                <div class="d-flex align-items-center">
-                    <img src="<%= user.displayAvatarURL() %>" alt="Avatar" class="rounded-circle me-2" width="32" height="32">
-                    <span class="text-white me-3"><%= user.username %></span>
-                    <a href="/logout" class="btn btn-outline-light btn-sm">Sair</a>
+                <div class="d-flex align-items-center bg-black p-1 rounded-pill px-3 border border-secondary">
+                    <img src="<%= user.displayAvatarURL() %>" alt="Avatar" class="rounded-circle me-2" width="28" height="28">
+                    <span class="text-white-50 small me-3 fw-bold"><%= user.username %></span>
+                    <a href="/logout" class="btn btn-link btn-sm text-danger p-0 text-decoration-none fw-bold">SAIR</a>
                 </div>
             </div>
         </div>

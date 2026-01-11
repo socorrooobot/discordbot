@@ -1,42 +1,96 @@
-
 :root {
-    --primary: #667eea;
-    --secondary: #764ba2;
+    --primary: #5865f2;
+    --secondary: #eb459e;
+    --success: #2ecc71;
+    --warning: #f1c40f;
+    --info: #3498db;
+    --danger: #e74c3c;
+    --dark: #1e1e1e;
+    --black: #0a0a0a;
+    --muted: #8e9297;
 }
 
 body {
-    background-color: #f5f7fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--black);
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 .navbar {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: var(--dark) !important;
+    border-bottom: 2px solid var(--primary);
+    padding: 0.8rem 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+.navbar-brand {
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--primary) !important;
 }
 
 .card {
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+    background-color: var(--dark);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.7) !important;
+    border-color: rgba(255,255,255,0.1);
 }
 
-.table th {
-    border-top: none;
+.stats-card .icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.icon-circle.bg-primary { background: linear-gradient(135deg, #5865f2, #4752c4); }
+.icon-circle.bg-success { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+.icon-circle.bg-warning { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+.icon-circle.bg-info { background: linear-gradient(135deg, #3498db, #2980b9); }
+
+.bg-black {
+    background-color: rgba(0,0,0,0.3) !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #5865f2, #4752c4);
+    border: none;
     font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    color: #6c757d;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
 }
 
-.btn {
-    border-radius: 6px;
+.btn-outline-info {
+    border-color: var(--info);
+    color: var(--info);
 }
 
-.badge {
-    padding: 0.5em 0.75em;
+.btn-outline-info:hover {
+    background-color: var(--info);
+    color: white;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--black);
+}
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
 }
