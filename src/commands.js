@@ -746,12 +746,33 @@ export const commands = {
 };
 
 export const handleCommand = async (message, client) => {
-  const args = message.content.slice(1).split(/ +/);
-  const commandName = args.shift().toLowerCase();
-  const command = Object.values(commands).find(c => c.name === '!' + commandName || (c.aliases && c.aliases.includes('!' + commandName)));
+  const content = message.content.toLowerCase();
+  
+  // Encontrar o comando
+  let command = null;
+  let args = [];
+
+  if (content.startsWith('!')) {
+    const fullArgs = message.content.slice(1).split(/ +/);
+    const cmdName = fullArgs.shift().toLowerCase();
+    args = fullArgs;
+    
+    command = Object.values(commands).find(c => {
+      const name = c.name.startsWith('!') ? c.name.slice(1).toLowerCase() : c.name.toLowerCase();
+      const hasAlias = c.aliases && c.aliases.some(a => (a.startsWith('!') ? a.slice(1).toLowerCase() : a.toLowerCase()) === cmdName);
+      return name === cmdName || hasAlias;
+    });
+  }
+
   if (!command) return false;
-  await command.execute(message, args, client);
-  return true;
+
+  try {
+    await command.execute(message, args, client);
+    return true;
+  } catch (error) {
+    console.error(`Erro ao executar comando ${command.name}:`, error);
+    return false;
+  }
 };
 
 export const shouldRespondToMention = (message, client) => {
