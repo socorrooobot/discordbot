@@ -43,24 +43,26 @@ const whispers = [
 export const commands = {
   ajuda: {
     name: '!ajuda',
-    aliases: ['!help'],
+    aliases: ['!help', '!cmds', '!comandos'],
     description: 'Mostra todos os comandos disponíveis',
     execute: async (message) => {
       const { EmbedBuilder } = await import('discord.js');
       const helpEmbed = new EmbedBuilder()
-        .setColor('#00bfff')
-        .setTitle('📑 Comandos da Miku')
-        .setDescription('Use `!help` ou `!ajuda` para mais detalhes!')
+        .setColor('#0a0a0a')
+        .setTitle('📑 Biblioteca de Comandos | Miku Diva')
+        .setDescription('*"O conhecimento é a única coisa que resta quando a música para."*\n\nUse `!help <comando>` para detalhes específicos.')
         .addFields(
-          { name: '💬 Conversa', value: '`!ask`, `!chat`, `!clear`' },
-          { name: '👤 Perfil', value: '`!perfil`, `!avatar`, `!userinfo`, `!topxp`, `!serverinfo`' },
-          { name: '🕹️ Jogos', value: '`!dice`, `!flip`, `!gamble`, `!moeda`, `!8ball`, `!gayrate`, `!lovecalc`, `!ppt`, `!ship`' },
-          { name: '💰 Economia', value: '`!balance`, `!daily`, `!work`, `!transfer`, `!topmoney`, `!transferirsonhos`, `!versonhos`' },
-          { name: '🎭 Roleplay', value: '`!quote`, `!dream`, `!whisper`, `!story`, `!miku`, `!tapa`, `!beijo`, `!abraco`, `!cafune`, `!casar`, `!divorciar`, `!danca`, `!pat`, `!slap`' },
-          { name: '🛡️ Moderação', value: '`!ban`, `!kick`, `!purge`, `!lock`, `!unlock`, `!warn`, `!warns`, `!unwarn`, `!clearwarns`, `!slowmode`' },
-          { name: '⚙️ Utilidade', value: '`!ping`, `!status`, `!invite`, `!about`, `!tempo`, `!calculadora` ' }
+          { name: '💬 Conversa & IA', value: '`ask`, `chat`, `clear`', inline: true },
+          { name: '👤 Perfil & XP', value: '`perfil`, `avatar`, `userinfo`, `topxp`, `serverinfo`', inline: true },
+          { name: '🕹️ Jogos & Diversão', value: '`dice`, `flip`, `gamble`, `moeda`, `8ball`, `gayrate`, `lovecalc`, `ppt`, `ship`, `kill`', inline: false },
+          { name: '💰 Economia', value: '`balance`, `daily`, `work`, `transfer`, `topmoney`, `transferirsonhos`, `versonhos`', inline: false },
+          { name: '🎭 Roleplay', value: '`quote`, `dream`, `whisper`, `story`, `miku`, `tapa`, `beijo`, `abraco`, `cafune`, `casar`, `divorciar`, `pat`, `slap`', inline: false },
+          { name: '🛡️ Moderação', value: '`ban`, `kick`, `purge`, `lock`, `unlock`, `warn`, `warns`, `unwarn`, `slowmode`', inline: false },
+          { name: '⚙️ Utilidade', value: '`ping`, `status`, `invite`, `about`, `tempo`, `calculadora` ', inline: false }
         )
-        .setFooter({ text: '"Conhecer os comandos é conhecer meu coração." 🖤' });
+        .setThumbnail(message.client.user.displayAvatarURL())
+        .setFooter({ text: '🌑 Eclipse Místico | Versão 2.5.0', iconURL: message.client.user.displayAvatarURL() })
+        .setTimestamp();
 
       await message.reply({ embeds: [helpEmbed] });
     }
@@ -69,17 +71,13 @@ export const commands = {
   help: {
     name: '!help',
     execute: async (message) => {
-      const { commands } = await import('./commands.js');
       return commands.ajuda.execute(message);
     }
   },
 
   comandos: {
     name: '!comandos',
-    aliases: ['!cmds'],
-    description: 'Lista simplificada de todos os comandos',
     execute: async (message) => {
-      const { commands } = await import('./commands.js');
       return commands.ajuda.execute(message);
     }
   },
@@ -87,7 +85,6 @@ export const commands = {
   cmds: {
     name: '!cmds',
     execute: async (message) => {
-      const { commands } = await import('./commands.js');
       return commands.ajuda.execute(message);
     }
   },
