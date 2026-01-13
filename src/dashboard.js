@@ -174,6 +174,100 @@ export function startDashboard(client) {
     }
   });
 
+  app.get('/blacklist', requireAuth, async (req, res) => {
+    const { getBlacklist } = await import('./blacklist.js');
+    const blacklistedIds = getBlacklist ? getBlacklist() : [];
+    const users = [];
+    for (const id of blacklistedIds) {
+      try {
+        const u = await client.users.fetch(id);
+        users.push({ id, username: u.username, avatar: u.displayAvatarURL() });
+      } catch {
+        users.push({ id, username: 'Desconhecido', avatar: null });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const blacklistHtml = `
+      <div class="card bg-dark text-white border-danger shadow-lg">
+        <div class="card-header border-danger bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🚫 Gestão de Blacklist</h5>
+        </div>
+        <div class="card-body">
+          <form action="/blacklist/add" method="POST" class="mb-4">
+            <div class="input-group">
+              <input type="text" name="userId" class="form-control bg-black text-white border-secondary" placeholder="ID do Usuário para banir do bot">
+              <button class="btn btn-danger">ADICIONAR</button>
+            </div>
+          </form>
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead><tr><th>Usuário</th><th>ID</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${users.map(u => `
+                  <tr>
+                    <td><img src="${u.avatar}" width="24" class="rounded-circle me-2"> ${u.username}</td>
+                    <td>${u.id}</td>
+                    <td>
+                      <form action="/blacklist/remove" method="POST" style="display:inline">
+                        <input type="hidden" name="userId" value="${u.id}">
+                        <button class="btn btn-sm btn-outline-warning">REMOVER</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: blacklistHtml, user: currentUser, activePage: 'blacklist', title: 'Blacklist' });
+  });
+
+  app.post('/blacklist/add', requireAuth, async (req, res) => {
+    const { addToBlacklist } = await import('./blacklist.js');
+    if (req.body.userId) addToBlacklist(req.body.userId);
+    res.redirect('/blacklist');
+  });
+
+  app.post('/blacklist/remove', requireAuth, async (req, res) => {
+    const { removeFromBlacklist } = await import('./blacklist.js');
+    if (req.body.userId) removeFromBlacklist(req.body.userId);
+    res.redirect('/blacklist');
+  });
+
+  app.get('/broadcast', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const broadcastHtml = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black">
+          <h5 class="mb-0">📢 Transmissão Global</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small">Envie uma mensagem para todos os servidores que a Diva está!</p>
+          <form action="/broadcast/send" method="POST">
+            <div class="mb-3">
+              <textarea name="message" class="form-control bg-black text-white border-secondary" rows="4" placeholder="Sua mensagem aqui..."></textarea>
+            </div>
+            <button class="btn btn-info w-100 fw-bold">ENVIAR PARA TODOS OS SERVIDORES</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: broadcastHtml, user: currentUser, activePage: 'broadcast', title: 'Broadcast' });
+  });
+
+  app.post('/broadcast/send', requireAuth, async (req, res) => {
+    const { message } = req.body;
+    if (message) {
+      client.guilds.cache.forEach(guild => {
+        const channel = guild.channels.cache.find(c => c.isTextBased() && c.permissionsFor(client.user).has('SendMessages'));
+        if (channel) channel.send({ embeds: [{ color: 0x00bfff, title: '📢 Comunicado da Diva', description: message, footer: { text: 'Enviado via Dashboard' } }] }).catch(() => {});
+      });
+    }
+    res.redirect('/broadcast');
+  });
+
   // Novos Logs e Configurações no Dashboard
   app.get('/logs', requireAuth, async (req, res) => {
     const currentUser = await client.users.fetch(req.session.userId);
@@ -261,6 +355,100 @@ export function startDashboard(client) {
       console.error('Erro ao atualizar configurações:', error);
       res.status(500).send('Erro interno ao atualizar configurações: ' + error.message);
     }
+  });
+
+  app.get('/blacklist', requireAuth, async (req, res) => {
+    const { getBlacklist } = await import('./blacklist.js');
+    const blacklistedIds = getBlacklist ? getBlacklist() : [];
+    const users = [];
+    for (const id of blacklistedIds) {
+      try {
+        const u = await client.users.fetch(id);
+        users.push({ id, username: u.username, avatar: u.displayAvatarURL() });
+      } catch {
+        users.push({ id, username: 'Desconhecido', avatar: null });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const blacklistHtml = `
+      <div class="card bg-dark text-white border-danger shadow-lg">
+        <div class="card-header border-danger bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🚫 Gestão de Blacklist</h5>
+        </div>
+        <div class="card-body">
+          <form action="/blacklist/add" method="POST" class="mb-4">
+            <div class="input-group">
+              <input type="text" name="userId" class="form-control bg-black text-white border-secondary" placeholder="ID do Usuário para banir do bot">
+              <button class="btn btn-danger">ADICIONAR</button>
+            </div>
+          </form>
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead><tr><th>Usuário</th><th>ID</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${users.map(u => `
+                  <tr>
+                    <td><img src="${u.avatar}" width="24" class="rounded-circle me-2"> ${u.username}</td>
+                    <td>${u.id}</td>
+                    <td>
+                      <form action="/blacklist/remove" method="POST" style="display:inline">
+                        <input type="hidden" name="userId" value="${u.id}">
+                        <button class="btn btn-sm btn-outline-warning">REMOVER</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: blacklistHtml, user: currentUser, activePage: 'blacklist', title: 'Blacklist' });
+  });
+
+  app.post('/blacklist/add', requireAuth, async (req, res) => {
+    const { addToBlacklist } = await import('./blacklist.js');
+    if (req.body.userId) addToBlacklist(req.body.userId);
+    res.redirect('/blacklist');
+  });
+
+  app.post('/blacklist/remove', requireAuth, async (req, res) => {
+    const { removeFromBlacklist } = await import('./blacklist.js');
+    if (req.body.userId) removeFromBlacklist(req.body.userId);
+    res.redirect('/blacklist');
+  });
+
+  app.get('/broadcast', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const broadcastHtml = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black">
+          <h5 class="mb-0">📢 Transmissão Global</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small">Envie uma mensagem para todos os servidores que a Diva está!</p>
+          <form action="/broadcast/send" method="POST">
+            <div class="mb-3">
+              <textarea name="message" class="form-control bg-black text-white border-secondary" rows="4" placeholder="Sua mensagem aqui..."></textarea>
+            </div>
+            <button class="btn btn-info w-100 fw-bold">ENVIAR PARA TODOS OS SERVIDORES</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: broadcastHtml, user: currentUser, activePage: 'broadcast', title: 'Broadcast' });
+  });
+
+  app.post('/broadcast/send', requireAuth, async (req, res) => {
+    const { message } = req.body;
+    if (message) {
+      client.guilds.cache.forEach(guild => {
+        const channel = guild.channels.cache.find(c => c.isTextBased() && c.permissionsFor(client.user).has('SendMessages'));
+        if (channel) channel.send({ embeds: [{ color: 0x00bfff, title: '📢 Comunicado da Diva', description: message, footer: { text: 'Enviado via Dashboard' } }] }).catch(() => {});
+      });
+    }
+    res.redirect('/broadcast');
   });
 
   // Gerenciar Economia
