@@ -158,11 +158,20 @@ export function startDashboard(client) {
     res.render('layout', { body: settingsHtml, user: currentUser, activePage: 'settings', title: 'Configurações' });
   });
 
-  app.post('/settings/update', requireAuth, (req, res) => {
-    const { botName, status } = req.body;
-    if (botName) client.user.setUsername(botName).catch(console.error);
-    if (status) client.user.setPresence({ status }).catch(console.error);
-    res.redirect('/settings');
+  app.post('/settings/update', requireAuth, async (req, res) => {
+    try {
+      const { botName, status } = req.body;
+      if (botName && botName !== client.user.username) {
+        await client.user.setUsername(botName);
+      }
+      if (status) {
+        await client.user.setPresence({ status: status });
+      }
+      res.redirect('/settings');
+    } catch (error) {
+      console.error('Erro ao atualizar configurações:', error);
+      res.status(500).send('Erro interno ao atualizar configurações: ' + error.message);
+    }
   });
 
   // Novos Logs e Configurações no Dashboard
@@ -238,11 +247,20 @@ export function startDashboard(client) {
     res.render('layout', { body: settingsHtml, user: currentUser, activePage: 'settings', title: 'Configurações' });
   });
 
-  app.post('/settings/update', requireAuth, (req, res) => {
-    const { botName, status } = req.body;
-    if (botName) client.user.setUsername(botName).catch(console.error);
-    if (status) client.user.setPresence({ status }).catch(console.error);
-    res.redirect('/settings');
+  app.post('/settings/update', requireAuth, async (req, res) => {
+    try {
+      const { botName, status } = req.body;
+      if (botName && botName !== client.user.username) {
+        await client.user.setUsername(botName);
+      }
+      if (status) {
+        await client.user.setPresence({ status: status });
+      }
+      res.redirect('/settings');
+    } catch (error) {
+      console.error('Erro ao atualizar configurações:', error);
+      res.status(500).send('Erro interno ao atualizar configurações: ' + error.message);
+    }
   });
 
   // Gerenciar Economia
