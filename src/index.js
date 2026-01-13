@@ -21,8 +21,10 @@ async function main() {
       console.log(`✨ Bot is online! Logged in as ${client.user.tag}`);
       console.log(`🖤 Bot is in ${client.guilds.cache.size} server(s)`);
 
-      // Notificar reinicialização
-      await notifyRestart(client, 'Reinicialização do bot');
+      // Notificar reinicialização (silencioso se falhar)
+      notifyRestart(client, 'Reinicialização do bot').catch(err => {
+        console.error('Erro silencioso ao notificar restart:', err.message);
+      });
 
       // Registrar slash commands
       await registerSlashCommands(client);
@@ -101,7 +103,10 @@ async function main() {
       // Ignorar mensagens de bots
       if (message.author.bot) return;
 
-      console.log(`📨 Mensagem recebida de ${message.author.tag}: ${message.content.substring(0, 50)}`);
+      // Log apenas se for comando ou menção para reduzir poluição
+      if (message.content.startsWith('!') || message.mentions.has(client.user)) {
+        console.log(`📨 Mensagem recebida de ${message.author.tag}: ${message.content.substring(0, 50)}`);
+      }
 
       // Verificar se usuário está na blacklist
       if (isBlacklisted(message.author.id)) {

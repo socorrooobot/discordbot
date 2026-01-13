@@ -40,8 +40,11 @@ export async function notifyRestart(client, reason = 'Atualização programada')
   if (!channelId) return;
   
   try {
-    const channel = await client.channels.fetch(channelId);
-    if (!channel || !channel.isTextBased()) return;
+    const channel = await client.channels.fetch(channelId).catch(() => null);
+    if (!channel || !channel.isTextBased()) {
+      console.log(`⚠️ Canal ${channelId} não encontrado ou sem acesso.`);
+      return;
+    }
     
     const embed = {
       color: 0xFF6B6B,
