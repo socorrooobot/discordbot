@@ -49,8 +49,8 @@ export const commands = {
       const { EmbedBuilder } = await import('discord.js');
       const helpEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
-        .setTitle('📑 Biblioteca de Comandos | Miku Diva')
-        .setDescription('*"O conhecimento é a única coisa que resta quando a música para."*\n\nUse `!help <comando>` para detalhes específicos.')
+        .setTitle('🌑 Biblioteca de Comandos | Miku Diva')
+        .setDescription('*"O conhecimento é a única coisa que resta quando a música para."*\n\nUse `!ajuda <comando>` para detalhes específicos.')
         .addFields(
           { name: '💬 Conversa & IA', value: '`ask`, `chat`, `clear`', inline: true },
           { name: '👤 Perfil & XP', value: '`perfil`, `avatar`, `userinfo`, `topxp`, `serverinfo`', inline: true },
@@ -61,7 +61,7 @@ export const commands = {
           { name: '⚙️ Utilidade', value: '`ping`, `status`, `invite`, `about`, `tempo`, `calculadora` ', inline: false }
         )
         .setThumbnail(message.client.user.displayAvatarURL())
-        .setFooter({ text: '🌑 Eclipse Místico | Versão 2.5.0', iconURL: message.client.user.displayAvatarURL() })
+        .setFooter({ text: 'Eclipse Místico | Miku Diva Bot 🖤', iconURL: message.client.user.displayAvatarURL() })
         .setTimestamp();
 
       await message.reply({ embeds: [helpEmbed] });
