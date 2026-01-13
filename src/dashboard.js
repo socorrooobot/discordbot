@@ -75,7 +75,6 @@ export function startDashboard(client) {
 
     const user = await client.users.fetch(req.session.userId);
     
-    // Usando render com layout manual para evitar erro de include no EJS
     res.render('index', { stats, user, client, activePage: 'home' }, (err, html) => {
       if (err) {
         console.error('Erro ao renderizar index:', err);
@@ -83,6 +82,167 @@ export function startDashboard(client) {
       }
       res.render('layout', { body: html, user, activePage: 'home', title: 'Dashboard' });
     });
+  });
+
+  // Novos Logs e Configurações no Dashboard
+  app.get('/logs', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const logs = [
+      { time: new Date().toLocaleTimeString(), action: 'Comando !ajuda usado', user: 'Sistema' },
+      { time: new Date().toLocaleTimeString(), action: 'Login no Dashboard', user: currentUser.username }
+    ];
+
+    const logsHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary d-flex justify-content-between align-items-center bg-black">
+          <h5 class="mb-0">📜 Logs do Sistema (Tempo Real)</h5>
+          <span class="badge bg-success shadow-sm">ATIVO</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0">
+              <thead>
+                <tr>
+                  <th class="border-secondary py-3 ps-4">Hora</th>
+                  <th class="border-secondary py-3">Ação</th>
+                  <th class="border-secondary py-3">Usuário</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${logs.map(log => `
+                  <tr>
+                    <td class="border-secondary ps-4 text-info font-monospace">${log.time}</td>
+                    <td class="border-secondary">${log.action}</td>
+                    <td class="border-secondary"><span class="badge bg-secondary border border-light-subtle">${log.user}</span></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: logsHtml, user: currentUser, activePage: 'logs', title: 'Logs do Sistema' });
+  });
+
+  app.get('/settings', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const settingsHtml = `
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card bg-dark text-white border-secondary shadow-lg">
+            <div class="card-header border-secondary bg-black">
+              <h5 class="mb-0">⚙️ Configurações da Diva</h5>
+            </div>
+            <div class="card-body p-4">
+              <form action="/settings/update" method="POST">
+                <div class="mb-4">
+                  <label class="form-label text-white-50 small fw-bold">NOME DA DIVA</label>
+                  <input type="text" class="form-control bg-black text-white border-secondary py-2" name="botName" value="${client.user.username}">
+                </div>
+                <div class="mb-4">
+                  <label class="form-label text-white-50 small fw-bold">ESTADO MENTAL (STATUS)</label>
+                  <select class="form-select bg-black text-white border-secondary py-2" name="status">
+                    <option value="online">Online & Radiante</option>
+                    <option value="idle">Ausente & Melancólica</option>
+                    <option value="dnd">Não Perturbe (Em Concerto)</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">SALVAR ALTERAÇÕES</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: settingsHtml, user: currentUser, activePage: 'settings', title: 'Configurações' });
+  });
+
+  app.post('/settings/update', requireAuth, (req, res) => {
+    const { botName, status } = req.body;
+    if (botName) client.user.setUsername(botName).catch(console.error);
+    if (status) client.user.setPresence({ status }).catch(console.error);
+    res.redirect('/settings');
+  });
+
+  // Novos Logs e Configurações no Dashboard
+  app.get('/logs', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    // Simulação de logs para a interface
+    const logs = [
+      { time: new Date().toLocaleTimeString(), action: 'Comando !ajuda usado', user: 'Sistema' },
+      { time: new Date().toLocaleTimeString(), action: 'Login no Dashboard', user: currentUser.username }
+    ];
+
+    res.render('index', { stats: {}, user: currentUser, client, logs, activePage: 'logs' }, (err, html) => {
+      const logsHtml = `
+        <div class="card bg-dark text-white border-secondary">
+          <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">📜 Logs do Sistema (Tempo Real)</h5>
+            <span class="badge bg-primary">Online</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover mb-0">
+                <thead>
+                  <tr>
+                    <th class="border-secondary">Hora</th>
+                    <th class="border-secondary">Ação</th>
+                    <th class="border-secondary">Usuário</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${logs.map(log => `
+                    <tr>
+                      <td class="border-secondary text-info">${log.time}</td>
+                      <td class="border-secondary">${log.action}</td>
+                      <td class="border-secondary"><span class="badge bg-secondary">${log.user}</span></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+      res.render('layout', { body: logsHtml, user: currentUser, activePage: 'logs', title: 'Logs do Sistema' });
+    });
+  });
+
+  app.get('/settings', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const settingsHtml = `
+      <div class="card bg-dark text-white border-secondary">
+        <div class="card-header border-secondary">
+          <h5 class="mb-0">⚙️ Configurações da Diva</h5>
+        </div>
+        <div class="card-body">
+          <form action="/settings/update" method="POST">
+            <div class="mb-3">
+              <label class="form-label">Nome do Bot</label>
+              <input type="text" class="form-control bg-dark text-white border-secondary" name="botName" value="${client.user.username}">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status da Atividade</label>
+              <select class="form-select bg-dark text-white border-secondary" name="status">
+                <option value="online">Online</option>
+                <option value="idle">Ausente</option>
+                <option value="dnd">Não Perturbe</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: settingsHtml, user: currentUser, activePage: 'settings', title: 'Configurações' });
+  });
+
+  app.post('/settings/update', requireAuth, (req, res) => {
+    const { botName, status } = req.body;
+    if (botName) client.user.setUsername(botName).catch(console.error);
+    if (status) client.user.setPresence({ status }).catch(console.error);
+    res.redirect('/settings');
   });
 
   // Gerenciar Economia

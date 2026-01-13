@@ -46,25 +46,104 @@ export const commands = {
     aliases: ['!help', '!cmds', '!comandos'],
     description: 'Mostra todos os comandos disponíveis',
     execute: async (message) => {
-      const { EmbedBuilder } = await import('discord.js');
-      const helpEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('🌑 Biblioteca de Comandos | Miku Diva')
-        .setDescription('*"O conhecimento é a única coisa que resta quando a música para."*\n\nUse `!ajuda <comando>` para detalhes específicos.')
-        .addFields(
-          { name: '💬 Conversa & IA', value: '`ask`, `chat`, `clear`', inline: true },
-          { name: '👤 Perfil & XP', value: '`perfil`, `avatar`, `userinfo`, `topxp`, `serverinfo`', inline: true },
-          { name: '🕹️ Jogos & Diversão', value: '`dice`, `flip`, `gamble`, `moeda`, `8ball`, `gayrate`, `lovecalc`, `ppt`, `ship`, `kill`', inline: false },
-          { name: '💰 Economia', value: '`balance`, `daily`, `work`, `transfer`, `topmoney`, `transferirsonhos`, `versonhos`', inline: false },
-          { name: '🎭 Roleplay', value: '`quote`, `dream`, `whisper`, `story`, `miku`, `tapa`, `beijo`, `abraco`, `cafune`, `casar`, `divorciar`, `pat`, `slap`', inline: false },
-          { name: '🛡️ Moderação', value: '`ban`, `kick`, `purge`, `lock`, `unlock`, `warn`, `warns`, `unwarn`, `slowmode`', inline: false },
-          { name: '⚙️ Utilidade', value: '`ping`, `status`, `invite`, `about`, `tempo`, `calculadora` ', inline: false }
-        )
-        .setThumbnail(message.client.user.displayAvatarURL())
-        .setFooter({ text: 'Eclipse Místico | Miku Diva Bot 🖤', iconURL: message.client.user.displayAvatarURL() })
-        .setTimestamp();
+      const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = await import('discord.js');
+      
+      const pages = [
+        {
+          title: '🌑 Biblioteca de Comandos | Início',
+          fields: [
+            { name: '💬 Conversa & IA', value: '`ask`, `chat`, `clear`', inline: true },
+            { name: '👤 Perfil & XP', value: '`perfil`, `avatar`, `userinfo`, `topxp`, `serverinfo`', inline: true },
+            { name: '⚙️ Utilidade', value: '`ping`, `status`, `invite`, `about`, `tempo`, `calculadora` ', inline: false }
+          ]
+        },
+        {
+          title: '🕹️ Biblioteca de Comandos | Diversão & Economia',
+          fields: [
+            { name: '🕹️ Jogos & Diversão', value: '`dice`, `flip`, `gamble`, `moeda`, `8ball`, `gayrate`, `lovecalc`, `ppt`, `ship`, `kill`', inline: false },
+            { name: '💰 Economia', value: '`balance`, `daily`, `work`, `transfer`, `topmoney`, `transferirsonhos`, `versonhos`', inline: false }
+          ]
+        },
+        {
+          title: '🎭 Biblioteca de Comandos | Social & Staff',
+          fields: [
+            { name: '🎭 Roleplay', value: '`quote`, `dream`, `whisper`, `story`, `miku`, `tapa`, `beijo`, `abraco`, `cafune`, `casar`, `divorciar`, `pat`, `slap`', inline: false },
+            { name: '🛡️ Moderação', value: '`ban`, `kick`, `purge`, `lock`, `unlock`, `warn`, `warns`, `unwarn`, `slowmode`', inline: false }
+          ]
+        }
+      ];
 
-      await message.reply({ embeds: [helpEmbed] });
+      let currentPage = 0;
+
+      const generateEmbed = (pageIdx) => {
+        const page = pages[pageIdx];
+        return new EmbedBuilder()
+          .setColor('#0a0a0a')
+          .setTitle(page.title)
+          .setDescription('*"O conhecimento é a única coisa que resta quando a música para."*\n\nUse `!ajuda <comando>` para detalhes.')
+          .addFields(page.fields)
+          .setThumbnail(message.client.user.displayAvatarURL())
+          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length} | Eclipse Místico 🖤` })
+          .setTimestamp();
+      };
+
+      const row = new ActionRowBuilder()
+        .addComponents(
+          new ButtonBuilder()
+            .setCustomId('prev_help')
+            .setLabel('⬅️')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(true),
+          new ButtonBuilder()
+            .setCustomId('next_help')
+            .setLabel('➡️')
+            .setStyle(ButtonStyle.Secondary)
+        );
+
+      const response = await message.reply({ 
+        embeds: [generateEmbed(0)], 
+        components: [row] 
+      });
+
+      const collector = response.createMessageComponentCollector({ 
+        componentType: ComponentType.Button, 
+        time: 60000 
+      });
+
+      collector.on('collect', async (i) => {
+        if (i.user.id !== message.author.id) return i.reply({ content: '❌ Apenas quem usou o comando pode mudar de página!', ephemeral: true });
+
+        if (i.customId === 'prev_help') currentPage--;
+        else if (i.customId === 'next_help') currentPage++;
+
+        const newRow = new ActionRowBuilder()
+          .addComponents(
+            new ButtonBuilder()
+              .setCustomId('prev_help')
+              .setLabel('⬅️')
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(currentPage === 0),
+            new ButtonBuilder()
+              .setCustomId('next_help')
+              .setLabel('➡️')
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(currentPage === pages.length - 1)
+          );
+
+        await i.update({ 
+          embeds: [generateEmbed(currentPage)], 
+          components: [newRow] 
+        });
+      });
+
+      collector.on('end', () => {
+        const disabledRow = new ActionRowBuilder()
+          .addComponents(
+            row.components[0].setDisabled(true),
+            row.components[1].setDisabled(true)
+          );
+        response.edit({ components: [disabledRow] }).catch(() => {});
+      });
     }
   },
 
