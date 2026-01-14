@@ -410,6 +410,72 @@ export function startDashboard(client) {
     res.redirect('/economy');
   });
 
+  app.get('/tickets', requireAuth, async (req, res) => {
+    const { loadTickets } = await import('./tickets.js');
+    const tickets = loadTickets();
+    const currentUser = await client.users.fetch(req.session.userId);
+    const ticketsHtml = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🎫 Central de Suporte (Tickets)</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>ID</th><th>Usuário</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${Object.entries(tickets).map(([id, t]) => `
+                  <tr>
+                    <td><small class="text-info">#${id}</small></td>
+                    <td>${t.username}</td>
+                    <td><span class="badge ${t.status === 'open' ? 'bg-success' : 'bg-secondary'}">${t.status.toUpperCase()}</span></td>
+                    <td>
+                      <a href="https://discord.com/channels/${t.guildId}/${t.channelId}" target="_blank" class="btn btn-sm btn-outline-info">Ir para Canal</a>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: ticketsHtml, user: currentUser, activePage: 'tickets', title: 'Tickets' });
+  });
+
+  app.get('/multipliers', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const multHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">⚡ Multiplicadores Globais</h5>
+        </div>
+        <div class="card-body">
+          <form action="/multipliers/update" method="POST">
+            <div class="mb-4">
+              <label class="form-label text-white-50 small fw-bold">MULTIPLICADOR DE ECONOMIA (ATUAL: ${getMultiplier()}x)</label>
+              <input type="number" step="0.1" name="economyMult" class="form-control bg-black text-white border-secondary" value="${getMultiplier()}">
+            </div>
+            <div class="mb-4">
+              <label class="form-label text-white-50 small fw-bold">MULTIPLICADOR DE XP (ATUAL: ${getXPMultiplier()}x)</label>
+              <input type="number" step="0.1" name="xpMult" class="form-control bg-black text-white border-secondary" value="${getXPMultiplier()}">
+            </div>
+            <button class="btn btn-primary w-100 fw-bold">ATUALIZAR MULTIPLICADORES</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: multHtml, user: currentUser, activePage: 'multipliers', title: 'Multiplicadores' });
+  });
+
+  app.post('/multipliers/update', requireAuth, (req, res) => {
+    const { economyMult, xpMult } = req.body;
+    if (economyMult) setMultiplier(parseFloat(economyMult));
+    if (xpMult) setXPMultiplier(parseFloat(xpMult));
+    if (client.addDashboardLog) client.addDashboardLog(`Multiplicadores atualizados: Eco=${economyMult}x, XP=${xpMult}x`, 'Admin Dashboard');
+    res.redirect('/multipliers');
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -894,6 +960,72 @@ export function startDashboard(client) {
       if (client.addDashboardLog) client.addDashboardLog(`Alteração de saldo (${action}): ${val} para ${userId}`, 'Admin Dashboard');
     }
     res.redirect('/economy');
+  });
+
+  app.get('/tickets', requireAuth, async (req, res) => {
+    const { loadTickets } = await import('./tickets.js');
+    const tickets = loadTickets();
+    const currentUser = await client.users.fetch(req.session.userId);
+    const ticketsHtml = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🎫 Central de Suporte (Tickets)</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>ID</th><th>Usuário</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${Object.entries(tickets).map(([id, t]) => `
+                  <tr>
+                    <td><small class="text-info">#${id}</small></td>
+                    <td>${t.username}</td>
+                    <td><span class="badge ${t.status === 'open' ? 'bg-success' : 'bg-secondary'}">${t.status.toUpperCase()}</span></td>
+                    <td>
+                      <a href="https://discord.com/channels/${t.guildId}/${t.channelId}" target="_blank" class="btn btn-sm btn-outline-info">Ir para Canal</a>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: ticketsHtml, user: currentUser, activePage: 'tickets', title: 'Tickets' });
+  });
+
+  app.get('/multipliers', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const multHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">⚡ Multiplicadores Globais</h5>
+        </div>
+        <div class="card-body">
+          <form action="/multipliers/update" method="POST">
+            <div class="mb-4">
+              <label class="form-label text-white-50 small fw-bold">MULTIPLICADOR DE ECONOMIA (ATUAL: ${getMultiplier()}x)</label>
+              <input type="number" step="0.1" name="economyMult" class="form-control bg-black text-white border-secondary" value="${getMultiplier()}">
+            </div>
+            <div class="mb-4">
+              <label class="form-label text-white-50 small fw-bold">MULTIPLICADOR DE XP (ATUAL: ${getXPMultiplier()}x)</label>
+              <input type="number" step="0.1" name="xpMult" class="form-control bg-black text-white border-secondary" value="${getXPMultiplier()}">
+            </div>
+            <button class="btn btn-primary w-100 fw-bold">ATUALIZAR MULTIPLICADORES</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: multHtml, user: currentUser, activePage: 'multipliers', title: 'Multiplicadores' });
+  });
+
+  app.post('/multipliers/update', requireAuth, (req, res) => {
+    const { economyMult, xpMult } = req.body;
+    if (economyMult) setMultiplier(parseFloat(economyMult));
+    if (xpMult) setXPMultiplier(parseFloat(xpMult));
+    if (client.addDashboardLog) client.addDashboardLog(`Multiplicadores atualizados: Eco=${economyMult}x, XP=${xpMult}x`, 'Admin Dashboard');
+    res.redirect('/multipliers');
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
