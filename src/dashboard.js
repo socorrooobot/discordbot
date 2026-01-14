@@ -682,6 +682,90 @@ export function startDashboard(client) {
     res.render('layout', { body: channelsHtml, user: currentUser, activePage: 'channels', title: 'Canais' });
   });
 
+  app.get('/autorole', requireAuth, async (req, res) => {
+    const { getAutoRoles } = await import('./autorole.js').catch(() => ({}));
+    const autoRoles = getAutoRoles ? getAutoRoles() : {};
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      currentRole: autoRoles[g.id] || null,
+      roles: g.roles.cache.filter(r => r.name !== '@everyone' && !r.managed).map(r => ({
+        id: r.id,
+        name: r.name
+      }))
+    }));
+    const currentUser = await client.users.fetch(req.session.userId);
+    const autoroleHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">🤖 Gerenciamento de Auto-Role</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small mb-4">Defina um cargo que novos membros receberão automaticamente ao entrar no servidor.</p>
+          ${guilds.map(g => `
+            <div class="mb-4 p-3 border border-secondary rounded bg-black">
+              <h6 class="text-primary fw-bold mb-3">${g.name}</h6>
+              <form action="/autorole/update" method="POST" class="d-flex gap-2">
+                <input type="hidden" name="guildId" value="${g.id}">
+                <select name="roleId" class="form-select bg-dark text-white border-secondary">
+                  <option value="">Desativado</option>
+                  ${g.roles.map(r => `<option value="${r.id}" ${g.currentRole === r.id ? 'selected' : ''}>${r.name}</option>`).join('')}
+                </select>
+                <button class="btn btn-primary px-4">SALVAR</button>
+              </form>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: autoroleHtml, user: currentUser, activePage: 'autorole', title: 'Auto-Role' });
+  });
+
+  app.post('/autorole/update', requireAuth, async (req, res) => {
+    const { setAutoRole } = await import('./autorole.js').catch(() => ({}));
+    const { guildId, roleId } = req.body;
+    if (guildId && setAutoRole) {
+      setAutoRole(guildId, roleId || null);
+      if (client.addDashboardLog) client.addDashboardLog(`Auto-Role atualizado no servidor ${guildId}`, 'Admin Dashboard');
+    }
+    res.redirect('/autorole');
+  });
+
+  app.get('/members', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      memberCount: g.memberCount
+    }));
+    const membersHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black">
+          <h5 class="mb-0">👥 Lista de Membros (Resumo)</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info bg-black border-info text-info small mb-4">
+            <i class="bi bi-info-circle me-2"></i> Devido aos limites do Discord, mostramos apenas o resumo de membros por servidor aqui.
+          </div>
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Servidor</th><th>Total de Membros</th></tr></thead>
+              <tbody>
+                ${guilds.map(g => `
+                  <tr>
+                    <td>${g.name}</td>
+                    <td class="text-info fw-bold">${g.memberCount}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: membersHtml, user: currentUser, activePage: 'members', title: 'Membros' });
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -1438,6 +1522,90 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: channelsHtml, user: currentUser, activePage: 'channels', title: 'Canais' });
+  });
+
+  app.get('/autorole', requireAuth, async (req, res) => {
+    const { getAutoRoles } = await import('./autorole.js').catch(() => ({}));
+    const autoRoles = getAutoRoles ? getAutoRoles() : {};
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      currentRole: autoRoles[g.id] || null,
+      roles: g.roles.cache.filter(r => r.name !== '@everyone' && !r.managed).map(r => ({
+        id: r.id,
+        name: r.name
+      }))
+    }));
+    const currentUser = await client.users.fetch(req.session.userId);
+    const autoroleHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">🤖 Gerenciamento de Auto-Role</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small mb-4">Defina um cargo que novos membros receberão automaticamente ao entrar no servidor.</p>
+          ${guilds.map(g => `
+            <div class="mb-4 p-3 border border-secondary rounded bg-black">
+              <h6 class="text-primary fw-bold mb-3">${g.name}</h6>
+              <form action="/autorole/update" method="POST" class="d-flex gap-2">
+                <input type="hidden" name="guildId" value="${g.id}">
+                <select name="roleId" class="form-select bg-dark text-white border-secondary">
+                  <option value="">Desativado</option>
+                  ${g.roles.map(r => `<option value="${r.id}" ${g.currentRole === r.id ? 'selected' : ''}>${r.name}</option>`).join('')}
+                </select>
+                <button class="btn btn-primary px-4">SALVAR</button>
+              </form>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: autoroleHtml, user: currentUser, activePage: 'autorole', title: 'Auto-Role' });
+  });
+
+  app.post('/autorole/update', requireAuth, async (req, res) => {
+    const { setAutoRole } = await import('./autorole.js').catch(() => ({}));
+    const { guildId, roleId } = req.body;
+    if (guildId && setAutoRole) {
+      setAutoRole(guildId, roleId || null);
+      if (client.addDashboardLog) client.addDashboardLog(`Auto-Role atualizado no servidor ${guildId}`, 'Admin Dashboard');
+    }
+    res.redirect('/autorole');
+  });
+
+  app.get('/members', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      memberCount: g.memberCount
+    }));
+    const membersHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black">
+          <h5 class="mb-0">👥 Lista de Membros (Resumo)</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info bg-black border-info text-info small mb-4">
+            <i class="bi bi-info-circle me-2"></i> Devido aos limites do Discord, mostramos apenas o resumo de membros por servidor aqui.
+          </div>
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Servidor</th><th>Total de Membros</th></tr></thead>
+              <tbody>
+                ${guilds.map(g => `
+                  <tr>
+                    <td>${g.name}</td>
+                    <td class="text-info fw-bold">${g.memberCount}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: membersHtml, user: currentUser, activePage: 'members', title: 'Membros' });
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
