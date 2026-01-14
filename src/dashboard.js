@@ -616,6 +616,72 @@ export function startDashboard(client) {
     res.render('layout', { body: themeHtml, user: currentUser, activePage: 'theme', title: 'Tema' });
   });
 
+  app.get('/commands', requireAuth, async (req, res) => {
+    const { commands } = await import('./commands.js');
+    const currentUser = await client.users.fetch(req.session.userId);
+    const commandsHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">📜 Comandos da Diva</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Prefixo</th><th>Comando</th><th>Aliases</th><th>Descrição</th></tr></thead>
+              <tbody>
+                ${Object.entries(commands).map(([name, cmd]) => `
+                  <tr>
+                    <td><span class="badge bg-primary">!</span></td>
+                    <td class="text-info fw-bold">${name}</td>
+                    <td>${cmd.aliases ? cmd.aliases.map(a => `<span class="badge bg-secondary me-1">${a}</span>`).join('') : '<small class="text-white-50">Nenhum</small>'}</td>
+                    <td>${cmd.description || 'Sem descrição.'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: commandsHtml, user: currentUser, activePage: 'commands', title: 'Comandos' });
+  });
+
+  app.get('/channels', requireAuth, async (req, res) => {
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      channels: g.channels.cache.filter(c => c.isTextBased()).map(c => ({
+        id: c.id,
+        name: c.name,
+        type: c.type
+      }))
+    }));
+    const currentUser = await client.users.fetch(req.session.userId);
+    const channelsHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black">
+          <h5 class="mb-0">📺 Canais de Texto por Servidor</h5>
+        </div>
+        <div class="card-body">
+          ${guilds.map(g => `
+            <div class="mb-4">
+              <h6 class="text-primary fw-bold mb-2">${g.name}</h6>
+              <div class="list-group list-group-flush bg-black rounded border border-secondary">
+                ${g.channels.map(c => `
+                  <div class="list-group-item bg-dark text-white border-secondary d-flex justify-content-between align-items-center">
+                    <span># ${c.name}</span>
+                    <small class="text-white-50">${c.id}</small>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: channelsHtml, user: currentUser, activePage: 'channels', title: 'Canais' });
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -1306,6 +1372,72 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: themeHtml, user: currentUser, activePage: 'theme', title: 'Tema' });
+  });
+
+  app.get('/commands', requireAuth, async (req, res) => {
+    const { commands } = await import('./commands.js');
+    const currentUser = await client.users.fetch(req.session.userId);
+    const commandsHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">📜 Comandos da Diva</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Prefixo</th><th>Comando</th><th>Aliases</th><th>Descrição</th></tr></thead>
+              <tbody>
+                ${Object.entries(commands).map(([name, cmd]) => `
+                  <tr>
+                    <td><span class="badge bg-primary">!</span></td>
+                    <td class="text-info fw-bold">${name}</td>
+                    <td>${cmd.aliases ? cmd.aliases.map(a => `<span class="badge bg-secondary me-1">${a}</span>`).join('') : '<small class="text-white-50">Nenhum</small>'}</td>
+                    <td>${cmd.description || 'Sem descrição.'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: commandsHtml, user: currentUser, activePage: 'commands', title: 'Comandos' });
+  });
+
+  app.get('/channels', requireAuth, async (req, res) => {
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      channels: g.channels.cache.filter(c => c.isTextBased()).map(c => ({
+        id: c.id,
+        name: c.name,
+        type: c.type
+      }))
+    }));
+    const currentUser = await client.users.fetch(req.session.userId);
+    const channelsHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black">
+          <h5 class="mb-0">📺 Canais de Texto por Servidor</h5>
+        </div>
+        <div class="card-body">
+          ${guilds.map(g => `
+            <div class="mb-4">
+              <h6 class="text-primary fw-bold mb-2">${g.name}</h6>
+              <div class="list-group list-group-flush bg-black rounded border border-secondary">
+                ${g.channels.map(c => `
+                  <div class="list-group-item bg-dark text-white border-secondary d-flex justify-content-between align-items-center">
+                    <span># ${c.name}</span>
+                    <small class="text-white-50">${c.id}</small>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: channelsHtml, user: currentUser, activePage: 'channels', title: 'Canais' });
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
