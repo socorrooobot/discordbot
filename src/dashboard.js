@@ -547,6 +547,75 @@ export function startDashboard(client) {
     res.render('layout', { body: inviteHtml, user: currentUser, activePage: 'invite', title: 'Convite' });
   });
 
+  app.get('/roles', requireAuth, async (req, res) => {
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      roles: g.roles.cache.filter(r => r.name !== '@everyone').map(r => ({
+        id: r.id,
+        name: r.name,
+        color: r.hexColor,
+        members: r.members.size
+      }))
+    }));
+    const currentUser = await client.users.fetch(req.session.userId);
+    const rolesHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black">
+          <h5 class="mb-0">🎭 Cargos por Servidor</h5>
+        </div>
+        <div class="card-body">
+          ${guilds.map(g => `
+            <div class="mb-5">
+              <h6 class="text-primary fw-bold mb-3 border-bottom border-secondary pb-2">${g.name} <small class="text-white-50">(${g.id})</small></h6>
+              <div class="d-flex flex-wrap gap-2">
+                ${g.roles.map(r => `
+                  <div class="badge border py-2 px-3 d-flex align-items-center" style="border-color: ${r.color} !important; background: rgba(0,0,0,0.3)">
+                    <span class="rounded-circle me-2" style="width: 10px; height: 10px; background: ${r.color}"></span>
+                    <span>${r.name}</span>
+                    <span class="ms-2 text-white-50 small">(${r.members})</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: rolesHtml, user: currentUser, activePage: 'roles', title: 'Cargos' });
+  });
+
+  app.get('/theme', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const themeHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black text-center">
+          <h5 class="mb-0">🎨 Customização de Tema (Eclipse Místico)</h5>
+        </div>
+        <div class="card-body p-5">
+          <div class="row text-center mb-4">
+            <div class="col-4">
+              <div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: #0a0a0a; border: 2px solid #8b0000"></div>
+              <small class="text-white-50">Sombrio</small>
+            </div>
+            <div class="col-4">
+              <div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: #000; border: 2px solid #00bfff"></div>
+              <small class="text-white-50">Ciano</small>
+            </div>
+            <div class="col-4">
+              <div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: #1a1a1a; border: 2px solid #ff00ff"></div>
+              <small class="text-white-50">Neon</small>
+            </div>
+          </div>
+          <div class="alert alert-info bg-black border-info text-info small">
+            <i class="bi bi-info-circle me-2"></i> Em breve: Seleção de paleta de cores personalizada para o Dashboard!
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: themeHtml, user: currentUser, activePage: 'theme', title: 'Tema' });
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -1168,6 +1237,75 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: inviteHtml, user: currentUser, activePage: 'invite', title: 'Convite' });
+  });
+
+  app.get('/roles', requireAuth, async (req, res) => {
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      roles: g.roles.cache.filter(r => r.name !== '@everyone').map(r => ({
+        id: r.id,
+        name: r.name,
+        color: r.hexColor,
+        members: r.members.size
+      }))
+    }));
+    const currentUser = await client.users.fetch(req.session.userId);
+    const rolesHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black">
+          <h5 class="mb-0">🎭 Cargos por Servidor</h5>
+        </div>
+        <div class="card-body">
+          ${guilds.map(g => `
+            <div class="mb-5">
+              <h6 class="text-primary fw-bold mb-3 border-bottom border-secondary pb-2">${g.name} <small class="text-white-50">(${g.id})</small></h6>
+              <div class="d-flex flex-wrap gap-2">
+                ${g.roles.map(r => `
+                  <div class="badge border py-2 px-3 d-flex align-items-center" style="border-color: ${r.color} !important; background: rgba(0,0,0,0.3)">
+                    <span class="rounded-circle me-2" style="width: 10px; height: 10px; background: ${r.color}"></span>
+                    <span>${r.name}</span>
+                    <span class="ms-2 text-white-50 small">(${r.members})</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: rolesHtml, user: currentUser, activePage: 'roles', title: 'Cargos' });
+  });
+
+  app.get('/theme', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const themeHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black text-center">
+          <h5 class="mb-0">🎨 Customização de Tema (Eclipse Místico)</h5>
+        </div>
+        <div class="card-body p-5">
+          <div class="row text-center mb-4">
+            <div class="col-4">
+              <div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: #0a0a0a; border: 2px solid #8b0000"></div>
+              <small class="text-white-50">Sombrio</small>
+            </div>
+            <div class="col-4">
+              <div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: #000; border: 2px solid #00bfff"></div>
+              <small class="text-white-50">Ciano</small>
+            </div>
+            <div class="col-4">
+              <div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: #1a1a1a; border: 2px solid #ff00ff"></div>
+              <small class="text-white-50">Neon</small>
+            </div>
+          </div>
+          <div class="alert alert-info bg-black border-info text-info small">
+            <i class="bi bi-info-circle me-2"></i> Em breve: Seleção de paleta de cores personalizada para o Dashboard!
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: themeHtml, user: currentUser, activePage: 'theme', title: 'Tema' });
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
