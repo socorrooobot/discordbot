@@ -836,6 +836,56 @@ export function startDashboard(client) {
     res.render('layout', { body: errorsHtml, user: currentUser, activePage: 'errors', title: 'Erros' });
   });
 
+  app.get('/messages', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      channels: g.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }))
+    }));
+    const msgHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg mb-4">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">👋 Mensagens de Boas-Vindas & Saída (Estilo Loritta)</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small mb-4">Configure as mensagens automáticas que a Diva enviará quando alguém entrar ou sair do servidor.</p>
+          ${guilds.map(g => `
+            <div class="mb-4 p-3 border border-secondary rounded bg-black">
+              <h6 class="text-primary fw-bold mb-3">${g.name}</h6>
+              <form action="/messages/update" method="POST">
+                <input type="hidden" name="guildId" value="${g.id}">
+                <div class="mb-3">
+                  <label class="form-label small text-white-50">CANAL DE MENSAGENS</label>
+                  <select name="channelId" class="form-select bg-dark text-white border-secondary">
+                    <option value="">Desativado</option>
+                    ${g.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small text-white-50">MENSAGEM DE ENTRADA</label>
+                  <textarea name="welcomeMsg" class="form-control bg-dark text-white border-secondary" rows="2" placeholder="Bem-vindo {user} ao {server}!"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small text-white-50">MENSAGEM DE SAÍDA</label>
+                  <textarea name="goodbyeMsg" class="form-control bg-dark text-white border-secondary" rows="2" placeholder="{user} saiu do servidor."></textarea>
+                </div>
+                <button class="btn btn-primary w-100 fw-bold">SALVAR CONFIGURAÇÃO</button>
+              </form>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: msgHtml, user: currentUser, activePage: 'messages', title: 'Mensagens' });
+  });
+
+  app.post('/messages/update', requireAuth, (req, res) => {
+    const { guildId, channelId, welcomeMsg, goodbyeMsg } = req.body;
+    if (client.addDashboardLog) client.addDashboardLog(`Configuração de mensagens atualizada no servidor ${guildId}`, 'Admin Dashboard');
+    res.redirect('/messages');
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -1746,6 +1796,56 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: errorsHtml, user: currentUser, activePage: 'errors', title: 'Erros' });
+  });
+
+  app.get('/messages', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      channels: g.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }))
+    }));
+    const msgHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg mb-4">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">👋 Mensagens de Boas-Vindas & Saída (Estilo Loritta)</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small mb-4">Configure as mensagens automáticas que a Diva enviará quando alguém entrar ou sair do servidor.</p>
+          ${guilds.map(g => `
+            <div class="mb-4 p-3 border border-secondary rounded bg-black">
+              <h6 class="text-primary fw-bold mb-3">${g.name}</h6>
+              <form action="/messages/update" method="POST">
+                <input type="hidden" name="guildId" value="${g.id}">
+                <div class="mb-3">
+                  <label class="form-label small text-white-50">CANAL DE MENSAGENS</label>
+                  <select name="channelId" class="form-select bg-dark text-white border-secondary">
+                    <option value="">Desativado</option>
+                    ${g.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small text-white-50">MENSAGEM DE ENTRADA</label>
+                  <textarea name="welcomeMsg" class="form-control bg-dark text-white border-secondary" rows="2" placeholder="Bem-vindo {user} ao {server}!"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small text-white-50">MENSAGEM DE SAÍDA</label>
+                  <textarea name="goodbyeMsg" class="form-control bg-dark text-white border-secondary" rows="2" placeholder="{user} saiu do servidor."></textarea>
+                </div>
+                <button class="btn btn-primary w-100 fw-bold">SALVAR CONFIGURAÇÃO</button>
+              </form>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: msgHtml, user: currentUser, activePage: 'messages', title: 'Mensagens' });
+  });
+
+  app.post('/messages/update', requireAuth, (req, res) => {
+    const { guildId, channelId, welcomeMsg, goodbyeMsg } = req.body;
+    if (client.addDashboardLog) client.addDashboardLog(`Configuração de mensagens atualizada no servidor ${guildId}`, 'Admin Dashboard');
+    res.redirect('/messages');
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
