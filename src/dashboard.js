@@ -886,6 +886,81 @@ export function startDashboard(client) {
     res.redirect('/messages');
   });
 
+  app.get('/audit', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      channels: g.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }))
+    }));
+    const auditHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black">
+          <h5 class="mb-0">🛡️ Logs de Auditoria (Modlogs)</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small mb-4">Escolha um canal para registrar ações de moderação e eventos do servidor.</p>
+          ${guilds.map(g => `
+            <div class="mb-4 p-3 border border-secondary rounded bg-black">
+              <h6 class="text-primary fw-bold mb-3">${g.name}</h6>
+              <form action="/audit/update" method="POST">
+                <input type="hidden" name="guildId" value="${g.id}">
+                <div class="mb-3">
+                  <label class="form-label small text-white-50">CANAL DE LOGS</label>
+                  <select name="logChannelId" class="form-select bg-dark text-white border-secondary">
+                    <option value="">Desativado</option>
+                    ${g.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="form-check form-switch mb-2">
+                  <input class="form-check-input" type="checkbox" name="logMessages" checked>
+                  <label class="form-check-label small">Log de Mensagens Deletadas</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" name="logMod" checked>
+                  <label class="form-check-label small">Log de Ações de Moderação</label>
+                </div>
+                <button class="btn btn-warning w-100 fw-bold">SALVAR CONFIGURAÇÃO</button>
+              </form>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: auditHtml, user: currentUser, activePage: 'audit', title: 'Auditoria' });
+  });
+
+  app.post('/audit/update', requireAuth, (req, res) => {
+    const { guildId, logChannelId } = req.body;
+    if (client.addDashboardLog) client.addDashboardLog(`Canal de auditoria configurado no servidor ${guildId}`, 'Admin Dashboard');
+    res.redirect('/audit');
+  });
+
+  app.get('/slash-commands', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const slashHtml = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black">
+          <h5 class="mb-0">⚡ Slash Commands (/)</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead><tr><th>Nome</th><th>Descrição</th></tr></thead>
+              <tbody>
+                <tr><td>/ping</td><td>Verifica a latência do bot</td></tr>
+                <tr><td>/daily</td><td>Resgata sua recompensa diária</td></tr>
+                <tr><td>/xp</td><td>Mostra seu nível atual</td></tr>
+                <tr><td>/ship</td><td>Calcula o amor entre dois usuários</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: slashHtml, user: currentUser, activePage: 'slash-commands', title: 'Slash Commands' });
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -1846,6 +1921,81 @@ export function startDashboard(client) {
     const { guildId, channelId, welcomeMsg, goodbyeMsg } = req.body;
     if (client.addDashboardLog) client.addDashboardLog(`Configuração de mensagens atualizada no servidor ${guildId}`, 'Admin Dashboard');
     res.redirect('/messages');
+  });
+
+  app.get('/audit', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      channels: g.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }))
+    }));
+    const auditHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black">
+          <h5 class="mb-0">🛡️ Logs de Auditoria (Modlogs)</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small mb-4">Escolha um canal para registrar ações de moderação e eventos do servidor.</p>
+          ${guilds.map(g => `
+            <div class="mb-4 p-3 border border-secondary rounded bg-black">
+              <h6 class="text-primary fw-bold mb-3">${g.name}</h6>
+              <form action="/audit/update" method="POST">
+                <input type="hidden" name="guildId" value="${g.id}">
+                <div class="mb-3">
+                  <label class="form-label small text-white-50">CANAL DE LOGS</label>
+                  <select name="logChannelId" class="form-select bg-dark text-white border-secondary">
+                    <option value="">Desativado</option>
+                    ${g.channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="form-check form-switch mb-2">
+                  <input class="form-check-input" type="checkbox" name="logMessages" checked>
+                  <label class="form-check-label small">Log de Mensagens Deletadas</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" name="logMod" checked>
+                  <label class="form-check-label small">Log de Ações de Moderação</label>
+                </div>
+                <button class="btn btn-warning w-100 fw-bold">SALVAR CONFIGURAÇÃO</button>
+              </form>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: auditHtml, user: currentUser, activePage: 'audit', title: 'Auditoria' });
+  });
+
+  app.post('/audit/update', requireAuth, (req, res) => {
+    const { guildId, logChannelId } = req.body;
+    if (client.addDashboardLog) client.addDashboardLog(`Canal de auditoria configurado no servidor ${guildId}`, 'Admin Dashboard');
+    res.redirect('/audit');
+  });
+
+  app.get('/slash-commands', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const slashHtml = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black">
+          <h5 class="mb-0">⚡ Slash Commands (/)</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead><tr><th>Nome</th><th>Descrição</th></tr></thead>
+              <tbody>
+                <tr><td>/ping</td><td>Verifica a latência do bot</td></tr>
+                <tr><td>/daily</td><td>Resgata sua recompensa diária</td></tr>
+                <tr><td>/xp</td><td>Mostra seu nível atual</td></tr>
+                <tr><td>/ship</td><td>Calcula o amor entre dois usuários</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: slashHtml, user: currentUser, activePage: 'slash-commands', title: 'Slash Commands' });
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
