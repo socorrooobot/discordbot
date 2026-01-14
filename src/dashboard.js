@@ -476,6 +476,77 @@ export function startDashboard(client) {
     res.redirect('/multipliers');
   });
 
+  app.get('/afk', requireAuth, async (req, res) => {
+    const { getAFKUsers } = await import('./afk.js');
+    const afkUsers = getAFKUsers ? getAFKUsers() : {};
+    const users = [];
+    for (const [id, data] of Object.entries(afkUsers)) {
+      try {
+        const u = await client.users.fetch(id);
+        users.push({ id, username: u.username, reason: data.reason, time: new Date(data.startTime).toLocaleTimeString() });
+      } catch {
+        users.push({ id, username: 'Desconhecido', reason: data.reason, time: 'Desconhecida' });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const afkHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">💤 Usuários em Modo AFK</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead><tr><th>Usuário</th><th>Motivo</th><th>Desde</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${users.map(u => `
+                  <tr>
+                    <td>${u.username} <small class="text-white-50">(${u.id})</small></td>
+                    <td>${u.reason}</td>
+                    <td class="text-info">${u.time}</td>
+                    <td>
+                      <form action="/afk/remove" method="POST" style="display:inline">
+                        <input type="hidden" name="userId" value="${u.id}">
+                        <button class="btn btn-sm btn-outline-warning">REMOVER AFK</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: afkHtml, user: currentUser, activePage: 'afk', title: 'AFK' });
+  });
+
+  app.post('/afk/remove', requireAuth, async (req, res) => {
+    const { removeAFK } = await import('./afk.js');
+    if (req.body.userId) removeAFK(req.body.userId);
+    res.redirect('/afk');
+  });
+
+  app.get('/invite', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const inviteLink = `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`;
+    const inviteHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg text-center p-5">
+        <i class="bi bi-person-plus-fill display-1 text-primary mb-4"></i>
+        <h2 class="fw-bold">Convide a Diva!</h2>
+        <p class="text-white-50 mb-4">Compartilhe o link abaixo para adicionar a Diva em outros servidores.</p>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control bg-black text-white border-primary" value="${inviteLink}" readonly id="inviteLink">
+          <button class="btn btn-primary" onclick="navigator.clipboard.writeText('${inviteLink}'); alert('Link copiado!')">COPIAR</button>
+        </div>
+        <div class="mt-4">
+          <a href="${inviteLink}" target="_blank" class="btn btn-lg btn-outline-primary px-5">ADICIONAR AGORA</a>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: inviteHtml, user: currentUser, activePage: 'invite', title: 'Convite' });
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -1026,6 +1097,77 @@ export function startDashboard(client) {
     if (xpMult) setXPMultiplier(parseFloat(xpMult));
     if (client.addDashboardLog) client.addDashboardLog(`Multiplicadores atualizados: Eco=${economyMult}x, XP=${xpMult}x`, 'Admin Dashboard');
     res.redirect('/multipliers');
+  });
+
+  app.get('/afk', requireAuth, async (req, res) => {
+    const { getAFKUsers } = await import('./afk.js');
+    const afkUsers = getAFKUsers ? getAFKUsers() : {};
+    const users = [];
+    for (const [id, data] of Object.entries(afkUsers)) {
+      try {
+        const u = await client.users.fetch(id);
+        users.push({ id, username: u.username, reason: data.reason, time: new Date(data.startTime).toLocaleTimeString() });
+      } catch {
+        users.push({ id, username: 'Desconhecido', reason: data.reason, time: 'Desconhecida' });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const afkHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">💤 Usuários em Modo AFK</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead><tr><th>Usuário</th><th>Motivo</th><th>Desde</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${users.map(u => `
+                  <tr>
+                    <td>${u.username} <small class="text-white-50">(${u.id})</small></td>
+                    <td>${u.reason}</td>
+                    <td class="text-info">${u.time}</td>
+                    <td>
+                      <form action="/afk/remove" method="POST" style="display:inline">
+                        <input type="hidden" name="userId" value="${u.id}">
+                        <button class="btn btn-sm btn-outline-warning">REMOVER AFK</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: afkHtml, user: currentUser, activePage: 'afk', title: 'AFK' });
+  });
+
+  app.post('/afk/remove', requireAuth, async (req, res) => {
+    const { removeAFK } = await import('./afk.js');
+    if (req.body.userId) removeAFK(req.body.userId);
+    res.redirect('/afk');
+  });
+
+  app.get('/invite', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const inviteLink = `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`;
+    const inviteHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg text-center p-5">
+        <i class="bi bi-person-plus-fill display-1 text-primary mb-4"></i>
+        <h2 class="fw-bold">Convide a Diva!</h2>
+        <p class="text-white-50 mb-4">Compartilhe o link abaixo para adicionar a Diva em outros servidores.</p>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control bg-black text-white border-primary" value="${inviteLink}" readonly id="inviteLink">
+          <button class="btn btn-primary" onclick="navigator.clipboard.writeText('${inviteLink}'); alert('Link copiado!')">COPIAR</button>
+        </div>
+        <div class="mt-4">
+          <a href="${inviteLink}" target="_blank" class="btn btn-lg btn-outline-primary px-5">ADICIONAR AGORA</a>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: inviteHtml, user: currentUser, activePage: 'invite', title: 'Convite' });
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
