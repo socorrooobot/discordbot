@@ -354,6 +354,62 @@ export function startDashboard(client) {
     res.redirect('/announcement');
   });
 
+  app.get('/economy', requireAuth, async (req, res) => {
+    const economyData = getEconomyUsers();
+    const users = [];
+    for (const [id, data] of Object.entries(economyData)) {
+      try {
+        const u = await client.users.fetch(id);
+        users.push({ id, username: u.username, balance: data.balance || 0, avatar: u.displayAvatarURL() });
+      } catch {
+        users.push({ id, username: 'Desconhecido', balance: data.balance || 0, avatar: null });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const economyHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">💰 Gestão de Economia (Akita Neru)</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Usuário</th><th>Saldo</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${users.map(u => `
+                  <tr>
+                    <td><img src="${u.avatar}" width="32" class="rounded-circle me-2"> ${u.username} <small class="text-white-50">(${u.id})</small></td>
+                    <td class="text-warning fw-bold">${u.balance.toLocaleString()} ₳</td>
+                    <td>
+                      <form action="/economy/edit" method="POST" class="d-flex gap-2">
+                        <input type="hidden" name="userId" value="${u.id}">
+                        <input type="number" name="amount" class="form-control form-control-sm bg-black text-white border-secondary" style="width: 100px" placeholder="Quantia">
+                        <button name="action" value="add" class="btn btn-sm btn-success">+</button>
+                        <button name="action" value="remove" class="btn btn-sm btn-danger">-</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: economyHtml, user: currentUser, activePage: 'economy', title: 'Economia' });
+  });
+
+  app.post('/economy/edit', requireAuth, (req, res) => {
+    const { userId, amount, action } = req.body;
+    const val = parseInt(amount);
+    if (userId && val > 0) {
+      if (action === 'add') addBalance(userId, val);
+      else if (action === 'remove') removeBalance(userId, val);
+      if (client.addDashboardLog) client.addDashboardLog(`Alteração de saldo (${action}): ${val} para ${userId}`, 'Admin Dashboard');
+    }
+    res.redirect('/economy');
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -448,48 +504,115 @@ export function startDashboard(client) {
     res.redirect('/broadcast');
   });
 
-  // Novos Logs e Configurações no Dashboard
+  // Variável global para armazenar os últimos logs em memória
+  const botLogs = [];
+  const MAX_LOGS = 50;
+
+  function addBotLog(action, user) {
+    botLogs.unshift({ time: new Date().toLocaleTimeString(), action, user });
+    if (botLogs.length > MAX_LOGS) botLogs.pop();
+  }
+
+  // Exportar a função para ser usada em outros arquivos
+  client.addDashboardLog = addBotLog;
+
   app.get('/logs', requireAuth, async (req, res) => {
     const currentUser = await client.users.fetch(req.session.userId);
-    // Simulação de logs para a interface
-    const logs = [
-      { time: new Date().toLocaleTimeString(), action: 'Comando !ajuda usado', user: 'Sistema' },
-      { time: new Date().toLocaleTimeString(), action: 'Login no Dashboard', user: currentUser.username }
-    ];
-
-    res.render('index', { stats: {}, user: currentUser, client, logs, activePage: 'logs' }, (err, html) => {
-      const logsHtml = `
-        <div class="card bg-dark text-white border-secondary">
-          <div class="card-header border-secondary d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">📜 Logs do Sistema (Tempo Real)</h5>
-            <span class="badge bg-primary">Online</span>
-          </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-dark table-hover mb-0">
-                <thead>
+    const logsHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary d-flex justify-content-between align-items-center bg-black">
+          <h5 class="mb-0">📜 Logs do Bot em Tempo Real</h5>
+          <span class="badge bg-success shadow-sm animate-pulse">LIVE</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0">
+              <thead>
+                <tr>
+                  <th class="border-secondary py-3 ps-4">Hora</th>
+                  <th class="border-secondary py-3">Ação / Comando</th>
+                  <th class="border-secondary py-3">Usuário</th>
+                </tr>
+              </thead>
+              <tbody id="logs-body">
+                ${botLogs.length > 0 ? botLogs.map(log => `
                   <tr>
-                    <th class="border-secondary">Hora</th>
-                    <th class="border-secondary">Ação</th>
-                    <th class="border-secondary">Usuário</th>
+                    <td class="border-secondary ps-4 text-info font-monospace">${log.time}</td>
+                    <td class="border-secondary">${log.action}</td>
+                    <td class="border-secondary"><span class="badge bg-secondary border border-light-subtle">${log.user}</span></td>
                   </tr>
-                </thead>
-                <tbody>
-                  ${logs.map(log => `
-                    <tr>
-                      <td class="border-secondary text-info">${log.time}</td>
-                      <td class="border-secondary">${log.action}</td>
-                      <td class="border-secondary"><span class="badge bg-secondary">${log.user}</span></td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
+                `).join('') : '<tr><td colspan="3" class="text-center py-4 text-white-50">Nenhum log registrado ainda...</td></tr>'}
+              </tbody>
+            </table>
           </div>
         </div>
-      `;
-      res.render('layout', { body: logsHtml, user: currentUser, activePage: 'logs', title: 'Logs do Sistema' });
-    });
+      </div>
+      <script>
+        // Auto-refresh simples a cada 5 segundos para simular tempo real
+        setTimeout(() => location.reload(), 5000);
+      </script>
+      <style>
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+      </style>
+    `;
+    res.render('layout', { body: logsHtml, user: currentUser, activePage: 'logs', title: 'Logs do Sistema' });
+  });
+
+  app.get('/economy', requireAuth, async (req, res) => {
+    const economyData = getEconomyUsers();
+    const users = [];
+    for (const [id, data] of Object.entries(economyData)) {
+      try {
+        const u = await client.users.fetch(id);
+        users.push({ id, username: u.username, balance: data.balance || 0, avatar: u.displayAvatarURL() });
+      } catch {
+        users.push({ id, username: 'Desconhecido', balance: data.balance || 0, avatar: null });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const economyHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">💰 Gestão de Economia (Akita Neru)</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Usuário</th><th>Saldo</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${users.map(u => `
+                  <tr>
+                    <td><img src="${u.avatar}" width="32" class="rounded-circle me-2"> ${u.username} <small class="text-white-50">(${u.id})</small></td>
+                    <td class="text-warning fw-bold">${u.balance.toLocaleString()} ₳</td>
+                    <td>
+                      <form action="/economy/edit" method="POST" class="d-flex gap-2">
+                        <input type="hidden" name="userId" value="${u.id}">
+                        <input type="number" name="amount" class="form-control form-control-sm bg-black text-white border-secondary" style="width: 100px" placeholder="Quantia">
+                        <button name="action" value="add" class="btn btn-sm btn-success">+</button>
+                        <button name="action" value="remove" class="btn btn-sm btn-danger">-</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: economyHtml, user: currentUser, activePage: 'economy', title: 'Economia' });
+  });
+
+  app.post('/economy/edit', requireAuth, (req, res) => {
+    const { userId, amount, action } = req.body;
+    const val = parseInt(amount);
+    if (userId && val > 0) {
+      if (action === 'add') addBalance(userId, val);
+      else if (action === 'remove') removeBalance(userId, val);
+      client.addDashboardLog(`Alteração de saldo (${action}): ${val} para ${userId}`, 'Admin Dashboard');
+    }
+    res.redirect('/economy');
   });
 
   app.get('/settings', requireAuth, async (req, res) => {
@@ -715,6 +838,62 @@ export function startDashboard(client) {
       }
     }
     res.redirect('/announcement');
+  });
+
+  app.get('/economy', requireAuth, async (req, res) => {
+    const economyData = getEconomyUsers();
+    const users = [];
+    for (const [id, data] of Object.entries(economyData)) {
+      try {
+        const u = await client.users.fetch(id);
+        users.push({ id, username: u.username, balance: data.balance || 0, avatar: u.displayAvatarURL() });
+      } catch {
+        users.push({ id, username: 'Desconhecido', balance: data.balance || 0, avatar: null });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const economyHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">💰 Gestão de Economia (Akita Neru)</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Usuário</th><th>Saldo</th><th>Ações</th></tr></thead>
+              <tbody>
+                ${users.map(u => `
+                  <tr>
+                    <td><img src="${u.avatar}" width="32" class="rounded-circle me-2"> ${u.username} <small class="text-white-50">(${u.id})</small></td>
+                    <td class="text-warning fw-bold">${u.balance.toLocaleString()} ₳</td>
+                    <td>
+                      <form action="/economy/edit" method="POST" class="d-flex gap-2">
+                        <input type="hidden" name="userId" value="${u.id}">
+                        <input type="number" name="amount" class="form-control form-control-sm bg-black text-white border-secondary" style="width: 100px" placeholder="Quantia">
+                        <button name="action" value="add" class="btn btn-sm btn-success">+</button>
+                        <button name="action" value="remove" class="btn btn-sm btn-danger">-</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: economyHtml, user: currentUser, activePage: 'economy', title: 'Economia' });
+  });
+
+  app.post('/economy/edit', requireAuth, (req, res) => {
+    const { userId, amount, action } = req.body;
+    const val = parseInt(amount);
+    if (userId && val > 0) {
+      if (action === 'add') addBalance(userId, val);
+      else if (action === 'remove') removeBalance(userId, val);
+      if (client.addDashboardLog) client.addDashboardLog(`Alteração de saldo (${action}): ${val} para ${userId}`, 'Admin Dashboard');
+    }
+    res.redirect('/economy');
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {

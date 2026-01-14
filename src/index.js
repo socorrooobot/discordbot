@@ -103,6 +103,11 @@ async function main() {
       // Ignorar mensagens de bots
       if (message.author.bot) return;
 
+      // Log no Dashboard
+      if (client.addDashboardLog) {
+        client.addDashboardLog(`Mensagem de ${message.author.tag}`, message.content.substring(0, 30));
+      }
+
       // Log apenas se for comando ou menção para reduzir poluição
       if (message.content.startsWith('!') || message.mentions.has(client.user)) {
         console.log(`📨 Mensagem recebida de ${message.author.tag}: ${message.content.substring(0, 50)}`);
