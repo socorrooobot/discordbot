@@ -247,6 +247,113 @@ export function startDashboard(client) {
     res.render('layout', { body: statsHtml, user: currentUser, activePage: 'stats', title: 'Estatísticas' });
   });
 
+  app.get('/servers', requireAuth, async (req, res) => {
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      icon: g.iconURL() || 'https://via.placeholder.com/128',
+      memberCount: g.memberCount,
+      ownerId: g.ownerId
+    }));
+    const currentUser = await client.users.fetch(req.session.userId);
+    const serversHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🏘️ Servidores Conectados</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Ícone</th><th>Nome</th><th>Membros</th><th>ID</th><th>Ação</th></tr></thead>
+              <tbody>
+                ${guilds.map(g => `
+                  <tr>
+                    <td><img src="${g.icon}" width="32" height="32" class="rounded-circle"></td>
+                    <td>${g.name}</td>
+                    <td>${g.memberCount}</td>
+                    <td><small class="text-white-50">${g.id}</small></td>
+                    <td>
+                      <form action="/servers/leave" method="POST" onsubmit="return confirm('Tem certeza que deseja fazer a Diva sair deste servidor?')">
+                        <input type="hidden" name="guildId" value="${g.id}">
+                        <button class="btn btn-sm btn-outline-danger">SAIR</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
+  });
+
+  app.post('/servers/leave', requireAuth, async (req, res) => {
+    const { guildId } = req.body;
+    if (guildId) {
+      const guild = client.guilds.cache.get(guildId);
+      if (guild) await guild.leave();
+    }
+    res.redirect('/servers');
+  });
+
+  app.get('/announcement', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const annHtml = `
+      <div class="card bg-dark text-white border-success shadow-lg">
+        <div class="card-header border-success bg-black">
+          <h5 class="mb-0">🎊 Anúncio com Embed</h5>
+        </div>
+        <div class="card-body">
+          <form action="/announcement/send" method="POST">
+            <div class="mb-3">
+              <label class="form-label text-white-50 small fw-bold">ID DO CANAL</label>
+              <input type="text" name="channelId" class="form-control bg-black text-white border-secondary" placeholder="Cole o ID do canal aqui">
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-white-50 small fw-bold">TÍTULO DO ANÚNCIO</label>
+              <input type="text" name="title" class="form-control bg-black text-white border-secondary" placeholder="Ex: Grande Novidade!">
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-white-50 small fw-bold">MENSAGEM</label>
+              <textarea name="message" class="form-control bg-black text-white border-secondary" rows="4" placeholder="Escreva o conteúdo do anúncio..."></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-white-50 small fw-bold">COR DO EMBED (HEX)</label>
+              <input type="color" name="color" class="form-control form-control-color bg-black border-secondary w-100" value="#8b0000">
+            </div>
+            <button class="btn btn-success w-100 fw-bold py-2">ENVIAR ANÚNCIO PERSONALIZADO</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: annHtml, user: currentUser, activePage: 'announcement', title: 'Anúncios' });
+  });
+
+  app.post('/announcement/send', requireAuth, async (req, res) => {
+    const { channelId, title, message, color } = req.body;
+    if (channelId && message) {
+      try {
+        const channel = await client.channels.fetch(channelId);
+        if (channel && channel.isTextBased()) {
+          await channel.send({
+            embeds: [{
+              title: title || 'Anúncio Importante',
+              description: message,
+              color: parseInt(color.replace('#', ''), 16) || 0x8b0000,
+              footer: { text: 'Mensagem Oficial da Diva' },
+              timestamp: new Date()
+            }]
+          });
+        }
+      } catch (e) {
+        console.error('Erro ao enviar anúncio:', e);
+      }
+    }
+    res.redirect('/announcement');
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -501,6 +608,113 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: statsHtml, user: currentUser, activePage: 'stats', title: 'Estatísticas' });
+  });
+
+  app.get('/servers', requireAuth, async (req, res) => {
+    const guilds = client.guilds.cache.map(g => ({
+      id: g.id,
+      name: g.name,
+      icon: g.iconURL() || 'https://via.placeholder.com/128',
+      memberCount: g.memberCount,
+      ownerId: g.ownerId
+    }));
+    const currentUser = await client.users.fetch(req.session.userId);
+    const serversHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🏘️ Servidores Conectados</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Ícone</th><th>Nome</th><th>Membros</th><th>ID</th><th>Ação</th></tr></thead>
+              <tbody>
+                ${guilds.map(g => `
+                  <tr>
+                    <td><img src="${g.icon}" width="32" height="32" class="rounded-circle"></td>
+                    <td>${g.name}</td>
+                    <td>${g.memberCount}</td>
+                    <td><small class="text-white-50">${g.id}</small></td>
+                    <td>
+                      <form action="/servers/leave" method="POST" onsubmit="return confirm('Tem certeza que deseja fazer a Diva sair deste servidor?')">
+                        <input type="hidden" name="guildId" value="${g.id}">
+                        <button class="btn btn-sm btn-outline-danger">SAIR</button>
+                      </form>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
+  });
+
+  app.post('/servers/leave', requireAuth, async (req, res) => {
+    const { guildId } = req.body;
+    if (guildId) {
+      const guild = client.guilds.cache.get(guildId);
+      if (guild) await guild.leave();
+    }
+    res.redirect('/servers');
+  });
+
+  app.get('/announcement', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const annHtml = `
+      <div class="card bg-dark text-white border-success shadow-lg">
+        <div class="card-header border-success bg-black">
+          <h5 class="mb-0">🎊 Anúncio com Embed</h5>
+        </div>
+        <div class="card-body">
+          <form action="/announcement/send" method="POST">
+            <div class="mb-3">
+              <label class="form-label text-white-50 small fw-bold">ID DO CANAL</label>
+              <input type="text" name="channelId" class="form-control bg-black text-white border-secondary" placeholder="Cole o ID do canal aqui">
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-white-50 small fw-bold">TÍTULO DO ANÚNCIO</label>
+              <input type="text" name="title" class="form-control bg-black text-white border-secondary" placeholder="Ex: Grande Novidade!">
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-white-50 small fw-bold">MENSAGEM</label>
+              <textarea name="message" class="form-control bg-black text-white border-secondary" rows="4" placeholder="Escreva o conteúdo do anúncio..."></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-white-50 small fw-bold">COR DO EMBED (HEX)</label>
+              <input type="color" name="color" class="form-control form-control-color bg-black border-secondary w-100" value="#8b0000">
+            </div>
+            <button class="btn btn-success w-100 fw-bold py-2">ENVIAR ANÚNCIO PERSONALIZADO</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: annHtml, user: currentUser, activePage: 'announcement', title: 'Anúncios' });
+  });
+
+  app.post('/announcement/send', requireAuth, async (req, res) => {
+    const { channelId, title, message, color } = req.body;
+    if (channelId && message) {
+      try {
+        const channel = await client.channels.fetch(channelId);
+        if (channel && channel.isTextBased()) {
+          await channel.send({
+            embeds: [{
+              title: title || 'Anúncio Importante',
+              description: message,
+              color: parseInt(color.replace('#', ''), 16) || 0x8b0000,
+              footer: { text: 'Mensagem Oficial da Diva' },
+              timestamp: new Date()
+            }]
+          });
+        }
+      } catch (e) {
+        console.error('Erro ao enviar anúncio:', e);
+      }
+    }
+    res.redirect('/announcement');
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
