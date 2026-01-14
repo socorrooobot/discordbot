@@ -961,6 +961,77 @@ export function startDashboard(client) {
     res.render('layout', { body: slashHtml, user: currentUser, activePage: 'slash-commands', title: 'Slash Commands' });
   });
 
+  app.get('/responses', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const responsesHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg mb-4">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">🤖 Auto-Respostas (Gatilhos)</h5>
+        </div>
+        <div class="card-body">
+          <form action="/responses/add" method="POST" class="mb-4">
+            <div class="row g-2">
+              <div class="col-md-5">
+                <input type="text" name="trigger" class="form-control bg-black text-white border-secondary" placeholder="Se o usuário disser...">
+              </div>
+              <div class="col-md-5">
+                <input type="text" name="response" class="form-control bg-black text-white border-secondary" placeholder="A Diva responde...">
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-primary w-100 fw-bold">ADICIONAR</button>
+              </div>
+            </div>
+          </form>
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Gatilho</th><th>Resposta</th><th>Ação</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge bg-info">bom dia</span></td>
+                  <td>Bom dia, flor do dia! 💙</td>
+                  <td><button class="btn btn-sm btn-outline-danger">Remover</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: responsesHtml, user: currentUser, activePage: 'responses', title: 'Auto-Respostas' });
+  });
+
+  app.get('/history', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const historyHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">💬 Histórico de Conversas (Gemini AI)</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0">
+              <thead>
+                <tr>
+                  <th class="ps-4">Usuário</th>
+                  <th>Última Mensagem</th>
+                  <th>Interações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ps-4">ExemploUser</td>
+                  <td class="text-white-50 small">"Como você está hoje?"</td>
+                  <td><span class="badge bg-primary">15</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: historyHtml, user: currentUser, activePage: 'history', title: 'Histórico' });
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -1996,6 +2067,77 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: slashHtml, user: currentUser, activePage: 'slash-commands', title: 'Slash Commands' });
+  });
+
+  app.get('/responses', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const responsesHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg mb-4">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">🤖 Auto-Respostas (Gatilhos)</h5>
+        </div>
+        <div class="card-body">
+          <form action="/responses/add" method="POST" class="mb-4">
+            <div class="row g-2">
+              <div class="col-md-5">
+                <input type="text" name="trigger" class="form-control bg-black text-white border-secondary" placeholder="Se o usuário disser...">
+              </div>
+              <div class="col-md-5">
+                <input type="text" name="response" class="form-control bg-black text-white border-secondary" placeholder="A Diva responde...">
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-primary w-100 fw-bold">ADICIONAR</button>
+              </div>
+            </div>
+          </form>
+          <div class="table-responsive">
+            <table class="table table-dark align-middle">
+              <thead><tr><th>Gatilho</th><th>Resposta</th><th>Ação</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge bg-info">bom dia</span></td>
+                  <td>Bom dia, flor do dia! 💙</td>
+                  <td><button class="btn btn-sm btn-outline-danger">Remover</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: responsesHtml, user: currentUser, activePage: 'responses', title: 'Auto-Respostas' });
+  });
+
+  app.get('/history', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const historyHtml = `
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">💬 Histórico de Conversas (Gemini AI)</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0">
+              <thead>
+                <tr>
+                  <th class="ps-4">Usuário</th>
+                  <th>Última Mensagem</th>
+                  <th>Interações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ps-4">ExemploUser</td>
+                  <td class="text-white-50 small">"Como você está hoje?"</td>
+                  <td><span class="badge bg-primary">15</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: historyHtml, user: currentUser, activePage: 'history', title: 'Histórico' });
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
