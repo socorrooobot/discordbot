@@ -174,6 +174,79 @@ export function startDashboard(client) {
     }
   });
 
+  app.get('/admins', requireAuth, async (req, res) => {
+    const adminIds = process.env.ADMIN_IDS ? process.env.ADMIN_IDS.split(',') : [];
+    const admins = [];
+    for (const id of adminIds) {
+      try {
+        const u = await client.users.fetch(id.trim());
+        admins.push({ id: id.trim(), username: u.username, avatar: u.displayAvatarURL() });
+      } catch {
+        admins.push({ id: id.trim(), username: 'Desconhecido', avatar: null });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const adminsHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🛡️ Administradores do Bot</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small">IDs configurados no sistema (ADMIN_IDS). Atualmente editável via Secrets.</p>
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead><tr><th>Usuário</th><th>ID</th></tr></thead>
+              <tbody>
+                ${admins.map(a => `
+                  <tr>
+                    <td><img src="${a.avatar}" width="24" class="rounded-circle me-2"> ${a.username}</td>
+                    <td>${a.id}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: adminsHtml, user: currentUser, activePage: 'admins', title: 'Administradores' });
+  });
+
+  app.get('/stats', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const totalServers = client.guilds.cache.size;
+    const totalUsers = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0) || client.users.cache.size;
+    const statsHtml = `
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card bg-dark text-white border-primary shadow">
+            <div class="card-body text-center">
+              <h1 class="display-4 fw-bold text-primary">${totalServers}</h1>
+              <p class="text-white-50">Servidores</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-dark text-white border-info shadow">
+            <div class="card-body text-center">
+              <h1 class="display-4 fw-bold text-info">${totalUsers}</h1>
+              <p class="text-white-50">Usuários Alcançados</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-dark text-white border-success shadow">
+            <div class="card-body text-center">
+              <h1 class="display-4 fw-bold text-success">${client.ws.ping}ms</h1>
+              <p class="text-white-50">Latência API</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: statsHtml, user: currentUser, activePage: 'stats', title: 'Estatísticas' });
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -355,6 +428,79 @@ export function startDashboard(client) {
       console.error('Erro ao atualizar configurações:', error);
       res.status(500).send('Erro interno ao atualizar configurações: ' + error.message);
     }
+  });
+
+  app.get('/admins', requireAuth, async (req, res) => {
+    const adminIds = process.env.ADMIN_IDS ? process.env.ADMIN_IDS.split(',') : [];
+    const admins = [];
+    for (const id of adminIds) {
+      try {
+        const u = await client.users.fetch(id.trim());
+        admins.push({ id: id.trim(), username: u.username, avatar: u.displayAvatarURL() });
+      } catch {
+        admins.push({ id: id.trim(), username: 'Desconhecido', avatar: null });
+      }
+    }
+    const currentUser = await client.users.fetch(req.session.userId);
+    const adminsHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🛡️ Administradores do Bot</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small">IDs configurados no sistema (ADMIN_IDS). Atualmente editável via Secrets.</p>
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead><tr><th>Usuário</th><th>ID</th></tr></thead>
+              <tbody>
+                ${admins.map(a => `
+                  <tr>
+                    <td><img src="${a.avatar}" width="24" class="rounded-circle me-2"> ${a.username}</td>
+                    <td>${a.id}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: adminsHtml, user: currentUser, activePage: 'admins', title: 'Administradores' });
+  });
+
+  app.get('/stats', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const totalServers = client.guilds.cache.size;
+    const totalUsers = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0) || client.users.cache.size;
+    const statsHtml = `
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card bg-dark text-white border-primary shadow">
+            <div class="card-body text-center">
+              <h1 class="display-4 fw-bold text-primary">${totalServers}</h1>
+              <p class="text-white-50">Servidores</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-dark text-white border-info shadow">
+            <div class="card-body text-center">
+              <h1 class="display-4 fw-bold text-info">${totalUsers}</h1>
+              <p class="text-white-50">Usuários Alcançados</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-dark text-white border-success shadow">
+            <div class="card-body text-center">
+              <h1 class="display-4 fw-bold text-success">${client.ws.ping}ms</h1>
+              <p class="text-white-50">Latência API</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: statsHtml, user: currentUser, activePage: 'stats', title: 'Estatísticas' });
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
