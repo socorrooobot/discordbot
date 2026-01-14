@@ -766,6 +766,76 @@ export function startDashboard(client) {
     res.render('layout', { body: membersHtml, user: currentUser, activePage: 'members', title: 'Membros' });
   });
 
+  app.get('/mod', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const modHtml = `
+      <div class="card bg-dark text-white border-danger shadow-lg">
+        <div class="card-header border-danger bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🛡️ Central de Moderação</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small mb-4">Ações rápidas de moderação global (use com cautela).</p>
+          <form action="/mod/action" method="POST" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label small text-white-50 fw-bold">ID DO USUÁRIO</label>
+              <input type="text" name="userId" class="form-control bg-black text-white border-secondary" placeholder="ID do infrator">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small text-white-50 fw-bold">ID DO SERVIDOR</label>
+              <input type="text" name="guildId" class="form-control bg-black text-white border-secondary" placeholder="ID do servidor">
+            </div>
+            <div class="col-12">
+              <label class="form-label small text-white-50 fw-bold">MOTIVO</label>
+              <textarea name="reason" class="form-control bg-black text-white border-secondary" rows="2" placeholder="Ex: Spam excessivo"></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+              <button name="action" value="kick" class="btn btn-warning flex-grow-1 fw-bold">EXPULSAR (KICK)</button>
+              <button name="action" value="ban" class="btn btn-danger flex-grow-1 fw-bold">BANIR (BAN)</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: modHtml, user: currentUser, activePage: 'mod', title: 'Moderação' });
+  });
+
+  app.post('/mod/action', requireAuth, async (req, res) => {
+    const { userId, guildId, reason, action } = req.body;
+    if (userId && guildId) {
+      try {
+        const guild = client.guilds.cache.get(guildId);
+        if (guild) {
+          const member = await guild.members.fetch(userId).catch(() => null);
+          if (member) {
+            if (action === 'kick') await member.kick(reason);
+            else if (action === 'ban') await member.ban({ reason });
+            if (client.addDashboardLog) client.addDashboardLog(`Moderação (${action}): ${userId} no servidor ${guildId}`, 'Admin Dashboard');
+          }
+        }
+      } catch (e) {
+        console.error('Erro na moderação via dashboard:', e);
+      }
+    }
+    res.redirect('/mod');
+  });
+
+  app.get('/errors', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const errorsHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">⚠️ Monitor de Erros Internos</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-dark bg-black border-secondary text-white-50 small mb-0">
+            <i class="bi bi-bug me-2"></i> No momento, todos os erros estão sendo capturados e exibidos nos logs em tempo real para sua conveniência.
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: errorsHtml, user: currentUser, activePage: 'errors', title: 'Erros' });
+  });
+
   app.get('/blacklist', requireAuth, async (req, res) => {
     const { getBlacklist } = await import('./blacklist.js');
     const blacklistedIds = getBlacklist ? getBlacklist() : [];
@@ -1606,6 +1676,76 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: membersHtml, user: currentUser, activePage: 'members', title: 'Membros' });
+  });
+
+  app.get('/mod', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const modHtml = `
+      <div class="card bg-dark text-white border-danger shadow-lg">
+        <div class="card-header border-danger bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">🛡️ Central de Moderação</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 small mb-4">Ações rápidas de moderação global (use com cautela).</p>
+          <form action="/mod/action" method="POST" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label small text-white-50 fw-bold">ID DO USUÁRIO</label>
+              <input type="text" name="userId" class="form-control bg-black text-white border-secondary" placeholder="ID do infrator">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small text-white-50 fw-bold">ID DO SERVIDOR</label>
+              <input type="text" name="guildId" class="form-control bg-black text-white border-secondary" placeholder="ID do servidor">
+            </div>
+            <div class="col-12">
+              <label class="form-label small text-white-50 fw-bold">MOTIVO</label>
+              <textarea name="reason" class="form-control bg-black text-white border-secondary" rows="2" placeholder="Ex: Spam excessivo"></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+              <button name="action" value="kick" class="btn btn-warning flex-grow-1 fw-bold">EXPULSAR (KICK)</button>
+              <button name="action" value="ban" class="btn btn-danger flex-grow-1 fw-bold">BANIR (BAN)</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: modHtml, user: currentUser, activePage: 'mod', title: 'Moderação' });
+  });
+
+  app.post('/mod/action', requireAuth, async (req, res) => {
+    const { userId, guildId, reason, action } = req.body;
+    if (userId && guildId) {
+      try {
+        const guild = client.guilds.cache.get(guildId);
+        if (guild) {
+          const member = await guild.members.fetch(userId).catch(() => null);
+          if (member) {
+            if (action === 'kick') await member.kick(reason);
+            else if (action === 'ban') await member.ban({ reason });
+            if (client.addDashboardLog) client.addDashboardLog(`Moderação (${action}): ${userId} no servidor ${guildId}`, 'Admin Dashboard');
+          }
+        }
+      } catch (e) {
+        console.error('Erro na moderação via dashboard:', e);
+      }
+    }
+    res.redirect('/mod');
+  });
+
+  app.get('/errors', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const errorsHtml = `
+      <div class="card bg-dark text-white border-warning shadow-lg">
+        <div class="card-header border-warning bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">⚠️ Monitor de Erros Internos</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-dark bg-black border-secondary text-white-50 small mb-0">
+            <i class="bi bi-bug me-2"></i> No momento, todos os erros estão sendo capturados e exibidos nos logs em tempo real para sua conveniência.
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: errorsHtml, user: currentUser, activePage: 'errors', title: 'Erros' });
   });
 
   app.get('/blacklist', requireAuth, async (req, res) => {
