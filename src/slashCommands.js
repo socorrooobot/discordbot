@@ -632,8 +632,8 @@ export const slashCommands = {
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .addSubcommand(sub =>
         sub.setName('categoria')
-          .setDescription('Define a categoria para os tickets')
-          .addChannelOption(opt => opt.setName('canal').setDescription('Categoria de canais').setRequired(true))
+          .setDescription('Define a categoria para os tickets (use sem canal para remover)')
+          .addChannelOption(opt => opt.setName('canal').setDescription('Categoria de canais').setRequired(false))
       )
       .addSubcommand(sub =>
         sub.setName('cargo')
@@ -644,8 +644,13 @@ export const slashCommands = {
       const subcommand = interaction.options.getSubcommand();
       if (subcommand === 'categoria') {
         const category = interaction.options.getChannel('canal');
-        setTicketCategory(interaction.guild.id, category.id);
-        await interaction.reply({ content: `✅ Categoria de tickets definida para: **${category.name}**`, ephemeral: true });
+        if (!category) {
+          setTicketCategory(interaction.guild.id, null);
+          await interaction.reply({ content: '✅ Categoria de tickets removida! Agora os tickets serão criados no topo da lista de canais.', ephemeral: true });
+        } else {
+          setTicketCategory(interaction.guild.id, category.id);
+          await interaction.reply({ content: `✅ Categoria de tickets definida para: **${category.name}**`, ephemeral: true });
+        }
       } else if (subcommand === 'cargo') {
         const role = interaction.options.getRole('cargo');
         setSupportRole(interaction.guild.id, role.id);
