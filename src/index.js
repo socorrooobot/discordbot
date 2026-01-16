@@ -100,8 +100,9 @@ async function main() {
     });
 
     client.on('messageCreate', async (message) => {
-      // Ignorar mensagens de bots
-      if (message.author.bot) return;
+      // Ignorar mensagens de bots, exceto o Steven
+      const STEVEN_ID = '1461033378701639955';
+      if (message.author.bot && message.author.id !== STEVEN_ID) return;
 
       // Log no Dashboard
       if (client.addDashboardLog) {
