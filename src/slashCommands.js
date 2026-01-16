@@ -625,6 +625,66 @@ export const slashCommands = {
     }
   },
 
+  setup_tickets: {
+    data: new SlashCommandBuilder()
+      .setName('setup_tickets')
+      .setDescription('Configura o sistema de tickets')
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+      .addSubcommand(sub =>
+        sub.setName('categoria')
+          .setDescription('Define a categoria para os tickets')
+          .addChannelOption(opt => opt.setName('canal').setDescription('Categoria de canais').setRequired(true))
+      )
+      .addSubcommand(sub =>
+        sub.setName('cargo')
+          .setDescription('Define o cargo de suporte')
+          .addRoleOption(opt => opt.setName('cargo').setDescription('Cargo de suporte').setRequired(true))
+      ),
+    execute: async (interaction) => {
+      const subcommand = interaction.options.getSubcommand();
+      if (subcommand === 'categoria') {
+        const category = interaction.options.getChannel('canal');
+        setTicketCategory(interaction.guild.id, category.id);
+        await interaction.reply({ content: `✅ Categoria de tickets definida para: **${category.name}**`, ephemeral: true });
+      } else if (subcommand === 'cargo') {
+        const role = interaction.options.getRole('cargo');
+        setSupportRole(interaction.guild.id, role.id);
+        await interaction.reply({ content: `✅ Cargo de suporte definido para: **${role.name}**`, ephemeral: true });
+      }
+    }
+  },
+
+  ticket_panel: {
+    data: new SlashCommandBuilder()
+      .setName('ticket_panel')
+      .setDescription('Envia o painel de tickets no canal atual')
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    execute: async (interaction) => {
+      await sendTicketPanel(interaction.channel);
+      await interaction.reply({ content: '✅ Painel de tickets enviado!', ephemeral: true });
+    }
+  },
+
+  stats_tickets: {
+    data: new SlashCommandBuilder()
+      .setName('stats_tickets')
+      .setDescription('Mostra estatísticas do sistema de tickets')
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    execute: async (interaction) => {
+      const stats = getTicketStats();
+      const statsEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('🎫 Estatísticas de Tickets')
+        .addFields(
+          { name: '🔓 Abertos', value: `${stats.open}`, inline: true },
+          { name: '🔒 Fechados', value: `${stats.closed}`, inline: true },
+          { name: '📊 Total', value: `${stats.total}`, inline: true }
+        )
+        .setTimestamp();
+      await interaction.reply({ embeds: [statsEmbed] });
+    }
+  },
+
   userinfo: {
     data: new SlashCommandBuilder()
       .setName('userinfo')
