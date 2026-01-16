@@ -820,8 +820,19 @@ export const slashCommands = {
 export async function registerSlashCommands(client) {
   try {
     const commandsData = Object.values(slashCommands).map(cmd => cmd.data.toJSON());
+    
+    // Registrar globalmente
     await client.application.commands.set(commandsData);
-    console.log('✅ Slash commands registrados com sucesso!');
+    
+    // Registrar em cada servidor para atualização instantânea
+    const guilds = await client.guilds.fetch();
+    for (const [guildId, guild] of guilds) {
+      const fullGuild = await guild.fetch();
+      await fullGuild.commands.set(commandsData);
+      console.log(`✅ Slash commands registrados no servidor: ${fullGuild.name} (${guildId})`);
+    }
+    
+    console.log('✅ Slash commands registrados com sucesso em todos os níveis!');
   } catch (error) {
     console.error('❌ Erro ao registrar slash commands:', error);
   }
