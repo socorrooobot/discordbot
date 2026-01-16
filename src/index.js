@@ -196,10 +196,10 @@ async function main() {
         }
       }
 
-      // SEGUNDO: Só responde a menções se NÃO for comando
-      if (shouldRespondToMention(message, client) && !message.content.startsWith('!')) {
+      // SEGUNDO: Só responde a menções se NÃO for comando (ou se falar do Steven)
+      if ((shouldRespondToMention(message, client) || message.content.toLowerCase().includes('steven')) && !message.content.startsWith('!')) {
         const question = message.content.replace(/<@!?\d+>/g, '').trim();
-        if (!question) {
+        if (!question && !message.content.toLowerCase().includes('steven')) {
           try {
             await message.reply('Oi! Me pergunte qualquer coisa ou use `!ajuda` para ver meus comandos. Estou aqui para te ajudar! 💙');
           } catch (error) {
