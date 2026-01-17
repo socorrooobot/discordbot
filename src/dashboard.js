@@ -300,6 +300,32 @@ export function startDashboard(client) {
     res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
   });
 
+  // Rota para capturar todas as páginas não definidas
+  app.get('/:page', requireAuth, async (req, res) => {
+    const page = req.params.page;
+    const currentUser = await client.users.fetch(req.session.userId);
+    const content = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black">
+          <h5 class="mb-0">✨ Página em Construção: ${page.toUpperCase()}</h5>
+        </div>
+        <div class="card-body text-center p-5">
+          <i class="bi bi-tools display-1 text-info mb-4"></i>
+          <h3>Estamos trabalhando nisso!</h3>
+          <p class="text-white-50">A função <strong>${page}</strong> será implementada em breve para dar mais controle sobre a Miku.</p>
+          <a href="/" class="btn btn-primary mt-3">Voltar ao Início</a>
+        </div>
+      </div>
+    `;
+    res.render('layout', { 
+      body: content, 
+      user: currentUser, 
+      activePage: page, 
+      title: page.charAt(0).toUpperCase() + page.slice(1),
+      theme: 'miku-blue'
+    });
+  });
+
   app.post('/servers/leave', requireAuth, async (req, res) => {
     const { guildId } = req.body;
     if (guildId) {
@@ -1406,6 +1432,32 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
+  });
+
+  // Rota para capturar todas as páginas não definidas
+  app.get('/:page', requireAuth, async (req, res) => {
+    const page = req.params.page;
+    const currentUser = await client.users.fetch(req.session.userId);
+    const content = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black">
+          <h5 class="mb-0">✨ Página em Construção: ${page.toUpperCase()}</h5>
+        </div>
+        <div class="card-body text-center p-5">
+          <i class="bi bi-tools display-1 text-info mb-4"></i>
+          <h3>Estamos trabalhando nisso!</h3>
+          <p class="text-white-50">A função <strong>${page}</strong> será implementada em breve para dar mais controle sobre a Miku.</p>
+          <a href="/" class="btn btn-primary mt-3">Voltar ao Início</a>
+        </div>
+      </div>
+    `;
+    res.render('layout', { 
+      body: content, 
+      user: currentUser, 
+      activePage: page, 
+      title: page.charAt(0).toUpperCase() + page.slice(1),
+      theme: 'miku-blue'
+    });
   });
 
   app.post('/servers/leave', requireAuth, async (req, res) => {
