@@ -300,9 +300,19 @@ export function startDashboard(client) {
     res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
   });
 
-  // Rota para capturar todas as páginas não definidas
-  app.get('/:page', requireAuth, async (req, res) => {
+  // Rota para capturar todas as páginas não definidas (deve ser a ÚLTIMA rota GET)
+  app.get('/:page', requireAuth, async (req, res, next) => {
     const page = req.params.page;
+    
+    // Lista de rotas que JÁ EXISTEM e não devem cair aqui
+    const existingRoutes = [
+      'login', 'logout', 'logs', 'settings', 'admins', 'stats', 'servers', 
+      'announcement', 'economy', 'tickets', 'multipliers', 'afk', 'invite',
+      'mod', 'errors', 'messages', 'audit', 'slash-commands', 'responses', 'history', 'blacklist', 'broadcast', 'xp'
+    ];
+    
+    if (existingRoutes.includes(page)) return next();
+
     const currentUser = await client.users.fetch(req.session.userId);
     const content = `
       <div class="card bg-dark text-white border-info shadow-lg">
@@ -1434,9 +1444,19 @@ export function startDashboard(client) {
     res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
   });
 
-  // Rota para capturar todas as páginas não definidas
-  app.get('/:page', requireAuth, async (req, res) => {
+  // Rota para capturar todas as páginas não definidas (deve ser a ÚLTIMA rota GET)
+  app.get('/:page', requireAuth, async (req, res, next) => {
     const page = req.params.page;
+    
+    // Lista de rotas que JÁ EXISTEM e não devem cair aqui
+    const existingRoutes = [
+      'login', 'logout', 'logs', 'settings', 'admins', 'stats', 'servers', 
+      'announcement', 'economy', 'tickets', 'multipliers', 'afk', 'invite',
+      'mod', 'errors', 'messages', 'audit', 'slash-commands', 'responses', 'history', 'blacklist', 'broadcast', 'xp'
+    ];
+    
+    if (existingRoutes.includes(page)) return next();
+
     const currentUser = await client.users.fetch(req.session.userId);
     const content = `
       <div class="card bg-dark text-white border-info shadow-lg">
