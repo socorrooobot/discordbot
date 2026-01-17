@@ -399,6 +399,55 @@ export const commands = {
     }
   },
 
+  miku_gif: {
+    name: '!miku_gif',
+    description: 'Mostra um GIF aleatório da Miku',
+    execute: async (message) => {
+      const gifs = [
+        'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZndqZndqZndqZndqZndqZndqZndqZndqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/v9G3NGdE81nVK/giphy.gif',
+        'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZndqZndqZndqZndqZndqZndqZndqZndqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/12v06XqHpxKzMk/giphy.gif',
+        'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZndqZndqZndqZndqZndqZndqZndqZndqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/fXp936yL6Jb6k/giphy.gif'
+      ];
+      const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+      const gifEmbed = new EmbedBuilder()
+        .setColor('#00bfff')
+        .setTitle('✨ Miku GIF!')
+        .setImage(randomGif)
+        .setFooter({ text: 'Olha eu aqui! 💙' });
+      await message.reply({ embeds: [gifEmbed] });
+    }
+  },
+
+  cantar: {
+    name: '!cantar',
+    description: 'Miku canta um trecho de música',
+    execute: async (message) => {
+      const lyrics = [
+        'I\'m thinking Miku Miku oo-ee-oo! 🎵',
+        'Popipopipopipopi-po! 🥤',
+        'The world is mine! 👑',
+        'Miku Miku ni shite ageru~ 💙'
+      ];
+      const randomLyric = lyrics[Math.floor(Math.random() * lyrics.length)];
+      await message.reply(`🎤 *Canta com paixão:* "${randomLyric}"`);
+    }
+  },
+
+  abracar: {
+    name: '!abracar',
+    aliases: ['!abraco'],
+    description: 'Abraça alguém',
+    execute: async (message) => {
+      const user = message.mentions.users.first();
+      if (!user) return message.reply('Quem você quer abraçar? 💙');
+      const hugEmbed = new EmbedBuilder()
+        .setColor('#ff69b4')
+        .setDescription(`💙 **${message.author.username}** deu um abraço bem quentinho em **${user.username}**!`)
+        .setImage('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZndqZndqZndqZndqZndqZndqZndqZndqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/u9BxQbM5bxvwN670W9/giphy.gif');
+      await message.reply({ embeds: [hugEmbed] });
+    }
+  },
+
   warn: {
     name: '!warn',
     description: 'Avisa um usuário',

@@ -80,7 +80,13 @@ export function startDashboard(client) {
         console.error('Erro ao renderizar index:', err);
         return res.status(500).send(err.message);
       }
-      res.render('layout', { body: html, user, activePage: 'home', title: 'Dashboard' });
+      res.render('layout', { 
+        body: html, 
+        user, 
+        activePage: 'home', 
+        title: 'Diva Dashboard',
+        theme: 'miku-blue' 
+      });
     });
   });
 
@@ -93,14 +99,19 @@ export function startDashboard(client) {
     ];
 
     const logsHtml = `
-      <div class="card bg-dark text-white border-secondary shadow-lg">
-        <div class="card-header border-secondary d-flex justify-content-between align-items-center bg-black">
-          <h5 class="mb-0">📜 Logs do Sistema (Tempo Real)</h5>
-          <span class="badge bg-success shadow-sm">ATIVO</span>
+      <style>
+        .miku-card { border-radius: 15px; overflow: hidden; border: 2px solid #00bfff !important; }
+        .miku-header { background: linear-gradient(90deg, #00bfff, #00ced1) !important; color: white !important; }
+        .miku-table thead { background-color: rgba(0, 191, 255, 0.1); }
+      </style>
+      <div class="card bg-dark text-white miku-card shadow-lg">
+        <div class="card-header miku-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">📜 Histórico de Atividades</h5>
+          <span class="badge bg-white text-info shadow-sm">ATIVO</span>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-dark table-hover mb-0">
+            <table class="table table-dark table-hover mb-0 miku-table">
               <thead>
                 <tr>
                   <th class="border-secondary py-3 ps-4">Hora</th>
