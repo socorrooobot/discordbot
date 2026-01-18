@@ -77,20 +77,11 @@
       "createdAt": "2025-12-31T18:12:33.634Z",
       "closedAt": "2025-12-31T18:12:38.681Z",
       "closedBy": "657739548507373618"
-    },
-    "ticket-10": {
-      "userId": "1424065435988656128",
-      "channelId": "1461809535114149942",
-      "status": "open",
-      "createdAt": "2026-01-16T19:49:12.602Z",
-      "closedAt": null,
-      "claimedBy": "657739548507373618",
-      "claimedAt": "2026-01-16T19:49:56.727Z"
     }
   },
   "config": {
     "categoryId": null,
-    "supportRoleId": "1444514412353290381",
-    "ticketCounter": 10
+    "supportRoleId": "1439242411338498141",
+    "ticketCounter": 9
   }
 }

@@ -41,28 +41,6 @@ const whispers = [
 ];
 
 export const commands = {
-  registrar: {
-    name: '!registrar',
-    description: 'Cria sua conta para acessar o Dashboard',
-    execute: async (message, args) => {
-      const password = args[0];
-      if (!password) return message.reply('❌ Você precisa definir uma senha! Ex: `!registrar minhaSenha123`');
-      
-      const { addAdmin } = await import('./admin.js');
-      addAdmin(message.author.id, password);
-      
-      const embed = new EmbedBuilder()
-        .setTitle('✅ Conta Criada!')
-        .setDescription('Agora você pode entrar no meu site usando seu ID e a senha que você escolheu.')
-        .addFields({ name: 'Seu ID', value: `\`${message.author.id}\`` })
-        .setColor('#00ff00')
-        .setFooter({ text: 'Não compartilhe sua senha com ninguém!' });
-        
-      await message.author.send({ embeds: [embed] }).catch(() => {});
-      await message.reply('✅ Verifique sua DM! Te mandei os detalhes do acesso.');
-    }
-  },
-
   ajuda: {
     name: '!ajuda',
     aliases: ['!help', '!cmds', '!comandos'],
@@ -187,31 +165,6 @@ export const commands = {
     name: '!cmds',
     execute: async (message) => {
       return commands.ajuda.execute(message);
-    }
-  },
-
-  humor: {
-    name: '!humor',
-    aliases: ['!miku_humor'],
-    description: 'Verifica o humor atual da Diva',
-    execute: async (message) => {
-      const moods = [
-        { name: 'Radiante 🌟', color: '#00fbff', effect: 'Ganha +10% de XP nas próximas 2 horas!' },
-        { name: 'Melancólica 💧', color: '#0077ff', effect: 'Minhas respostas serão mais curtas e poéticas.' },
-        { name: 'Animada para o Show 🎤', color: '#ff00ff', effect: 'Multiplicador de economia em 1.5x ativado!' },
-        { name: 'Tímida 😳', color: '#ffc0cb', effect: 'Posso demorar um pouquinho mais para responder.' },
-        { name: 'Rebelde 🎸', color: '#ff0000', effect: 'Minhas respostas podem ser um pouco sarcásticas!' }
-      ];
-      const mood = moods[Math.floor(Math.random() * moods.length)];
-      
-      const embed = new EmbedBuilder()
-        .setTitle(`Estado Atual da Diva: ${mood.name}`)
-        .setDescription(`Hoje eu estou me sentindo assim!\n\n**Efeito Ativo:** ${mood.effect}`)
-        .setColor(parseInt(mood.color.replace('#', ''), 16))
-        .setThumbnail(message.client.user.displayAvatarURL())
-        .setFooter({ text: 'Meu humor afeta o comportamento e bônus do servidor!' });
-      
-      await message.reply({ embeds: [embed] });
     }
   },
 
@@ -443,55 +396,6 @@ export const commands = {
         .setImage(randomImage)
         .setFooter({ text: 'Fufu~ Eu sou a Diva! 💙' });
       await message.reply({ embeds: [mikuEmbed] });
-    }
-  },
-
-  miku_gif: {
-    name: '!miku_gif',
-    description: 'Mostra um GIF aleatório da Miku',
-    execute: async (message) => {
-      const gifs = [
-        'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZndqZndqZndqZndqZndqZndqZndqZndqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/v9G3NGdE81nVK/giphy.gif',
-        'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZndqZndqZndqZndqZndqZndqZndqZndqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/12v06XqHpxKzMk/giphy.gif',
-        'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZndqZndqZndqZndqZndqZndqZndqZndqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/fXp936yL6Jb6k/giphy.gif'
-      ];
-      const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
-      const gifEmbed = new EmbedBuilder()
-        .setColor('#00bfff')
-        .setTitle('✨ Miku GIF!')
-        .setImage(randomGif)
-        .setFooter({ text: 'Olha eu aqui! 💙' });
-      await message.reply({ embeds: [gifEmbed] });
-    }
-  },
-
-  cantar: {
-    name: '!cantar',
-    description: 'Miku canta um trecho de música',
-    execute: async (message) => {
-      const lyrics = [
-        'I\'m thinking Miku Miku oo-ee-oo! 🎵',
-        'Popipopipopipopi-po! 🥤',
-        'The world is mine! 👑',
-        'Miku Miku ni shite ageru~ 💙'
-      ];
-      const randomLyric = lyrics[Math.floor(Math.random() * lyrics.length)];
-      await message.reply(`🎤 *Canta com paixão:* "${randomLyric}"`);
-    }
-  },
-
-  abracar: {
-    name: '!abracar',
-    aliases: ['!abraco'],
-    description: 'Abraça alguém',
-    execute: async (message) => {
-      const user = message.mentions.users.first();
-      if (!user) return message.reply('Quem você quer abraçar? 💙');
-      const hugEmbed = new EmbedBuilder()
-        .setColor('#ff69b4')
-        .setDescription(`💙 **${message.author.username}** deu um abraço bem quentinho em **${user.username}**!`)
-        .setImage('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZndqZndqZndqZndqZndqZndqZndqZndqJmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/u9BxQbM5bxvwN670W9/giphy.gif');
-      await message.reply({ embeds: [hugEmbed] });
     }
   },
 

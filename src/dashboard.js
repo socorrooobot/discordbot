@@ -40,33 +40,19 @@ export function startDashboard(client) {
 
   // Página de login
   app.get('/login', (req, res) => {
-    res.render('login', { 
-      error: null,
-      title: 'Login - Miku Diva',
-      theme: 'miku-blue'
-    });
+    res.render('login', { error: null });
   });
 
   app.post('/login', async (req, res) => {
     const { userId, password } = req.body;
-    const cleanUserId = userId.trim();
-    const cleanPassword = password.trim();
     
-    if (verifyAdminPassword(cleanUserId, cleanPassword)) {
-      req.session.userId = cleanUserId;
-      try {
-        req.session.userObject = await client.users.fetch(userId);
-      } catch (e) {
-        req.session.userObject = { username: 'Usuário ' + userId, id: userId };
-      }
+    if (verifyAdminPassword(userId, password)) {
+      req.session.userId = userId;
+      req.session.userObject = await client.users.fetch(userId);
       return res.redirect('/');
     }
     
-    res.render('login', { 
-      error: 'ID de usuário ou senha incorretos!',
-      title: 'Login - Miku Diva',
-      theme: 'miku-blue'
-    });
+    res.render('login', { error: 'ID de usuário ou senha incorretos!' });
   });
 
   app.get('/logout', (req, res) => {
@@ -94,52 +80,7 @@ export function startDashboard(client) {
         console.error('Erro ao renderizar index:', err);
         return res.status(500).send(err.message);
       }
-      
-      const resourceInfo = `
-        <div class="row mt-4">
-          <div class="col-md-12">
-            <div class="card bg-dark text-white border-primary shadow-lg">
-              <div class="card-header border-primary bg-black d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">🖥️ Monitor de Performance (Miku Core)</h5>
-                <span class="badge bg-primary animate-pulse">LIVE</span>
-              </div>
-              <div class="card-body">
-                <div class="row text-center">
-                  <div class="col-md-3">
-                    <h6 class="text-white-50 small">CPU USAGE</h6>
-                    <h4 class="text-primary">${(process.cpuUsage().user / 1000000).toFixed(2)}%</h4>
-                  </div>
-                  <div class="col-md-3">
-                    <h6 class="text-white-50 small">MEMÓRIA RAM</h6>
-                    <h4 class="text-info">${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB</h4>
-                  </div>
-                  <div class="col-md-3">
-                    <h6 class="text-white-50 small">SESSÕES ATIVAS</h6>
-                    <h4 class="text-success">${client.guilds.cache.size}</h4>
-                  </div>
-                  <div class="col-md-3">
-                    <h6 class="text-white-50 small">UPTIME</h6>
-                    <h4 class="text-warning">${Math.floor(process.uptime() / 3600)}h ${Math.floor((process.uptime() % 3600) / 60)}m</h4>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <style>
-          .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-          @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-        </style>
-        ${html}
-      `;
-      
-      res.render('layout', { 
-        body: resourceInfo, 
-        user, 
-        activePage: 'home', 
-        title: 'Diva Dashboard',
-        theme: 'miku-blue' 
-      });
+      res.render('layout', { body: html, user, activePage: 'home', title: 'Dashboard' });
     });
   });
 
@@ -152,19 +93,14 @@ export function startDashboard(client) {
     ];
 
     const logsHtml = `
-      <style>
-        .miku-card { border-radius: 15px; overflow: hidden; border: 2px solid #00bfff !important; }
-        .miku-header { background: linear-gradient(90deg, #00bfff, #00ced1) !important; color: white !important; }
-        .miku-table thead { background-color: rgba(0, 191, 255, 0.1); }
-      </style>
-      <div class="card bg-dark text-white miku-card shadow-lg">
-        <div class="card-header miku-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">📜 Histórico de Atividades</h5>
-          <span class="badge bg-white text-info shadow-sm">ATIVO</span>
+      <div class="card bg-dark text-white border-secondary shadow-lg">
+        <div class="card-header border-secondary d-flex justify-content-between align-items-center bg-black">
+          <h5 class="mb-0">📜 Logs do Sistema (Tempo Real)</h5>
+          <span class="badge bg-success shadow-sm">ATIVO</span>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-dark table-hover mb-0 miku-table">
+            <table class="table table-dark table-hover mb-0">
               <thead>
                 <tr>
                   <th class="border-secondary py-3 ps-4">Hora</th>
@@ -351,157 +287,6 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
-  });
-
-  // Rota para selecionar servidores que o usuário gerencia
-  app.get('/manage', requireAuth, async (req, res) => {
-    const currentUser = await client.users.fetch(req.session.userId);
-    const userGuilds = client.guilds.cache.filter(g => {
-      const member = g.members.cache.get(currentUser.id);
-      return member && member.permissions.has('Administrator');
-    });
-
-    const guildsHtml = `
-      <div class="card bg-dark text-white border-primary shadow-lg">
-        <div class="card-header border-primary bg-black">
-          <h5 class="mb-0">🎮 Meus Servidores (Administração)</h5>
-        </div>
-        <div class="card-body">
-          <p class="text-white-50 mb-4">Selecione um servidor onde você é Administrador para configurar a Diva.</p>
-          <div class="row g-3">
-            ${userGuilds.map(g => `
-              <div class="col-md-4">
-                <div class="card bg-black border-secondary h-100">
-                  <div class="card-body text-center">
-                    <img src="${g.iconURL() || 'https://via.placeholder.com/64'}" class="rounded-circle mb-3" width="64">
-                    <h6 class="text-white">${g.name}</h6>
-                    <a href="/manage/${g.id}" class="btn btn-sm btn-outline-primary mt-2">CONFIGURAR</a>
-                  </div>
-                </div>
-              </div>
-            `).join('')}
-            ${userGuilds.size === 0 ? '<p class="text-center py-4">Você não gerencia nenhum servidor onde eu estou. :(</p>' : ''}
-          </div>
-        </div>
-      </div>
-    `;
-    res.render('layout', { body: guildsHtml, user: currentUser, activePage: 'manage', title: 'Gerenciar' });
-  });
-
-  app.get('/manage/:guildId', requireAuth, async (req, res) => {
-    const { guildId } = req.params;
-    const guild = client.guilds.cache.get(guildId);
-    if (!guild) return res.redirect('/manage');
-
-    const currentUser = await client.users.fetch(req.session.userId);
-    const member = await guild.members.fetch(currentUser.id).catch(() => null);
-    if (!member || !member.permissions.has('Administrator')) return res.status(403).send('Sem permissão.');
-
-    const channels = guild.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }));
-    const roles = guild.roles.cache.filter(r => r.name !== '@everyone' && !r.managed).map(r => ({ id: r.id, name: r.name }));
-
-    const configHtml = `
-      <div class="card bg-dark text-white border-info shadow-lg">
-        <div class="card-header border-info bg-black d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">⚙️ Configurações: ${guild.name}</h5>
-          <span class="badge bg-info">LORITTA STYLE</span>
-        </div>
-        <div class="card-body">
-          <form action="/manage/${guildId}/update" method="POST">
-            <!-- Boas Vindas -->
-            <div class="mb-4 p-3 border border-secondary rounded">
-              <h6 class="text-primary mb-3"><i class="bi bi-door-open me-2"></i>SISTEMA DE ENTRADA</h6>
-              <div class="mb-3">
-                <label class="form-label text-white-50 small">CANAL DE MENSAGENS</label>
-                <select name="welcomeChannel" class="form-select bg-black text-white border-secondary">
-                  <option value="">Desativado</option>
-                  ${channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-                </select>
-              </div>
-              <div class="mb-0">
-                <label class="form-label text-white-50 small">MENSAGEM (Use {user} e {server})</label>
-                <textarea name="welcomeMsg" class="form-control bg-black text-white border-secondary" rows="2" placeholder="Bem-vindo {user}!"></textarea>
-              </div>
-            </div>
-
-            <!-- Auto Role -->
-            <div class="mb-4 p-3 border border-secondary rounded">
-              <h6 class="text-success mb-3"><i class="bi bi-person-badge me-2"></i>AUTO-ROLE (CARGO AO ENTRAR)</h6>
-              <div class="mb-0">
-                <label class="form-label text-white-50 small">CARGO PARA NOVOS MEMBROS</label>
-                <select name="autoRole" class="form-select bg-black text-white border-secondary">
-                  <option value="">Desativado</option>
-                  ${roles.map(r => `<option value="${r.id}">${r.name}</option>`).join('')}
-                </select>
-              </div>
-            </div>
-
-            <!-- Módulos -->
-            <div class="mb-4 p-3 border border-secondary rounded">
-              <h6 class="text-warning mb-3"><i class="bi bi-toggle-on me-2"></i>MÓDULOS DO BOT</h6>
-              <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" name="moduleFun" checked>
-                <label class="form-check-label small text-white-50">Comandos de Diversão (!abraçar, !gif, etc)</label>
-              </div>
-              <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" name="moduleEco" checked>
-                <label class="form-check-label small text-white-50">Sistema de Economia</label>
-              </div>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" name="moduleAI" checked>
-                <label class="form-check-label small text-white-50">Respostas com IA (Menção/Ask)</label>
-              </div>
-            </div>
-
-            <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
-              <i class="bi bi-check-circle me-2"></i>SALVAR TODAS AS ALTERAÇÕES
-            </button>
-          </form>
-        </div>
-      </div>
-    `;
-    res.render('layout', { body: configHtml, user: currentUser, activePage: 'manage', title: 'Configurar Servidor' });
-  });
-
-  app.post('/manage/:guildId/update', requireAuth, async (req, res) => {
-    // Aqui salvaríamos em um banco de dados ou JSON por servidor futuramente
-    res.redirect('/manage/' + req.params.guildId + '?success=true');
-  });
-
-  // Rota para capturar todas as páginas não definidas (deve ser a ÚLTIMA rota GET)
-  app.get('/:page', requireAuth, async (req, res, next) => {
-    const page = req.params.page;
-    
-    // Lista de rotas que JÁ EXISTEM e não devem cair aqui
-    const existingRoutes = [
-      'login', 'logout', 'logs', 'settings', 'admins', 'stats', 'servers', 
-      'announcement', 'economy', 'tickets', 'multipliers', 'afk', 'invite',
-      'mod', 'errors', 'messages', 'audit', 'slash-commands', 'responses', 'history', 'blacklist', 'broadcast', 'xp', 'manage'
-    ];
-    
-    if (existingRoutes.includes(page)) return next();
-
-    const currentUser = await client.users.fetch(req.session.userId);
-    const content = `
-      <div class="card bg-dark text-white border-info shadow-lg">
-        <div class="card-header border-info bg-black">
-          <h5 class="mb-0">✨ Página em Construção: ${page.toUpperCase()}</h5>
-        </div>
-        <div class="card-body text-center p-5">
-          <i class="bi bi-tools display-1 text-info mb-4"></i>
-          <h3>Estamos trabalhando nisso!</h3>
-          <p class="text-white-50">A função <strong>${page}</strong> será implementada em breve para dar mais controle sobre a Miku.</p>
-          <a href="/" class="btn btn-primary mt-3">Voltar ao Início</a>
-        </div>
-      </div>
-    `;
-    res.render('layout', { 
-      body: content, 
-      user: currentUser, 
-      activePage: page, 
-      title: page.charAt(0).toUpperCase() + page.slice(1),
-      theme: 'miku-blue'
-    });
   });
 
   app.post('/servers/leave', requireAuth, async (req, res) => {
@@ -1610,157 +1395,6 @@ export function startDashboard(client) {
       </div>
     `;
     res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
-  });
-
-  // Rota para selecionar servidores que o usuário gerencia
-  app.get('/manage', requireAuth, async (req, res) => {
-    const currentUser = await client.users.fetch(req.session.userId);
-    const userGuilds = client.guilds.cache.filter(g => {
-      const member = g.members.cache.get(currentUser.id);
-      return member && member.permissions.has('Administrator');
-    });
-
-    const guildsHtml = `
-      <div class="card bg-dark text-white border-primary shadow-lg">
-        <div class="card-header border-primary bg-black">
-          <h5 class="mb-0">🎮 Meus Servidores (Administração)</h5>
-        </div>
-        <div class="card-body">
-          <p class="text-white-50 mb-4">Selecione um servidor onde você é Administrador para configurar a Diva.</p>
-          <div class="row g-3">
-            ${userGuilds.map(g => `
-              <div class="col-md-4">
-                <div class="card bg-black border-secondary h-100">
-                  <div class="card-body text-center">
-                    <img src="${g.iconURL() || 'https://via.placeholder.com/64'}" class="rounded-circle mb-3" width="64">
-                    <h6 class="text-white">${g.name}</h6>
-                    <a href="/manage/${g.id}" class="btn btn-sm btn-outline-primary mt-2">CONFIGURAR</a>
-                  </div>
-                </div>
-              </div>
-            `).join('')}
-            ${userGuilds.size === 0 ? '<p class="text-center py-4">Você não gerencia nenhum servidor onde eu estou. :(</p>' : ''}
-          </div>
-        </div>
-      </div>
-    `;
-    res.render('layout', { body: guildsHtml, user: currentUser, activePage: 'manage', title: 'Gerenciar' });
-  });
-
-  app.get('/manage/:guildId', requireAuth, async (req, res) => {
-    const { guildId } = req.params;
-    const guild = client.guilds.cache.get(guildId);
-    if (!guild) return res.redirect('/manage');
-
-    const currentUser = await client.users.fetch(req.session.userId);
-    const member = await guild.members.fetch(currentUser.id).catch(() => null);
-    if (!member || !member.permissions.has('Administrator')) return res.status(403).send('Sem permissão.');
-
-    const channels = guild.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }));
-    const roles = guild.roles.cache.filter(r => r.name !== '@everyone' && !r.managed).map(r => ({ id: r.id, name: r.name }));
-
-    const configHtml = `
-      <div class="card bg-dark text-white border-info shadow-lg">
-        <div class="card-header border-info bg-black d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">⚙️ Configurações: ${guild.name}</h5>
-          <span class="badge bg-info">LORITTA STYLE</span>
-        </div>
-        <div class="card-body">
-          <form action="/manage/${guildId}/update" method="POST">
-            <!-- Boas Vindas -->
-            <div class="mb-4 p-3 border border-secondary rounded">
-              <h6 class="text-primary mb-3"><i class="bi bi-door-open me-2"></i>SISTEMA DE ENTRADA</h6>
-              <div class="mb-3">
-                <label class="form-label text-white-50 small">CANAL DE MENSAGENS</label>
-                <select name="welcomeChannel" class="form-select bg-black text-white border-secondary">
-                  <option value="">Desativado</option>
-                  ${channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-                </select>
-              </div>
-              <div class="mb-0">
-                <label class="form-label text-white-50 small">MENSAGEM (Use {user} e {server})</label>
-                <textarea name="welcomeMsg" class="form-control bg-black text-white border-secondary" rows="2" placeholder="Bem-vindo {user}!"></textarea>
-              </div>
-            </div>
-
-            <!-- Auto Role -->
-            <div class="mb-4 p-3 border border-secondary rounded">
-              <h6 class="text-success mb-3"><i class="bi bi-person-badge me-2"></i>AUTO-ROLE (CARGO AO ENTRAR)</h6>
-              <div class="mb-0">
-                <label class="form-label text-white-50 small">CARGO PARA NOVOS MEMBROS</label>
-                <select name="autoRole" class="form-select bg-black text-white border-secondary">
-                  <option value="">Desativado</option>
-                  ${roles.map(r => `<option value="${r.id}">${r.name}</option>`).join('')}
-                </select>
-              </div>
-            </div>
-
-            <!-- Módulos -->
-            <div class="mb-4 p-3 border border-secondary rounded">
-              <h6 class="text-warning mb-3"><i class="bi bi-toggle-on me-2"></i>MÓDULOS DO BOT</h6>
-              <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" name="moduleFun" checked>
-                <label class="form-check-label small text-white-50">Comandos de Diversão (!abraçar, !gif, etc)</label>
-              </div>
-              <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" name="moduleEco" checked>
-                <label class="form-check-label small text-white-50">Sistema de Economia</label>
-              </div>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" name="moduleAI" checked>
-                <label class="form-check-label small text-white-50">Respostas com IA (Menção/Ask)</label>
-              </div>
-            </div>
-
-            <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
-              <i class="bi bi-check-circle me-2"></i>SALVAR TODAS AS ALTERAÇÕES
-            </button>
-          </form>
-        </div>
-      </div>
-    `;
-    res.render('layout', { body: configHtml, user: currentUser, activePage: 'manage', title: 'Configurar Servidor' });
-  });
-
-  app.post('/manage/:guildId/update', requireAuth, async (req, res) => {
-    // Aqui salvaríamos em um banco de dados ou JSON por servidor futuramente
-    res.redirect('/manage/' + req.params.guildId + '?success=true');
-  });
-
-  // Rota para capturar todas as páginas não definidas (deve ser a ÚLTIMA rota GET)
-  app.get('/:page', requireAuth, async (req, res, next) => {
-    const page = req.params.page;
-    
-    // Lista de rotas que JÁ EXISTEM e não devem cair aqui
-    const existingRoutes = [
-      'login', 'logout', 'logs', 'settings', 'admins', 'stats', 'servers', 
-      'announcement', 'economy', 'tickets', 'multipliers', 'afk', 'invite',
-      'mod', 'errors', 'messages', 'audit', 'slash-commands', 'responses', 'history', 'blacklist', 'broadcast', 'xp', 'manage'
-    ];
-    
-    if (existingRoutes.includes(page)) return next();
-
-    const currentUser = await client.users.fetch(req.session.userId);
-    const content = `
-      <div class="card bg-dark text-white border-info shadow-lg">
-        <div class="card-header border-info bg-black">
-          <h5 class="mb-0">✨ Página em Construção: ${page.toUpperCase()}</h5>
-        </div>
-        <div class="card-body text-center p-5">
-          <i class="bi bi-tools display-1 text-info mb-4"></i>
-          <h3>Estamos trabalhando nisso!</h3>
-          <p class="text-white-50">A função <strong>${page}</strong> será implementada em breve para dar mais controle sobre a Miku.</p>
-          <a href="/" class="btn btn-primary mt-3">Voltar ao Início</a>
-        </div>
-      </div>
-    `;
-    res.render('layout', { 
-      body: content, 
-      user: currentUser, 
-      activePage: page, 
-      title: page.charAt(0).toUpperCase() + page.slice(1),
-      theme: 'miku-blue'
-    });
   });
 
   app.post('/servers/leave', requireAuth, async (req, res) => {

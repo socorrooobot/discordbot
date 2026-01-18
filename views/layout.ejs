@@ -7,19 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .navbar-nav { flex-wrap: wrap; }
-        .nav-item { margin-bottom: 5px; }
-        @media (max-width: 991px) {
-            .navbar-collapse {
-                max-height: 400px;
-                overflow-y: auto;
-                background: rgba(0,0,0,0.9);
-                padding: 15px;
-                border-radius: 10px;
-            }
-        }
-    </style>
 </head>
 <body>
     <% if (typeof user !== 'undefined' && user) { %>
@@ -33,9 +20,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item mx-1">
-                        <a class="nav-link rounded px-3 <%= activePage === 'manage' ? 'active bg-primary text-white' : '' %>" href="/manage"><i class="bi bi-controller me-1"></i> Gerenciar</a>
-                    </li>
                     <li class="nav-item mx-1">
                         <a class="nav-link rounded px-3 <%= activePage === 'home' ? 'active bg-primary text-white' : '' %>" href="/"><i class="bi bi-house-door me-1"></i> Home</a>
                     </li>

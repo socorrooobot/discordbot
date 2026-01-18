@@ -625,71 +625,6 @@ export const slashCommands = {
     }
   },
 
-  setup_tickets: {
-    data: new SlashCommandBuilder()
-      .setName('setup_tickets')
-      .setDescription('Configura o sistema de tickets')
-      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-      .addSubcommand(sub =>
-        sub.setName('categoria')
-          .setDescription('Define a categoria para os tickets (use sem canal para remover)')
-          .addChannelOption(opt => opt.setName('canal').setDescription('Categoria de canais').setRequired(false))
-      )
-      .addSubcommand(sub =>
-        sub.setName('cargo')
-          .setDescription('Define o cargo de suporte')
-          .addRoleOption(opt => opt.setName('cargo').setDescription('Cargo de suporte').setRequired(true))
-      ),
-    execute: async (interaction) => {
-      const subcommand = interaction.options.getSubcommand();
-      if (subcommand === 'categoria') {
-        const category = interaction.options.getChannel('canal');
-        if (!category) {
-          setTicketCategory(interaction.guild.id, null);
-          await interaction.reply({ content: '✅ Categoria de tickets removida! Agora os tickets serão criados no topo da lista de canais.', ephemeral: true });
-        } else {
-          setTicketCategory(interaction.guild.id, category.id);
-          await interaction.reply({ content: `✅ Categoria de tickets definida para: **${category.name}**`, ephemeral: true });
-        }
-      } else if (subcommand === 'cargo') {
-        const role = interaction.options.getRole('cargo');
-        setSupportRole(interaction.guild.id, role.id);
-        await interaction.reply({ content: `✅ Cargo de suporte definido para: **${role.name}**`, ephemeral: true });
-      }
-    }
-  },
-
-  ticket_panel: {
-    data: new SlashCommandBuilder()
-      .setName('ticket_panel')
-      .setDescription('Envia o painel de tickets no canal atual')
-      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-    execute: async (interaction) => {
-      await sendTicketPanel(interaction.channel);
-      await interaction.reply({ content: '✅ Painel de tickets enviado!', ephemeral: true });
-    }
-  },
-
-  stats_tickets: {
-    data: new SlashCommandBuilder()
-      .setName('stats_tickets')
-      .setDescription('Mostra estatísticas do sistema de tickets')
-      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-    execute: async (interaction) => {
-      const stats = getTicketStats();
-      const statsEmbed = new EmbedBuilder()
-        .setColor('#00bfff')
-        .setTitle('🎫 Estatísticas de Tickets')
-        .addFields(
-          { name: '🔓 Abertos', value: `${stats.open}`, inline: true },
-          { name: '🔒 Fechados', value: `${stats.closed}`, inline: true },
-          { name: '📊 Total', value: `${stats.total}`, inline: true }
-        )
-        .setTimestamp();
-      await interaction.reply({ embeds: [statsEmbed] });
-    }
-  },
-
   userinfo: {
     data: new SlashCommandBuilder()
       .setName('userinfo')
@@ -825,19 +760,8 @@ export const slashCommands = {
 export async function registerSlashCommands(client) {
   try {
     const commandsData = Object.values(slashCommands).map(cmd => cmd.data.toJSON());
-    
-    // Registrar globalmente
     await client.application.commands.set(commandsData);
-    
-    // Registrar em cada servidor para atualização instantânea
-    const guilds = await client.guilds.fetch();
-    for (const [guildId, guild] of guilds) {
-      const fullGuild = await guild.fetch();
-      await fullGuild.commands.set(commandsData);
-      console.log(`✅ Slash commands registrados no servidor: ${fullGuild.name} (${guildId})`);
-    }
-    
-    console.log('✅ Slash commands registrados com sucesso em todos os níveis!');
+    console.log('✅ Slash commands registrados com sucesso!');
   } catch (error) {
     console.error('❌ Erro ao registrar slash commands:', error);
   }

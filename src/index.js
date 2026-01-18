@@ -100,9 +100,8 @@ async function main() {
     });
 
     client.on('messageCreate', async (message) => {
-      // Ignorar mensagens de bots, exceto o Steven
-      const STEVEN_ID = '1461033378701639955';
-      if (message.author.bot && message.author.id !== STEVEN_ID) return;
+      // Ignorar mensagens de bots
+      if (message.author.bot) return;
 
       // Log no Dashboard
       if (client.addDashboardLog) {
@@ -197,10 +196,10 @@ async function main() {
         }
       }
 
-      // SEGUNDO: Só responde a menções se NÃO for comando (ou se falar do Steven)
-      if ((shouldRespondToMention(message, client) || message.content.toLowerCase().includes('steven')) && !message.content.startsWith('!')) {
+      // SEGUNDO: Só responde a menções se NÃO for comando
+      if (shouldRespondToMention(message, client) && !message.content.startsWith('!')) {
         const question = message.content.replace(/<@!?\d+>/g, '').trim();
-        if (!question && !message.content.toLowerCase().includes('steven')) {
+        if (!question) {
           try {
             await message.reply('Oi! Me pergunte qualquer coisa ou use `!ajuda` para ver meus comandos. Estou aqui para te ajudar! 💙');
           } catch (error) {

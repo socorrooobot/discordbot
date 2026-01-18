@@ -61,9 +61,6 @@ export function setSupportRole(guildId, roleId) {
 
 // Criar ticket
 export async function createTicket(interaction) {
-  // Adiar resposta para evitar timeout de 3 segundos
-  await interaction.deferReply({ ephemeral: true });
-  
   const guild = interaction.guild;
   const user = interaction.user;
 
@@ -73,8 +70,9 @@ export async function createTicket(interaction) {
   );
 
   if (existingTicket) {
-    await interaction.editReply({
-      content: `❌ Você já tem um ticket aberto: <#${existingTicket.channelId}>`
+    await interaction.reply({
+      content: `❌ Você já tem um ticket aberto: <#${existingTicket.channelId}>`,
+      ephemeral: true
     });
     return;
   }
@@ -84,17 +82,11 @@ export async function createTicket(interaction) {
   const ticketId = `ticket-${ticketNumber}`;
 
   try {
-    // Verificar se a categoria existe, se não, criar sem categoria
-    let parentCategory = null;
-    if (ticketsData.config.categoryId) {
-      parentCategory = guild.channels.cache.get(ticketsData.config.categoryId);
-    }
-
     // Criar canal de ticket
     const ticketChannel = await guild.channels.create({
       name: `🎫┃${ticketId}`,
       type: ChannelType.GuildText,
-      parent: parentCategory?.id || undefined,
+      parent: ticketsData.config.categoryId || undefined,
       permissionOverwrites: [
         {
           id: guild.roles.everyone,
@@ -114,8 +106,7 @@ export async function createTicket(interaction) {
           allow: [
             PermissionFlagsBits.ViewChannel,
             PermissionFlagsBits.SendMessages,
-            PermissionFlagsBits.ManageChannels,
-            PermissionFlagsBits.EmbedLinks
+            PermissionFlagsBits.ManageChannels
           ]
         }
       ]
@@ -168,9 +159,10 @@ export async function createTicket(interaction) {
 
     await ticketChannel.send({ embeds: [welcomeEmbed], components: [row] });
 
-    // Responder ao usuário (usando editReply porque já demos defer)
-    await interaction.editReply({
-      content: `✅ Ticket criado com sucesso! Acesse: ${ticketChannel}`
+    // Responder ao usuário
+    await interaction.reply({
+      content: `✅ Ticket criado com sucesso! Acesse: ${ticketChannel}`,
+      ephemeral: true
     });
 
     // Notificar suporte se configurado
@@ -180,20 +172,10 @@ export async function createTicket(interaction) {
 
   } catch (error) {
     console.error('Erro ao criar ticket:', error);
-    try {
-      if (interaction.deferred) {
-        await interaction.editReply({
-          content: '❌ Erro ao criar ticket! Verifique se eu tenho permissão de "Gerenciar Canais" e se a categoria configurada ainda existe.'
-        });
-      } else {
-        await interaction.reply({
-          content: '❌ Erro ao criar ticket! Verifique as permissões do bot.',
-          ephemeral: true
-        });
-      }
-    } catch (e) {
-      console.error('Erro ao enviar mensagem de erro de ticket:', e);
-    }
+    await interaction.reply({
+      content: '❌ Erro ao criar ticket! Verifique as permissões do bot.',
+      ephemeral: true
+    });
   }
 }
 
