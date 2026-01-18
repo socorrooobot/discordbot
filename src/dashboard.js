@@ -384,27 +384,64 @@ export function startDashboard(client) {
     if (!member || !member.permissions.has('Administrator')) return res.status(403).send('Sem permissão.');
 
     const channels = guild.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }));
+    const roles = guild.roles.cache.filter(r => r.name !== '@everyone' && !r.managed).map(r => ({ id: r.id, name: r.name }));
 
     const configHtml = `
       <div class="card bg-dark text-white border-info shadow-lg">
-        <div class="card-header border-info bg-black">
+        <div class="card-header border-info bg-black d-flex justify-content-between align-items-center">
           <h5 class="mb-0">⚙️ Configurações: ${guild.name}</h5>
+          <span class="badge bg-info">LORITTA STYLE</span>
         </div>
         <div class="card-body">
           <form action="/manage/${guildId}/update" method="POST">
-            <div class="mb-4">
-              <label class="form-label text-info fw-bold">CANAL DE BOAS-VINDAS</label>
-              <select name="welcomeChannel" class="form-select bg-black text-white border-secondary">
-                <option value="">Desativado</option>
-                ${channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-              </select>
+            <!-- Boas Vindas -->
+            <div class="mb-4 p-3 border border-secondary rounded">
+              <h6 class="text-primary mb-3"><i class="bi bi-door-open me-2"></i>SISTEMA DE ENTRADA</h6>
+              <div class="mb-3">
+                <label class="form-label text-white-50 small">CANAL DE MENSAGENS</label>
+                <select name="welcomeChannel" class="form-select bg-black text-white border-secondary">
+                  <option value="">Desativado</option>
+                  ${channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                </select>
+              </div>
+              <div class="mb-0">
+                <label class="form-label text-white-50 small">MENSAGEM (Use {user} e {server})</label>
+                <textarea name="welcomeMsg" class="form-control bg-black text-white border-secondary" rows="2" placeholder="Bem-vindo {user}!"></textarea>
+              </div>
             </div>
-            <div class="mb-4">
-              <label class="form-label text-info fw-bold">MENSAGEM DE BOAS-VINDAS</label>
-              <textarea name="welcomeMsg" class="form-control bg-black text-white border-secondary" rows="3" placeholder="Ex: Bem-vindo {user} ao nosso servidor!"></textarea>
+
+            <!-- Auto Role -->
+            <div class="mb-4 p-3 border border-secondary rounded">
+              <h6 class="text-success mb-3"><i class="bi bi-person-badge me-2"></i>AUTO-ROLE (CARGO AO ENTRAR)</h6>
+              <div class="mb-0">
+                <label class="form-label text-white-50 small">CARGO PARA NOVOS MEMBROS</label>
+                <select name="autoRole" class="form-select bg-black text-white border-secondary">
+                  <option value="">Desativado</option>
+                  ${roles.map(r => `<option value="${r.id}">${r.name}</option>`).join('')}
+                </select>
+              </div>
             </div>
-            <hr class="border-secondary">
-            <button class="btn btn-info w-100 fw-bold">SALVAR CONFIGURAÇÕES</button>
+
+            <!-- Módulos -->
+            <div class="mb-4 p-3 border border-secondary rounded">
+              <h6 class="text-warning mb-3"><i class="bi bi-toggle-on me-2"></i>MÓDULOS DO BOT</h6>
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" name="moduleFun" checked>
+                <label class="form-check-label small text-white-50">Comandos de Diversão (!abraçar, !gif, etc)</label>
+              </div>
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" name="moduleEco" checked>
+                <label class="form-check-label small text-white-50">Sistema de Economia</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="moduleAI" checked>
+                <label class="form-check-label small text-white-50">Respostas com IA (Menção/Ask)</label>
+              </div>
+            </div>
+
+            <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+              <i class="bi bi-check-circle me-2"></i>SALVAR TODAS AS ALTERAÇÕES
+            </button>
           </form>
         </div>
       </div>
@@ -1606,27 +1643,64 @@ export function startDashboard(client) {
     if (!member || !member.permissions.has('Administrator')) return res.status(403).send('Sem permissão.');
 
     const channels = guild.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }));
+    const roles = guild.roles.cache.filter(r => r.name !== '@everyone' && !r.managed).map(r => ({ id: r.id, name: r.name }));
 
     const configHtml = `
       <div class="card bg-dark text-white border-info shadow-lg">
-        <div class="card-header border-info bg-black">
+        <div class="card-header border-info bg-black d-flex justify-content-between align-items-center">
           <h5 class="mb-0">⚙️ Configurações: ${guild.name}</h5>
+          <span class="badge bg-info">LORITTA STYLE</span>
         </div>
         <div class="card-body">
           <form action="/manage/${guildId}/update" method="POST">
-            <div class="mb-4">
-              <label class="form-label text-info fw-bold">CANAL DE BOAS-VINDAS</label>
-              <select name="welcomeChannel" class="form-select bg-black text-white border-secondary">
-                <option value="">Desativado</option>
-                ${channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-              </select>
+            <!-- Boas Vindas -->
+            <div class="mb-4 p-3 border border-secondary rounded">
+              <h6 class="text-primary mb-3"><i class="bi bi-door-open me-2"></i>SISTEMA DE ENTRADA</h6>
+              <div class="mb-3">
+                <label class="form-label text-white-50 small">CANAL DE MENSAGENS</label>
+                <select name="welcomeChannel" class="form-select bg-black text-white border-secondary">
+                  <option value="">Desativado</option>
+                  ${channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                </select>
+              </div>
+              <div class="mb-0">
+                <label class="form-label text-white-50 small">MENSAGEM (Use {user} e {server})</label>
+                <textarea name="welcomeMsg" class="form-control bg-black text-white border-secondary" rows="2" placeholder="Bem-vindo {user}!"></textarea>
+              </div>
             </div>
-            <div class="mb-4">
-              <label class="form-label text-info fw-bold">MENSAGEM DE BOAS-VINDAS</label>
-              <textarea name="welcomeMsg" class="form-control bg-black text-white border-secondary" rows="3" placeholder="Ex: Bem-vindo {user} ao nosso servidor!"></textarea>
+
+            <!-- Auto Role -->
+            <div class="mb-4 p-3 border border-secondary rounded">
+              <h6 class="text-success mb-3"><i class="bi bi-person-badge me-2"></i>AUTO-ROLE (CARGO AO ENTRAR)</h6>
+              <div class="mb-0">
+                <label class="form-label text-white-50 small">CARGO PARA NOVOS MEMBROS</label>
+                <select name="autoRole" class="form-select bg-black text-white border-secondary">
+                  <option value="">Desativado</option>
+                  ${roles.map(r => `<option value="${r.id}">${r.name}</option>`).join('')}
+                </select>
+              </div>
             </div>
-            <hr class="border-secondary">
-            <button class="btn btn-info w-100 fw-bold">SALVAR CONFIGURAÇÕES</button>
+
+            <!-- Módulos -->
+            <div class="mb-4 p-3 border border-secondary rounded">
+              <h6 class="text-warning mb-3"><i class="bi bi-toggle-on me-2"></i>MÓDULOS DO BOT</h6>
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" name="moduleFun" checked>
+                <label class="form-check-label small text-white-50">Comandos de Diversão (!abraçar, !gif, etc)</label>
+              </div>
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" name="moduleEco" checked>
+                <label class="form-check-label small text-white-50">Sistema de Economia</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="moduleAI" checked>
+                <label class="form-check-label small text-white-50">Respostas com IA (Menção/Ask)</label>
+              </div>
+            </div>
+
+            <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+              <i class="bi bi-check-circle me-2"></i>SALVAR TODAS AS ALTERAÇÕES
+            </button>
           </form>
         </div>
       </div>
