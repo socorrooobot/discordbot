@@ -564,6 +564,66 @@ export const commands = {
     }
   },
 
+  ban: {
+    name: '!ban',
+    description: 'Bane um usuário do servidor',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.BanMembers)) {
+        await message.reply('❌ Você não tem permissão para banir membros!');
+        return;
+      }
+      const user = message.mentions.users.first();
+      if (!user) return message.reply('❌ Mencione um usuário para banir!');
+      const member = await message.guild.members.fetch(user.id);
+      if (!member.bannable) return message.reply('❌ Eu não posso banir este usuário!');
+      
+      const reason = args.slice(1).join(' ') || 'Sem motivo especificado';
+      await member.ban({ reason });
+      
+      const banEmbed = new EmbedBuilder()
+        .setColor('#ff0000')
+        .setTitle('🔨 Usuário Banido')
+        .setDescription(`**${user.tag}** foi banido com sucesso.`)
+        .addFields({ name: 'Motivo', value: reason })
+        .setFooter({ text: 'Justiça divina aplicada' })
+        .setTimestamp();
+        
+      await message.reply({ embeds: [banEmbed] });
+    }
+  },
+
+  mute: {
+    name: '!mute',
+    aliases: ['!timeout'],
+    description: 'Silencia um usuário (Timeout)',
+    execute: async (message, args) => {
+      if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+        await message.reply('❌ Você não tem permissão para silenciar membros!');
+        return;
+      }
+      const user = message.mentions.users.first();
+      if (!user) return message.reply('❌ Mencione um usuário para silenciar!');
+      const member = await message.guild.members.fetch(user.id);
+      
+      const duration = parseInt(args[1]) || 60; // default 60 minutes
+      const reason = args.slice(2).join(' ') || 'Sem motivo especificado';
+      
+      try {
+        await member.timeout(duration * 60 * 1000, reason);
+        const muteEmbed = new EmbedBuilder()
+          .setColor('#808080')
+          .setTitle('🔇 Usuário Silenciado')
+          .setDescription(`**${user.tag}** foi silenciado por ${duration} minutos.`)
+          .addFields({ name: 'Motivo', value: reason })
+          .setTimestamp();
+        await message.reply({ embeds: [muteEmbed] });
+      } catch (error) {
+        console.error(error);
+        await message.reply('❌ Não foi possível silenciar o usuário.');
+      }
+    }
+  },
+
   moeda: {
     name: '!moeda',
     aliases: ['!caraoucoroa'],

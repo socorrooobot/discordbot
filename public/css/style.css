@@ -58,8 +58,38 @@ body {
 .icon-circle.bg-warning { background: linear-gradient(135deg, #f1c40f, #f39c12); }
 .icon-circle.bg-info { background: linear-gradient(135deg, #3498db, #2980b9); }
 
-.bg-black {
-    background-color: rgba(0,0,0,0.3) !important;
+.navbar-nav {
+    gap: 5px;
+}
+
+.nav-item {
+    margin: 0 !important;
+}
+
+.nav-link {
+    font-size: 0.85rem;
+    white-space: nowrap;
+    padding: 0.5rem 0.8rem !important;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: var(--dark);
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .user-profile {
+        margin-top: 1rem;
+        width: fit-content;
+    }
+}
+
+.container-fluid {
+    max-width: 1400px;
 }
 
 .btn-primary {
