@@ -41,6 +41,28 @@ const whispers = [
 ];
 
 export const commands = {
+  registrar: {
+    name: '!registrar',
+    description: 'Cria sua conta para acessar o Dashboard',
+    execute: async (message, args) => {
+      const password = args[0];
+      if (!password) return message.reply('❌ Você precisa definir uma senha! Ex: `!registrar minhaSenha123`');
+      
+      const { addAdmin } = await import('./admin.js');
+      addAdmin(message.author.id, password);
+      
+      const embed = new EmbedBuilder()
+        .setTitle('✅ Conta Criada!')
+        .setDescription('Agora você pode entrar no meu site usando seu ID e a senha que você escolheu.')
+        .addFields({ name: 'Seu ID', value: `\`${message.author.id}\`` })
+        .setColor('#00ff00')
+        .setFooter({ text: 'Não compartilhe sua senha com ninguém!' });
+        
+      await message.author.send({ embeds: [embed] }).catch(() => {});
+      await message.reply('✅ Verifique sua DM! Te mandei os detalhes do acesso.');
+    }
+  },
+
   ajuda: {
     name: '!ajuda',
     aliases: ['!help', '!cmds', '!comandos'],

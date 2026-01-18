@@ -339,6 +339,84 @@ export function startDashboard(client) {
     res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
   });
 
+  // Rota para selecionar servidores que o usuário gerencia
+  app.get('/manage', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const userGuilds = client.guilds.cache.filter(g => {
+      const member = g.members.cache.get(currentUser.id);
+      return member && member.permissions.has('Administrator');
+    });
+
+    const guildsHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">🎮 Meus Servidores (Administração)</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 mb-4">Selecione um servidor onde você é Administrador para configurar a Diva.</p>
+          <div class="row g-3">
+            ${userGuilds.map(g => `
+              <div class="col-md-4">
+                <div class="card bg-black border-secondary h-100">
+                  <div class="card-body text-center">
+                    <img src="${g.iconURL() || 'https://via.placeholder.com/64'}" class="rounded-circle mb-3" width="64">
+                    <h6 class="text-white">${g.name}</h6>
+                    <a href="/manage/${g.id}" class="btn btn-sm btn-outline-primary mt-2">CONFIGURAR</a>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+            ${userGuilds.size === 0 ? '<p class="text-center py-4">Você não gerencia nenhum servidor onde eu estou. :(</p>' : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: guildsHtml, user: currentUser, activePage: 'manage', title: 'Gerenciar' });
+  });
+
+  app.get('/manage/:guildId', requireAuth, async (req, res) => {
+    const { guildId } = req.params;
+    const guild = client.guilds.cache.get(guildId);
+    if (!guild) return res.redirect('/manage');
+
+    const currentUser = await client.users.fetch(req.session.userId);
+    const member = await guild.members.fetch(currentUser.id).catch(() => null);
+    if (!member || !member.permissions.has('Administrator')) return res.status(403).send('Sem permissão.');
+
+    const channels = guild.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }));
+
+    const configHtml = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black">
+          <h5 class="mb-0">⚙️ Configurações: ${guild.name}</h5>
+        </div>
+        <div class="card-body">
+          <form action="/manage/${guildId}/update" method="POST">
+            <div class="mb-4">
+              <label class="form-label text-info fw-bold">CANAL DE BOAS-VINDAS</label>
+              <select name="welcomeChannel" class="form-select bg-black text-white border-secondary">
+                <option value="">Desativado</option>
+                ${channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="form-label text-info fw-bold">MENSAGEM DE BOAS-VINDAS</label>
+              <textarea name="welcomeMsg" class="form-control bg-black text-white border-secondary" rows="3" placeholder="Ex: Bem-vindo {user} ao nosso servidor!"></textarea>
+            </div>
+            <hr class="border-secondary">
+            <button class="btn btn-info w-100 fw-bold">SALVAR CONFIGURAÇÕES</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: configHtml, user: currentUser, activePage: 'manage', title: 'Configurar Servidor' });
+  });
+
+  app.post('/manage/:guildId/update', requireAuth, async (req, res) => {
+    // Aqui salvaríamos em um banco de dados ou JSON por servidor futuramente
+    res.redirect('/manage/' + req.params.guildId + '?success=true');
+  });
+
   // Rota para capturar todas as páginas não definidas (deve ser a ÚLTIMA rota GET)
   app.get('/:page', requireAuth, async (req, res, next) => {
     const page = req.params.page;
@@ -347,7 +425,7 @@ export function startDashboard(client) {
     const existingRoutes = [
       'login', 'logout', 'logs', 'settings', 'admins', 'stats', 'servers', 
       'announcement', 'economy', 'tickets', 'multipliers', 'afk', 'invite',
-      'mod', 'errors', 'messages', 'audit', 'slash-commands', 'responses', 'history', 'blacklist', 'broadcast', 'xp'
+      'mod', 'errors', 'messages', 'audit', 'slash-commands', 'responses', 'history', 'blacklist', 'broadcast', 'xp', 'manage'
     ];
     
     if (existingRoutes.includes(page)) return next();
@@ -1483,6 +1561,84 @@ export function startDashboard(client) {
     res.render('layout', { body: serversHtml, user: currentUser, activePage: 'servers', title: 'Servidores' });
   });
 
+  // Rota para selecionar servidores que o usuário gerencia
+  app.get('/manage', requireAuth, async (req, res) => {
+    const currentUser = await client.users.fetch(req.session.userId);
+    const userGuilds = client.guilds.cache.filter(g => {
+      const member = g.members.cache.get(currentUser.id);
+      return member && member.permissions.has('Administrator');
+    });
+
+    const guildsHtml = `
+      <div class="card bg-dark text-white border-primary shadow-lg">
+        <div class="card-header border-primary bg-black">
+          <h5 class="mb-0">🎮 Meus Servidores (Administração)</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-white-50 mb-4">Selecione um servidor onde você é Administrador para configurar a Diva.</p>
+          <div class="row g-3">
+            ${userGuilds.map(g => `
+              <div class="col-md-4">
+                <div class="card bg-black border-secondary h-100">
+                  <div class="card-body text-center">
+                    <img src="${g.iconURL() || 'https://via.placeholder.com/64'}" class="rounded-circle mb-3" width="64">
+                    <h6 class="text-white">${g.name}</h6>
+                    <a href="/manage/${g.id}" class="btn btn-sm btn-outline-primary mt-2">CONFIGURAR</a>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+            ${userGuilds.size === 0 ? '<p class="text-center py-4">Você não gerencia nenhum servidor onde eu estou. :(</p>' : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: guildsHtml, user: currentUser, activePage: 'manage', title: 'Gerenciar' });
+  });
+
+  app.get('/manage/:guildId', requireAuth, async (req, res) => {
+    const { guildId } = req.params;
+    const guild = client.guilds.cache.get(guildId);
+    if (!guild) return res.redirect('/manage');
+
+    const currentUser = await client.users.fetch(req.session.userId);
+    const member = await guild.members.fetch(currentUser.id).catch(() => null);
+    if (!member || !member.permissions.has('Administrator')) return res.status(403).send('Sem permissão.');
+
+    const channels = guild.channels.cache.filter(c => c.isTextBased()).map(c => ({ id: c.id, name: c.name }));
+
+    const configHtml = `
+      <div class="card bg-dark text-white border-info shadow-lg">
+        <div class="card-header border-info bg-black">
+          <h5 class="mb-0">⚙️ Configurações: ${guild.name}</h5>
+        </div>
+        <div class="card-body">
+          <form action="/manage/${guildId}/update" method="POST">
+            <div class="mb-4">
+              <label class="form-label text-info fw-bold">CANAL DE BOAS-VINDAS</label>
+              <select name="welcomeChannel" class="form-select bg-black text-white border-secondary">
+                <option value="">Desativado</option>
+                ${channels.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="form-label text-info fw-bold">MENSAGEM DE BOAS-VINDAS</label>
+              <textarea name="welcomeMsg" class="form-control bg-black text-white border-secondary" rows="3" placeholder="Ex: Bem-vindo {user} ao nosso servidor!"></textarea>
+            </div>
+            <hr class="border-secondary">
+            <button class="btn btn-info w-100 fw-bold">SALVAR CONFIGURAÇÕES</button>
+          </form>
+        </div>
+      </div>
+    `;
+    res.render('layout', { body: configHtml, user: currentUser, activePage: 'manage', title: 'Configurar Servidor' });
+  });
+
+  app.post('/manage/:guildId/update', requireAuth, async (req, res) => {
+    // Aqui salvaríamos em um banco de dados ou JSON por servidor futuramente
+    res.redirect('/manage/' + req.params.guildId + '?success=true');
+  });
+
   // Rota para capturar todas as páginas não definidas (deve ser a ÚLTIMA rota GET)
   app.get('/:page', requireAuth, async (req, res, next) => {
     const page = req.params.page;
@@ -1491,7 +1647,7 @@ export function startDashboard(client) {
     const existingRoutes = [
       'login', 'logout', 'logs', 'settings', 'admins', 'stats', 'servers', 
       'announcement', 'economy', 'tickets', 'multipliers', 'afk', 'invite',
-      'mod', 'errors', 'messages', 'audit', 'slash-commands', 'responses', 'history', 'blacklist', 'broadcast', 'xp'
+      'mod', 'errors', 'messages', 'audit', 'slash-commands', 'responses', 'history', 'blacklist', 'broadcast', 'xp', 'manage'
     ];
     
     if (existingRoutes.includes(page)) return next();
