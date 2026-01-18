@@ -40,7 +40,11 @@ export function startDashboard(client) {
 
   // Página de login
   app.get('/login', (req, res) => {
-    res.render('login', { error: null });
+    res.render('login', { 
+      error: null,
+      title: 'Login - Miku Diva',
+      theme: 'miku-blue'
+    });
   });
 
   app.post('/login', async (req, res) => {
@@ -48,11 +52,19 @@ export function startDashboard(client) {
     
     if (verifyAdminPassword(userId, password)) {
       req.session.userId = userId;
-      req.session.userObject = await client.users.fetch(userId);
+      try {
+        req.session.userObject = await client.users.fetch(userId);
+      } catch (e) {
+        req.session.userObject = { username: 'Usuário ' + userId, id: userId };
+      }
       return res.redirect('/');
     }
     
-    res.render('login', { error: 'ID de usuário ou senha incorretos!' });
+    res.render('login', { 
+      error: 'ID de usuário ou senha incorretos!',
+      title: 'Login - Miku Diva',
+      theme: 'miku-blue'
+    });
   });
 
   app.get('/logout', (req, res) => {
