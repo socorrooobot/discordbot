@@ -168,6 +168,31 @@ export const commands = {
     }
   },
 
+  humor: {
+    name: '!humor',
+    aliases: ['!miku_humor'],
+    description: 'Verifica o humor atual da Diva',
+    execute: async (message) => {
+      const moods = [
+        { name: 'Radiante 🌟', color: '#00fbff', effect: 'Ganha +10% de XP nas próximas 2 horas!' },
+        { name: 'Melancólica 💧', color: '#0077ff', effect: 'Minhas respostas serão mais curtas e poéticas.' },
+        { name: 'Animada para o Show 🎤', color: '#ff00ff', effect: 'Multiplicador de economia em 1.5x ativado!' },
+        { name: 'Tímida 😳', color: '#ffc0cb', effect: 'Posso demorar um pouquinho mais para responder.' },
+        { name: 'Rebelde 🎸', color: '#ff0000', effect: 'Minhas respostas podem ser um pouco sarcásticas!' }
+      ];
+      const mood = moods[Math.floor(Math.random() * moods.length)];
+      
+      const embed = new EmbedBuilder()
+        .setTitle(`Estado Atual da Diva: ${mood.name}`)
+        .setDescription(`Hoje eu estou me sentindo assim!\n\n**Efeito Ativo:** ${mood.effect}`)
+        .setColor(parseInt(mood.color.replace('#', ''), 16))
+        .setThumbnail(message.client.user.displayAvatarURL())
+        .setFooter({ text: 'Meu humor afeta o comportamento e bônus do servidor!' });
+      
+      await message.reply({ embeds: [embed] });
+    }
+  },
+
   ping: {
     name: '!ping',
     description: 'Verifica se o bot está respondendo',

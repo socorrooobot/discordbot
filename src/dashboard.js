@@ -80,8 +80,47 @@ export function startDashboard(client) {
         console.error('Erro ao renderizar index:', err);
         return res.status(500).send(err.message);
       }
+      
+      const resourceInfo = `
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <div class="card bg-dark text-white border-primary shadow-lg">
+              <div class="card-header border-primary bg-black d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">🖥️ Monitor de Performance (Miku Core)</h5>
+                <span class="badge bg-primary animate-pulse">LIVE</span>
+              </div>
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-md-3">
+                    <h6 class="text-white-50 small">CPU USAGE</h6>
+                    <h4 class="text-primary">${(process.cpuUsage().user / 1000000).toFixed(2)}%</h4>
+                  </div>
+                  <div class="col-md-3">
+                    <h6 class="text-white-50 small">MEMÓRIA RAM</h6>
+                    <h4 class="text-info">${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB</h4>
+                  </div>
+                  <div class="col-md-3">
+                    <h6 class="text-white-50 small">SESSÕES ATIVAS</h6>
+                    <h4 class="text-success">${client.guilds.cache.size}</h4>
+                  </div>
+                  <div class="col-md-3">
+                    <h6 class="text-white-50 small">UPTIME</h6>
+                    <h4 class="text-warning">${Math.floor(process.uptime() / 3600)}h ${Math.floor((process.uptime() % 3600) / 60)}m</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <style>
+          .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+          @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        </style>
+        ${html}
+      `;
+      
       res.render('layout', { 
-        body: html, 
+        body: resourceInfo, 
         user, 
         activePage: 'home', 
         title: 'Diva Dashboard',
