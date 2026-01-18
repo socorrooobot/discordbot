@@ -49,9 +49,11 @@ export function startDashboard(client) {
 
   app.post('/login', async (req, res) => {
     const { userId, password } = req.body;
+    const cleanUserId = userId.trim();
+    const cleanPassword = password.trim();
     
-    if (verifyAdminPassword(userId, password)) {
-      req.session.userId = userId;
+    if (verifyAdminPassword(cleanUserId, cleanPassword)) {
+      req.session.userId = cleanUserId;
       try {
         req.session.userObject = await client.users.fetch(userId);
       } catch (e) {

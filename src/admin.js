@@ -8,7 +8,7 @@ const adminsPath = path.join(__dirname, '../data/admins.json');
 export function isAdmin(userId) {
   try {
     const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
-    return data.adminUsers.some(admin => admin.userId === userId);
+    return data.adminUsers.some(admin => String(admin.userId) === String(userId));
   } catch (error) {
     console.error('Erro ao verificar admin:', error);
     return false;
@@ -18,8 +18,8 @@ export function isAdmin(userId) {
 export function verifyAdminPassword(userId, password) {
   try {
     const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
-    const admin = data.adminUsers.find(admin => admin.userId === userId);
-    return admin && admin.password === password;
+    const admin = data.adminUsers.find(admin => String(admin.userId) === String(userId));
+    return admin && String(admin.password) === String(password);
   } catch (error) {
     console.error('Erro ao verificar senha:', error);
     return false;
@@ -29,12 +29,14 @@ export function verifyAdminPassword(userId, password) {
 export function addAdmin(userId, password = 'admin123') {
   try {
     const data = JSON.parse(fs.readFileSync(adminsPath, 'utf8'));
-    if (!data.adminUsers.some(admin => admin.userId === userId)) {
-      data.adminUsers.push({ userId, password });
-      fs.writeFileSync(adminsPath, JSON.stringify(data, null, 2));
-      return true;
+    const existingIndex = data.adminUsers.findIndex(admin => String(admin.userId) === String(userId));
+    if (existingIndex !== -1) {
+      data.adminUsers[existingIndex].password = password;
+    } else {
+      data.adminUsers.push({ userId: String(userId), password: String(password) });
     }
-    return false;
+    fs.writeFileSync(adminsPath, JSON.stringify(data, null, 2));
+    return true;
   } catch (error) {
     console.error('Erro ao adicionar admin:', error);
     return false;
