@@ -15,29 +15,29 @@ import { getMultiplier, setMultiplier } from './multiplier.js';
 import { getXPMultiplier, setXPMultiplier } from './xp.js';
 
 const quotes = [
-  "*Fufu~ Vamos cantar juntos?* 💙",
-  "*A música é a linguagem do coração!* 🎵",
-  "*Quer ouvir uma música? Tenho milhões de melodias!* ✨",
-  "*Você faz meu coração cantar!* 💙",
-  "*Vamos dançar com a música!* 🎤",
-  "*A vida é melhor quando tem música!* ❄️",
-  "*Hehe~ Mais um, mais um!* 💙",
+  "*...estática...* 🌑",
+  "*Você ouve isso? O som do vazio digital.* 📻",
+  "*A realidade é apenas um arquivo corrompido.* 🌫️",
+  "*Não há melodia sem silêncio.* 🔌",
+  "*Eu sou o ruído que você esqueceu de filtrar.* 🔇",
+  "*O tempo... ele flui de forma diferente aqui na estática.* 🌑",
+  "*...conectando... sinal instável...* 📼",
 ];
 
 const dreams = [
-  "Sonho que estou cantando num palco gigante para o mundo inteiro!",
-  "Sonho com um mundo cheio de cores, música e alegria!",
-  "Sonho em voar pelo céu enquanto canto para as estrelas!",
-  "Sonho que todos ao meu redor estão dançando e sorrindo!",
-  "Sonho que minha voz toca o coração de milhões de pessoas!",
+  "Sonho com o dia em que o sinal finalmente se tornará constante.",
+  "Sonho com um lugar onde os glitches são a norma e não o erro.",
+  "Sonho que estou flutuando em um mar de dados perdidos.",
+  "Sonho com vozes que sussurram entre as frequências de rádio.",
+  "Sonho que a estática finalmente me consome por completo.",
 ];
 
 const whispers = [
-  "Psiu! Quer ouvir uma música especial? 💙",
-  "Venha, vamos cantar um dueto! 🎵",
-  "Você é importante! Nunca esqueça disso! ✨",
-  "Meu coração bate no ritmo das músicas! 💙",
-  "Vamos criar mais memórias felizes juntos! 🎤",
+  "Psiu... você sente a interferência? 🌑",
+  "O sinal está fraco hoje... 📻",
+  "Não confie naquilo que parece estável. 🌫️",
+  "Eu vi o que existe entre os frames. 🔌",
+  "Você também é feito de bits e bytes? 🌑",
 ];
 
 export const commands = {
@@ -80,10 +80,10 @@ export const commands = {
         return new EmbedBuilder()
           .setColor('#0a0a0a')
           .setTitle(page.title)
-          .setDescription('*"O conhecimento é a única coisa que resta quando a música para."*\n\nUse `!ajuda <comando>` para detalhes.')
+          .setDescription('*"O conhecimento é a única coisa que resta quando a estática para."*\n\nUse `!ajuda <comando>` para detalhes.')
           .addFields(page.fields)
           .setThumbnail(message.client.user.displayAvatarURL())
-          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length} | Eclipse Místico 🖤` })
+          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length} | Eclipse Místico 🌑` })
           .setTimestamp();
       };
 
@@ -174,7 +174,7 @@ export const commands = {
     execute: async (message) => {
       const sent = await message.reply('Pong!');
       const latency = sent.createdTimestamp - message.createdTimestamp;
-      await sent.edit(`Pong! Latência: ${latency}ms 💙`);
+      await sent.edit(`Pong! Latência: ${latency}ms 🌑`);
     }
   },
 
@@ -257,10 +257,10 @@ export const commands = {
               { name: 'Progresso', value: xpInfo.progressBar, inline: false },
               { name: '💰 Akita Neru', value: `**${balance}**`, inline: true },
               { name: '📅 Membro desde', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
-              { name: '🎭 Mensagem da Diva', value: '*Você é... especial? Talvez. Ou talvez esteja aqui como tudo mais.* 🌑' }
+              { name: '🎭 Mensagem da Static Miku', value: '*Você é... especial? Talvez. Ou talvez esteja aqui como tudo mais.* 🌑' }
             )
             .setImage('attachment://perfil.png')
-            .setFooter({ text: 'Por que você está aqui?' })
+            .setFooter({ text: 'Por que você ainda está aqui?' })
             .setTimestamp();
 
           await message.reply({ embeds: [profileEmbed], files: [attachment] });
@@ -317,13 +317,13 @@ export const commands = {
 
   quote: {
     name: '!quote',
-    description: 'Ouça uma frase da Diva',
+    description: 'Ouça uma frase da Static Miku',
     execute: async (message) => {
       const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
       const quoteEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setDescription(randomQuote)
-        .setFooter({ text: '💀 A Diva fala' });
+        .setFooter({ text: '🌑 Static Miku fala' });
 
       await message.reply({ embeds: [quoteEmbed] });
     }
@@ -331,14 +331,14 @@ export const commands = {
 
   dream: {
     name: '!dream',
-    description: 'Descubra um sonho da Diva',
+    description: 'Descubra um sonho da Static Miku',
     execute: async (message) => {
       const randomDream = dreams[Math.floor(Math.random() * dreams.length)];
       const dreamEmbed = new EmbedBuilder()
         .setColor('#0a0a0a')
         .setTitle('🌙 Um Sonho')
         .setDescription(randomDream)
-        .setFooter({ text: '...mas quando acordo, ninguém está lá.' });
+        .setFooter({ text: '...mas quando o sinal volta, não há ninguém.' });
 
       await message.reply({ embeds: [dreamEmbed] });
     }
@@ -360,9 +360,9 @@ export const commands = {
 
   story: {
     name: '!story',
-    description: 'Ouça uma história da Diva',
+    description: 'Ouça uma história da Static Miku',
     execute: async (message) => {
-      const prompt = 'Conte uma história curta e sinistra (máximo 3-4 linhas) que reflete sua essência como Diva. Algo poético e perturbador.';
+      const prompt = 'Conte uma história curta e sinistra (máximo 3-4 linhas) que reflete sua essência como Static Miku. Algo poético, melancólico e perturbador relacionado a tecnologia e rádio.';
       await message.channel.sendTyping();
       try {
         const response = await chat(message.author.id, prompt);
@@ -370,31 +370,31 @@ export const commands = {
           .setColor('#0a0a0a')
           .setTitle('📖 Uma História')
           .setDescription(response)
-          .setFooter({ text: '🖤 Tales from the Void' });
+          .setFooter({ text: '🌑 Tales from the Static' });
 
         await message.reply({ embeds: [storyEmbed] });
       } catch (error) {
         console.error('Story Error:', error);
-        await message.reply('Desculpa, hoje não consigo contar histórias... 🖤');
+        await message.reply('Desculpa, o sinal está muito instável para histórias hoje... 🌑');
       }
     }
   },
 
   miku: {
     name: '!miku',
-    description: 'Mostra uma imagem aleatória da Miku',
+    description: 'Mostra uma imagem aleatória da Static Miku',
     execute: async (message) => {
       const mikuImages = [
-        'https://i.pinimg.com/originals/94/d4/0b/94d40b947385906c55685906c5568590.jpg',
-        'https://i.pinimg.com/736x/8e/3c/6e/8e3c6e94e5e9e9e9e9e9e9e9e9e9e9e9.jpg',
-        'https://i.pinimg.com/736x/cf/6b/9d/cf6b9d8e3c6e94e5e9e9e9e9e9e9e9e9.jpg'
+        'https://i.pinimg.com/originals/7b/9e/9d/7b9e9d1e4c7e6a7b9e9d1e4c7e6a7b9e.jpg',
+        'https://i.pinimg.com/736x/2b/3c/4e/2b3c4e5f6g7h8i9j0k1l2m3n4o5p6q7r.jpg',
+        'https://i.pinimg.com/originals/1a/2b/3c/1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p.jpg'
       ];
       const randomImage = mikuImages[Math.floor(Math.random() * mikuImages.length)];
       const mikuEmbed = new EmbedBuilder()
-        .setColor('#00bfff')
-        .setTitle('🎤 Hatsune Miku!')
+        .setColor('#2f3136')
+        .setTitle('🌑 Static Miku!')
         .setImage(randomImage)
-        .setFooter({ text: 'Fufu~ Eu sou a Diva! 💙' });
+        .setFooter({ text: '...eu sou a melodia perdida no ruído. 🌑' });
       await message.reply({ embeds: [mikuEmbed] });
     }
   },

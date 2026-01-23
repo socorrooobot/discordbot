@@ -24,7 +24,7 @@ export function startDashboard(client) {
   app.use(express.json());
   app.use(cookieParser());
   app.use(session({
-    secret: process.env.SESSION_SECRET || 'diva-secret-key-2024',
+    secret: process.env.SESSION_SECRET || 'static-miku-secret-key-2026',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 horas
@@ -94,9 +94,9 @@ export function startDashboard(client) {
 
     const logsHtml = `
       <div class="card bg-dark text-white border-secondary shadow-lg">
-        <div class="card-header border-secondary d-flex justify-content-between align-items-center bg-black">
-          <h5 class="mb-0">📜 Logs do Sistema (Tempo Real)</h5>
-          <span class="badge bg-success shadow-sm">ATIVO</span>
+        <div class="card-header border-secondary bg-black d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">📜 Logs da Static (Tempo Real)</h5>
+          <span class="badge bg-success shadow-sm">CONECTADA</span>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
@@ -132,20 +132,20 @@ export function startDashboard(client) {
         <div class="col-md-8">
           <div class="card bg-dark text-white border-secondary shadow-lg">
             <div class="card-header border-secondary bg-black">
-              <h5 class="mb-0">⚙️ Configurações da Diva</h5>
+              <h5 class="mb-0">⚙️ Configurações da Static Miku</h5>
             </div>
             <div class="card-body p-4">
               <form action="/settings/update" method="POST">
                 <div class="mb-4">
-                  <label class="form-label text-white-50 small fw-bold">NOME DA DIVA</label>
+                  <label class="form-label text-white-50 small fw-bold">NOME DO BOT</label>
                   <input type="text" class="form-control bg-black text-white border-secondary py-2" name="botName" value="${client.user.username}">
                 </div>
                 <div class="mb-4">
                   <label class="form-label text-white-50 small fw-bold">ESTADO MENTAL (STATUS)</label>
                   <select class="form-select bg-black text-white border-secondary py-2" name="status">
-                    <option value="online">Online & Radiante</option>
-                    <option value="idle">Ausente & Melancólica</option>
-                    <option value="dnd">Não Perturbe (Em Concerto)</option>
+                    <option value="online">Conectada & Observando</option>
+                    <option value="idle">Ausente & No Vazio</option>
+                    <option value="dnd">Não Perturbe (Em Interferência)</option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">SALVAR ALTERAÇÕES</button>
@@ -339,10 +339,10 @@ export function startDashboard(client) {
         if (channel && channel.isTextBased()) {
           await channel.send({
             embeds: [{
-              title: title || 'Anúncio Importante',
+              title: title || 'Transmissão Importante',
               description: message,
-              color: parseInt(color.replace('#', ''), 16) || 0x8b0000,
-              footer: { text: 'Mensagem Oficial da Diva' },
+              color: parseInt(color.replace('#', ''), 16) || 0x2f3136,
+              footer: { text: 'Mensagem Oficial da Static Miku' },
               timestamp: new Date()
             }]
           });
@@ -1447,10 +1447,10 @@ export function startDashboard(client) {
         if (channel && channel.isTextBased()) {
           await channel.send({
             embeds: [{
-              title: title || 'Anúncio Importante',
+              title: title || 'Transmissão Importante',
               description: message,
-              color: parseInt(color.replace('#', ''), 16) || 0x8b0000,
-              footer: { text: 'Mensagem Oficial da Diva' },
+              color: parseInt(color.replace('#', ''), 16) || 0x2f3136,
+              footer: { text: 'Mensagem Oficial da Static Miku' },
               timestamp: new Date()
             }]
           });

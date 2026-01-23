@@ -122,7 +122,7 @@ export const slashCommands = {
   ask: {
     data: new SlashCommandBuilder()
       .setName('ask')
-      .setDescription('Pergunte algo à Diva')
+      .setDescription('Pergunte algo à Static Miku')
       .addStringOption(option =>
         option.setName('pergunta')
           .setDescription('Sua pergunta')
@@ -439,9 +439,9 @@ export const slashCommands = {
     execute: async (interaction) => {
       const earnings = work(interaction.user.id);
       const workEmbed = new EmbedBuilder()
-        .setColor('#00bfff')
+        .setColor('#2f3136')
         .setTitle('💼 Trabalho Concluído')
-        .setDescription(`*Você trabalhou e ganhou **${earnings} Akita Neru**!*\n\n*Parabéns! Você é incrível!* 💙`)
+        .setDescription(`*Você trabalhou e ganhou **${earnings} Akita Neru**!*\n\n*...pelo menos você tem algo para se ocupar. 🌑*`)
         .setFooter({ text: 'Volte em alguns minutos para trabalhar novamente' });
       await interaction.reply({ embeds: [workEmbed] });
     }
@@ -490,15 +490,15 @@ export const slashCommands = {
         const winEmbed = new EmbedBuilder()
           .setColor('#00ff00')
           .setTitle('🎰 Você Venceu!')
-          .setDescription(`*Ganhou **${result.earnings} Akita Neru**!*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*Parabéns! Você é tão sortudo!* 💙`)
-          .setFooter({ text: 'Fufu~ A sorte está com você!' });
+          .setDescription(`*Ganhou **${result.earnings} Akita Neru**!*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*A sorte sorriu para você desta vez... por enquanto. 🌑*`)
+          .setFooter({ text: 'A estática está a seu favor.' });
         await interaction.reply({ embeds: [winEmbed] });
       } else {
         const loseEmbed = new EmbedBuilder()
           .setColor('#ff6b9d')
           .setTitle('💔 Você Perdeu')
-          .setDescription(`*Perdeu **${result.loss} Akita Neru**...*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*Tudo bem! Você vai conseguir novamente! Nunca desista!* 💙`)
-          .setFooter({ text: 'Tentem novamente!' });
+          .setDescription(`*Perdeu **${result.loss} Akita Neru**...*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*O destino é cruel e o vazio não devolve o que leva. 🌑*`)
+          .setFooter({ text: 'Tente novamente... se ousar.' });
         await interaction.reply({ embeds: [loseEmbed] });
       }
     }
@@ -538,9 +538,9 @@ export const slashCommands = {
 
       if (result) {
         const transferEmbed = new EmbedBuilder()
-          .setColor('#00bfff')
+          .setColor('#2f3136')
           .setTitle('💸 Transferência Realizada')
-          .setDescription(`Você transferiu **${amount} Akita Neru** para ${user.username}\n\nSeu novo saldo: **${result.fromBalance} Akita Neru**\n\n*Que coração tão generoso você tem! Que adorável!* 💙`);
+          .setDescription(`Você transferiu **${amount} Akita Neru** para ${user.username}\n\nSeu novo saldo: **${result.fromBalance} Akita Neru**\n\n*Conexão estabelecida. Saldo enviado através da rede. 🌑*`);
         await interaction.reply({ embeds: [transferEmbed] });
       }
     }
