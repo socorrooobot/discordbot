@@ -32,7 +32,7 @@ function getUser(userId) {
   const data = loadEconomy();
   if (!data[userId]) {
     data[userId] = {
-      balance: 100, // Começa com 100 Akita Neru
+      balance: 100, // Começa com 100 Akita Neru (Créditos da Rede)
       lastDaily: 0,
       inventory: {}
     };
@@ -114,7 +114,7 @@ export async function dailyReward(userId) {
     return null;
   }
   
-  const baseReward = 50; // 50 Akita Neru base
+  const baseReward = 50; // 50 Akita Neru (Créditos) base
   const multiplier = getMultiplier();
   
   // Bônus VIP
@@ -188,7 +188,7 @@ export async function work(userId) {
     return { error: true, timeLeft };
   }
   
-  const baseEarnings = Math.floor(Math.random() * 30) + 10; // 10-40 Akita Neru
+  const baseEarnings = Math.floor(Math.random() * 30) + 10; // 10-40 Akita Neru (Créditos)
   const earnings = Math.floor(baseEarnings * workBonus);
   
   user.balance += earnings;

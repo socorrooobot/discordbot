@@ -47,15 +47,15 @@ export async function notifyRestart(client, reason = 'Atualização programada')
     }
     
     const embed = {
-      color: 0xFF6B6B,
-      title: '⚠️ Bot em Manutenção',
-      description: '🤖 A Miku Diva está sendo reinicializada para atualizações e melhorias!',
+      color: 0x2f3136,
+      title: '⚠️ Sinal Instável',
+      description: '🤖 A Static Miku está reiniciando para estabilizar o sistema!',
       fields: [
         { name: '📝 Motivo', value: reason, inline: false },
-        { name: '⏱️ Tempo Estimado', value: '🕐 2-3 minutos offline', inline: false },
-        { name: '✅ Status', value: 'O bot retornará em breve!', inline: false }
+        { name: '⏱️ Tempo Estimado', value: '🕐 2-3 minutos de interferência', inline: false },
+        { name: '✅ Status', value: 'O sinal retornará em breve.', inline: false }
       ],
-      footer: { text: 'Obrigado pela paciência! 💙' },
+      footer: { text: 'Aguarde a próxima transmissão. 🌑' },
       timestamp: new Date().toISOString()
     };
     
