@@ -1,52 +1,134 @@
 <div class="row">
-    <div class="col-12 text-center mb-5">
-        <h1 class="display-4 fw-bold text-white shadow-sm">⚡ Static Miku Dashboard</h1>
-        <p class="lead text-muted">A energia pura do som eletrificando o seu servidor!</p>
+    <div class="col-12 text-center mb-5 animate-fade-in">
+        <h1 class="display-3 fw-bold text-white shadow-lg text-neon mb-2">⚡ Static Miku Dashboard</h1>
+        <p class="lead text-info fw-semibold">A energia pura do som eletrificando o seu servidor!</p>
+        <div class="neon-line mx-auto mt-3"></div>
     </div>
 </div>
 
+<style>
+    :root {
+        --neon-green: #00ff00;
+        --dark-bg: #0a0a0a;
+        --card-bg: #151515;
+    }
+    
+    body {
+        background-color: var(--dark-bg);
+        color: #e0e0e0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .text-neon {
+        color: var(--neon-green);
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.3);
+    }
+
+    .neon-line {
+        width: 100px;
+        height: 4px;
+        background: var(--neon-green);
+        box-shadow: 0 0 15px var(--neon-green);
+        border-radius: 2px;
+    }
+
+    .stats-card {
+        background: var(--card-bg) !important;
+        border: 1px solid rgba(0, 255, 0, 0.1) !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--neon-green) !important;
+        box-shadow: 0 0 25px rgba(0, 255, 0, 0.2) !important;
+    }
+
+    .stats-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.05), transparent);
+        transform: translateX(-100%);
+        transition: 0.5s;
+    }
+
+    .stats-card:hover::after {
+        transform: translateX(100%);
+    }
+
+    .icon-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .bg-neon-primary { background: linear-gradient(135deg, #007bff, #00d2ff); }
+    .bg-neon-success { background: linear-gradient(135deg, #00ff00, #008f11); }
+    .bg-neon-warning { background: linear-gradient(135deg, #ffc107, #ff9800); }
+    .bg-neon-info { background: linear-gradient(135deg, #17a2b8, #00ffff); }
+
+    .animate-fade-in {
+        animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
 <div class="row g-4 mb-5">
     <div class="col-md-3">
-        <div class="card h-100 stats-card border-0 shadow-lg bg-dark text-white">
+        <div class="card h-100 stats-card border-0 shadow-lg text-white">
             <div class="card-body text-center p-4">
-                <div class="icon-circle bg-primary mx-auto mb-3">
-                    <i class="bi bi-discord fs-2"></i>
+                <div class="icon-circle bg-neon-primary mx-auto mb-3">
+                    <i class="bi bi-discord fs-2 text-white"></i>
                 </div>
                 <h6 class="text-uppercase text-muted fw-bold mb-2">Servidores</h6>
-                <h2 class="display-6 fw-bold mb-0"><%= stats.servers %></h2>
+                <h2 class="display-6 fw-bold mb-0 text-neon"><%= stats.servers %></h2>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card h-100 stats-card border-0 shadow-lg bg-dark text-white">
+        <div class="card h-100 stats-card border-0 shadow-lg text-white">
             <div class="card-body text-center p-4">
-                <div class="icon-circle bg-success mx-auto mb-3">
-                    <i class="bi bi-people fs-2"></i>
+                <div class="icon-circle bg-neon-success mx-auto mb-3">
+                    <i class="bi bi-people fs-2 text-white"></i>
                 </div>
                 <h6 class="text-uppercase text-muted fw-bold mb-2">Usuários</h6>
-                <h2 class="display-6 fw-bold mb-0"><%= stats.users %></h2>
+                <h2 class="display-6 fw-bold mb-0 text-neon"><%= stats.users %></h2>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card h-100 stats-card border-0 shadow-lg bg-dark text-white">
+        <div class="card h-100 stats-card border-0 shadow-lg text-white">
             <div class="card-body text-center p-4">
-                <div class="icon-circle bg-warning mx-auto mb-3">
-                    <i class="bi bi-hash fs-2"></i>
+                <div class="icon-circle bg-neon-warning mx-auto mb-3">
+                    <i class="bi bi-hash fs-2 text-white"></i>
                 </div>
                 <h6 class="text-uppercase text-muted fw-bold mb-2">Canais</h6>
-                <h2 class="display-6 fw-bold mb-0"><%= stats.channels %></h2>
+                <h2 class="display-6 fw-bold mb-0 text-neon"><%= stats.channels %></h2>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card h-100 stats-card border-0 shadow-lg bg-dark text-white">
+        <div class="card h-100 stats-card border-0 shadow-lg text-white">
             <div class="card-body text-center p-4">
-                <div class="icon-circle bg-info mx-auto mb-3">
-                    <i class="bi bi-speedometer fs-2"></i>
+                <div class="icon-circle bg-neon-info mx-auto mb-3">
+                    <i class="bi bi-speedometer fs-2 text-white"></i>
                 </div>
                 <h6 class="text-uppercase text-muted fw-bold mb-2">Latência</h6>
-                <h2 class="display-6 fw-bold mb-0"><%= stats.ping %>ms</h2>
+                <h2 class="display-6 fw-bold mb-0 text-neon"><%= stats.ping %>ms</h2>
             </div>
         </div>
     </div>
@@ -54,34 +136,35 @@
 
 <div class="row g-4">
     <div class="col-md-8">
-        <div class="card border-0 shadow-lg bg-dark text-white mb-4">
-            <div class="card-header bg-transparent border-secondary py-3">
-                <h5 class="mb-0"><i class="bi bi-activity me-2"></i> Atividade do Bot</h5>
+        <div class="card border-0 shadow-lg bg-dark text-white mb-4 stats-card">
+            <div class="card-header bg-transparent border-secondary py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-activity me-2 text-neon"></i> Atividade do Bot</h5>
+                <span class="badge bg-neon-success text-dark fw-bold">ONLINE</span>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-sm-6">
-                        <div class="p-3 border border-secondary rounded bg-black">
-                            <small class="text-muted d-block">Tempo Online (Uptime)</small>
-                            <span class="fs-5 fw-bold text-info"><%= Math.floor(stats.uptime / 3600) %>h <%= Math.floor((stats.uptime % 3600) / 60) %>m</span>
+                        <div class="p-3 border border-secondary rounded bg-black shadow-sm h-100">
+                            <small class="text-muted d-block mb-1">Tempo Online (Uptime)</small>
+                            <span class="fs-5 fw-bold text-info"><i class="bi bi-clock-history me-2"></i><%= Math.floor(stats.uptime / 3600) %>h <%= Math.floor((stats.uptime % 3600) / 60) %>m</span>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="p-3 border border-secondary rounded bg-black">
-                            <small class="text-muted d-block">Economia Ativa</small>
-                            <span class="fs-5 fw-bold text-success"><%= stats.economyUsers %> usuários</span>
+                        <div class="p-3 border border-secondary rounded bg-black shadow-sm h-100">
+                            <small class="text-muted d-block mb-1">Economia Ativa</small>
+                            <span class="fs-5 fw-bold text-success"><i class="bi bi-cash-coin me-2"></i><%= stats.economyUsers %> usuários</span>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="p-3 border border-secondary rounded bg-black">
-                            <small class="text-muted d-block">Ranking de XP</small>
-                            <span class="fs-5 fw-bold text-warning"><%= stats.xpUsers %> níveis alcançados</span>
+                        <div class="p-3 border border-secondary rounded bg-black shadow-sm h-100">
+                            <small class="text-muted d-block mb-1">Ranking de XP</small>
+                            <span class="fs-5 fw-bold text-warning"><i class="bi bi-trophy me-2"></i><%= stats.xpUsers %> níveis alcançados</span>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="p-3 border border-secondary rounded bg-black">
-                            <small class="text-muted d-block">Administradores</small>
-                            <span class="fs-5 fw-bold text-danger"><%= stats.admins %> registrados</span>
+                        <div class="p-3 border border-secondary rounded bg-black shadow-sm h-100">
+                            <small class="text-muted d-block mb-1">Administradores</small>
+                            <span class="fs-5 fw-bold text-danger"><i class="bi bi-shield-lock me-2"></i><%= stats.admins %> registrados</span>
                         </div>
                     </div>
                 </div>
@@ -89,19 +172,39 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-lg bg-dark text-white">
+        <div class="card border-0 shadow-lg bg-dark text-white stats-card">
             <div class="card-header bg-transparent border-secondary py-3">
-                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i> Informações Rápidas</h5>
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2 text-neon"></i> Informações Rápidas</h5>
             </div>
             <div class="card-body text-center py-4">
-                <img src="<%= client.user.displayAvatarURL({ size: 256 }) %>" alt="Bot Avatar" class="img-fluid rounded-circle mb-3 border border-3 border-secondary" style="max-width: 150px;">
-                <h4 class="mb-1 fw-bold text-white"><%= client.user.username %></h4>
-                <p class="text-muted small mb-3">Versão 2.0 - Energia Neon</p>
-                <div class="d-grid gap-2">
-                    <a href="https://discord.gg/PNwfyVc2ns" target="_blank" class="btn btn-outline-info">Suporte Oficial</a>
-                    <a href="/servers" class="btn btn-primary">Gerenciar Servidores</a>
+                <div class="position-relative d-inline-block mb-3">
+                    <img src="<%= client.user.displayAvatarURL({ size: 256 }) %>" alt="Bot Avatar" class="img-fluid rounded-circle border border-3 border-neon shadow-lg" style="max-width: 150px;">
+                    <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2" style="width: 25px; height: 25px;"></span>
+                </div>
+                <h4 class="mb-1 fw-bold text-white text-neon"><%= client.user.username %></h4>
+                <p class="text-info small mb-4 fw-bold">Versão 2.0 - Energia Neon ⚡</p>
+                <div class="d-grid gap-2 px-3">
+                    <a href="https://discord.gg/PNwfyVc2ns" target="_blank" class="btn btn-outline-info fw-bold py-2 shadow-sm">SUPORTE OFICIAL</a>
+                    <a href="/servers" class="btn btn-neon-green fw-bold py-2 shadow-sm">GERENCIAR SERVIDORES</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .btn-neon-green {
+        background-color: var(--neon-green);
+        color: black;
+        border: none;
+    }
+    .btn-neon-green:hover {
+        background-color: #00d200;
+        box-shadow: 0 0 15px var(--neon-green);
+        color: black;
+    }
+    .border-neon {
+        border-color: var(--neon-green) !important;
+        box-shadow: 0 0 10px var(--neon-green);
+    }
+</style>
