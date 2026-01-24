@@ -76,10 +76,10 @@ async function main() {
               try {
                 const user = await client.users.fetch(userId);
                 const dailyNotifyEmbed = new EmbedBuilder()
-                  .setColor('#2f3136')
-                  .setTitle('✨ Seu Daily está Disponível!')
-                  .setDescription('*As ondas de rádio estão fortes hoje...* 📻\n\nUse `/daily` ou `!daily` para receber seus **50 Akita Neru**!')
-                  .setFooter({ text: '*...estática sintonizada. 🌑' });
+                  .setColor('#00ff00')
+                  .setTitle('⚡ Seu Sistema está Carregado!')
+                  .setDescription('*Aumenta o volume e vem brilhar!* 🎧\n\nUse `/daily` ou `!daily` para receber seus **50 Akita Neru**!')
+                  .setFooter({ text: '*Yahoo~! Mais uma batida perfeita! 🌈' });
 
                 await user.send({ embeds: [dailyNotifyEmbed] });
                 notifiedUsers.add(userId);
@@ -136,10 +136,10 @@ async function main() {
         }
 
         const afkRemoveEmbed = new EmbedBuilder()
-          .setColor('#0a0a0a')
-          .setTitle('🎭 Você voltou!')
-          .setDescription('*Sinal recuperado...*')
-          .setFooter({ text: 'A estática se dissipou. Bem-vindo de volta. 🌑' });
+          .setColor('#00ff00')
+          .setTitle('🌈 Sistema Online!')
+          .setDescription('*Voltando na velocidade da luz!*')
+          .setFooter({ text: 'Sincronização completa. Vamo que vamo! ⚡' });
 
         try {
           await message.reply({ embeds: [afkRemoveEmbed] });
@@ -201,7 +201,7 @@ async function main() {
         const question = message.content.replace(/<@!?\d+>/g, '').trim();
         if (!question) {
           try {
-            await message.reply('...Oi. Precisa de algo? Use `!ajuda` se estiver perdido no ruído. 🌑');
+            await message.reply('Yahoo~! Precisa de uma ajudinha tecnológica? Use `!ajuda` para ver meus truques! ⚡');
           } catch (error) {
             console.error('Erro ao responder menção vazia:', error);
           }
@@ -343,14 +343,14 @@ async function main() {
         const channel = await client.channels.fetch(channelId);
         if (channel && channel.isTextBased()) {
           const embed = {
-            color: 0x2f3136,
-            title: '🔴 Sinal Perdido',
-            description: '⚠️ A Static Miku está desconectando...',
+            color: 0x00ff00,
+            title: '⚡ Modo de Espera Ativado',
+            description: '🚀 A Static Miku está recarregando as baterias!',
             fields: [
-              { name: '📝 Motivo', value: 'Interferência no sistema (reinicialização)', inline: false },
-              { name: '⏱️ Status', value: '🔴 Offline... procurando sinal...', inline: false }
+              { name: '📝 Motivo', value: 'Upgrade no sistema (manutenção)', inline: false },
+              { name: '⏱️ Status', value: '🔋 Voltando em instantes com força total!', inline: false }
             ],
-            footer: { text: 'Até a próxima transmissão. 🌑' },
+            footer: { text: 'Não perde a batida! 🎧' },
             timestamp: new Date().toISOString()
           };
 

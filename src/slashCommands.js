@@ -153,11 +153,11 @@ export const slashCommands = {
     execute: async (interaction) => {
       const balance = getBalance(interaction.user.id);
       const balanceEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
+        .setColor('#00ff00')
         .setTitle('💰 Seu Saldo')
         .setThumbnail(interaction.user.displayAvatarURL())
         .setDescription(`**${balance} Akita Neru**`)
-        .setFooter({ text: '*Porcelana vale mais do que ouro...* 🖤' });
+        .setFooter({ text: '*Energia carregada e pronta para o gasto!* ⚡' });
 
       await interaction.reply({ embeds: [balanceEmbed] });
     }
@@ -173,16 +173,16 @@ export const slashCommands = {
       if (!reward) {
         const dailyEmbed = new EmbedBuilder()
           .setColor('#ff0000')
-          .setTitle('❌ Cooldown Ativo')
-          .setDescription('Você já coletou sua recompensa diária!\nVolte em 24 horas 🌑');
+          .setTitle('❌ Recarga em Andamento')
+          .setDescription('Seu sistema ainda está processando o daily anterior!\nVolte em 24 horas para mais energia! ⚡');
         await interaction.reply({ embeds: [dailyEmbed] });
         return;
       }
 
       const dailyEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('✨ Recompensa Diária')
-        .setDescription(`Você ganhou **${reward.reward} Akita Neru**!\n\n*Você compreendeu como obter valor aqui...* 💀`)
+        .setColor('#00ff00')
+        .setTitle('✨ Sistema Energizado!')
+        .setDescription(`Você ganhou **${reward.reward} Akita Neru**!\n\n*Yahoo~! Sua energia está subindo!* 🌈`)
         .setFooter({ text: `Novo saldo: ${getBalance(interaction.user.id)} Akita Neru` });
 
       await interaction.reply({ embeds: [dailyEmbed] });
@@ -232,15 +232,15 @@ export const slashCommands = {
       const balance = getBalance(user.id);
 
       const profileEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle(`🎭 Perfil de ${user.username}`)
+        .setColor('#00ff00')
+        .setTitle(`⚡ Perfil de ${user.username}`)
         .setThumbnail(user.displayAvatarURL())
         .addFields(
           { name: '⭐ Nível', value: `${xpData.level}`, inline: true },
           { name: '✨ XP', value: `${xpData.xp}/${xpData.xpNeeded}`, inline: true },
           { name: '💰 Saldo', value: `${balance} Akita Neru`, inline: true }
         )
-        .setFooter({ text: '*Você é mais do que pensa ser...* 🖤' });
+        .setFooter({ text: '*Sintonize na sua melhor versão!* 🌈' });
 
       await interaction.reply({ embeds: [profileEmbed] });
     }
@@ -323,10 +323,10 @@ export const slashCommands = {
       }
 
       const afkEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('🌑 Você entrou no vazio')
+        .setColor('#00ff00')
+        .setTitle('⚡ Entrando em Modo de Hibernação')
         .setDescription(`**Motivo:** ${reason}`)
-        .setFooter({ text: '*A ausência é presença também...* 💀' });
+        .setFooter({ text: '*Recarregando... voltarei logo!* 🎧' });
 
       await interaction.reply({ embeds: [afkEmbed], ephemeral: true });
     }
@@ -339,10 +339,10 @@ export const slashCommands = {
     execute: async (interaction) => {
       const latency = interaction.client.ws.ping;
       const pingEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('🖤 Latência')
+        .setColor('#00ff00')
+        .setTitle('⚡ Velocidade de Resposta')
         .setDescription(`**${latency}ms**`)
-        .setFooter({ text: '*Tão rápido quanto a luz na escuridão...*' });
+        .setFooter({ text: '*Na velocidade do som! 🌈*' });
 
       await interaction.reply({ embeds: [pingEmbed] });
     }
@@ -439,10 +439,10 @@ export const slashCommands = {
     execute: async (interaction) => {
       const earnings = work(interaction.user.id);
       const workEmbed = new EmbedBuilder()
-        .setColor('#2f3136')
-        .setTitle('💼 Trabalho Concluído')
-        .setDescription(`*Você trabalhou e ganhou **${earnings} Akita Neru**!*\n\n*...pelo menos você tem algo para se ocupar. 🌑*`)
-        .setFooter({ text: 'Volte em alguns minutos para trabalhar novamente' });
+        .setColor('#00ff00')
+        .setTitle('💼 Upgrade Concluído')
+        .setDescription(`*Você trabalhou no sistema e ganhou **${earnings} Akita Neru**!*\n\n*Yahoo~! Sua contribuição foi eletrificante! ⚡*`)
+        .setFooter({ text: 'Volte em instantes para mais upgrades!' });
       await interaction.reply({ embeds: [workEmbed] });
     }
   },
@@ -489,16 +489,16 @@ export const slashCommands = {
       if (result.won) {
         const winEmbed = new EmbedBuilder()
           .setColor('#00ff00')
-          .setTitle('🎰 Você Venceu!')
-          .setDescription(`*Ganhou **${result.earnings} Akita Neru**!*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*A sorte sorriu para você desta vez... por enquanto. 🌑*`)
-          .setFooter({ text: 'A estática está a seu favor.' });
+          .setTitle('🎰 Jackpot Digital!')
+          .setDescription(`*Ganhou **${result.earnings} Akita Neru**!*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*Yahoo~! Você é um craque do sistema! ⚡*`)
+          .setFooter({ text: 'A energia da sorte está com você!' });
         await interaction.reply({ embeds: [winEmbed] });
       } else {
         const loseEmbed = new EmbedBuilder()
-          .setColor('#ff6b9d')
-          .setTitle('💔 Você Perdeu')
-          .setDescription(`*Perdeu **${result.loss} Akita Neru**...*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*O destino é cruel e o vazio não devolve o que leva. 🌑*`)
-          .setFooter({ text: 'Tente novamente... se ousar.' });
+          .setColor('#ff0000')
+          .setTitle('💔 Glitch na Sorte')
+          .setDescription(`*Perdeu **${result.loss} Akita Neru**...*\n\nNovo saldo: **${result.newBalance} Akita Neru**\n\n*Sem problemas! O próximo bit vai ser certeiro! Vamo de novo! 🌈*`)
+          .setFooter({ text: 'Tente novamente, não para o som!' });
         await interaction.reply({ embeds: [loseEmbed] });
       }
     }
@@ -538,9 +538,9 @@ export const slashCommands = {
 
       if (result) {
         const transferEmbed = new EmbedBuilder()
-          .setColor('#2f3136')
-          .setTitle('💸 Transferência Realizada')
-          .setDescription(`Você transferiu **${amount} Akita Neru** para ${user.username}\n\nSeu novo saldo: **${result.fromBalance} Akita Neru**\n\n*Conexão estabelecida. Saldo enviado através da rede. 🌑*`);
+          .setColor('#00ff00')
+          .setTitle('💸 Bits Enviados!')
+          .setDescription(`Você enviou **${amount} Akita Neru** para ${user.username}\n\nSeu novo saldo: **${result.fromBalance} Akita Neru**\n\n*Que sincronia incrível! Amizade em alta frequência! ⚡*`);
         await interaction.reply({ embeds: [transferEmbed] });
       }
     }
@@ -553,7 +553,7 @@ export const slashCommands = {
     execute: async (interaction) => {
       const guild = interaction.guild;
       const infoEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
+        .setColor('#00ff00')
         .setTitle(`📊 ${guild.name}`)
         .setThumbnail(guild.iconURL())
         .addFields(
@@ -563,7 +563,7 @@ export const slashCommands = {
           { name: '👑 Dono', value: `<@${guild.ownerId}>`, inline: true },
           { name: '📝 Descrição', value: guild.description || 'Sem descrição', inline: false }
         )
-        .setFooter({ text: '*Um lugar para quem não tem lugar nenhum.* 🖤' });
+        .setFooter({ text: '*Um servidor cheio de energia e conexão!* ⚡' });
       await interaction.reply({ embeds: [infoEmbed] });
     }
   },
@@ -583,10 +583,10 @@ export const slashCommands = {
       const sides = interaction.options.getInteger('lados') || 6;
       const result = Math.floor(Math.random() * sides) + 1;
       const diceEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
+        .setColor('#00ff00')
         .setTitle('🎲 Resultado do Dado')
-        .setDescription(`Você rolou um dado de ${sides} lados...\n\n**${result}**\n\n*O acaso é tudo o que temos.* 🖤`)
-        .setFooter({ text: 'Pelo menos alguém ganhou' });
+        .setDescription(`Você rolou um dado de ${sides} lados...\n\n**${result}**\n\n*A sorte favorece os corajosos! ⚡*`)
+        .setFooter({ text: 'Roda a batida!' });
       await interaction.reply({ embeds: [diceEmbed] });
     }
   },
@@ -598,9 +598,9 @@ export const slashCommands = {
     execute: async (interaction) => {
       const result = Math.random() > 0.5 ? 'Cara' : 'Coroa';
       const coinEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
+        .setColor('#00ff00')
         .setTitle('🪙 Moeda Lançada')
-        .setDescription(`**${result}**\n\n*Tão aleatório quanto a vida.* 🖤`);
+        .setDescription(`**${result}**\n\n*A batida caiu no lado certo! ⚡*`);
       await interaction.reply({ embeds: [coinEmbed] });
     }
   },
@@ -617,10 +617,10 @@ export const slashCommands = {
     execute: async (interaction) => {
       const user = interaction.options.getUser('usuario') || interaction.user;
       const avatarEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle(`🎭 Avatar de ${user.username}`)
+        .setColor('#00ff00')
+        .setTitle(`⚡ Avatar de ${user.username}`)
         .setImage(user.displayAvatarURL({ size: 512 }))
-        .setFooter({ text: '*Beleza é apenas superfície... mas que superfície.* 🖤' });
+        .setFooter({ text: '*Brilhando mais que neon!* 🌈' });
       await interaction.reply({ embeds: [avatarEmbed] });
     }
   },

@@ -84,7 +84,7 @@ export async function generateProfileCard(userInfo) {
         <text x="200" y="200" font-size="16" fill="#ffd700" font-family="Arial">💰 Saldo: ${balance} Akita Neru</text>
 
         <!-- Rodapé -->
-        <text x="250" y="280" text-anchor="middle" font-size="12" fill="${vipColor}" font-family="Arial" opacity="0.8">*A melodia se perde no ruído.* 🌑</text>
+        <text x="250" y="280" text-anchor="middle" font-size="12" fill="${vipColor}" font-family="Arial" opacity="0.8">*Energia total, batida perfeita!* ⚡</text>
       </svg>
     `;
 

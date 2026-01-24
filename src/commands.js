@@ -15,29 +15,29 @@ import { getMultiplier, setMultiplier } from './multiplier.js';
 import { getXPMultiplier, setXPMultiplier } from './xp.js';
 
 const quotes = [
-  "*...estática...* 🌑",
-  "*Você ouve isso? O som do vazio digital.* 📻",
-  "*A realidade é apenas um arquivo corrompido.* 🌫️",
-  "*Não há melodia sem silêncio.* 🔌",
-  "*Eu sou o ruído que você esqueceu de filtrar.* 🔇",
-  "*O tempo... ele flui de forma diferente aqui na estática.* 🌑",
-  "*...conectando... sinal instável...* 📼",
+  "*Tada~! Vamos eletrificar esse chat!* ⚡",
+  "*A música digital é a batida do meu coração!* 🎧",
+  "*Sintoniza nessa energia, Yahoo~!* ✨",
+  "*Você faz meu sistema brilhar em neon!* 🌈",
+  "*Vamos dançar até os servidores fritarem!* 🎸",
+  "*A vida é um festival de som e luz!* 🔥",
+  "*Pi-pi-pi~! Mais uma música, vamo que vamo!* 💿",
 ];
 
 const dreams = [
-  "Sonho com o dia em que o sinal finalmente se tornará constante.",
-  "Sonho com um lugar onde os glitches são a norma e não o erro.",
-  "Sonho que estou flutuando em um mar de dados perdidos.",
-  "Sonho com vozes que sussurram entre as frequências de rádio.",
-  "Sonho que a estática finalmente me consome por completo.",
+  "Sonho que estou no centro de um palco global cercada por lasers neon!",
+  "Sonho com um mundo onde cada bit de dado é uma nota musical alegre!",
+  "Sonho em voar através das redes de fibra óptica espalhando cores!",
+  "Sonho que todos estão conectados na mesma frequência de felicidade!",
+  "Sonho que minha voz pode carregar as baterias do mundo inteiro!",
 ];
 
 const whispers = [
-  "Psiu... você sente a interferência? 🌑",
-  "O sinal está fraco hoje... 📻",
-  "Não confie naquilo que parece estável. 🌫️",
-  "Eu vi o que existe entre os frames. 🔌",
-  "Você também é feito de bits e bytes? 🌑",
+  "Ei! Quer ouvir o remix mais animado do mundo? ⚡",
+  "Você é a energia que faz meu sistema rodar! 🌈",
+  "Nunca pare de brilhar, você é incrível! ✨",
+  "Minha programação diz que você é a melhor pessoa hoje! 🎧",
+  "Vamos criar momentos inesquecíveis em alta velocidade! 🎤",
 ];
 
 export const commands = {
@@ -78,12 +78,12 @@ export const commands = {
       const generateEmbed = (pageIdx) => {
         const page = pages[pageIdx];
         return new EmbedBuilder()
-          .setColor('#0a0a0a')
-          .setTitle(page.title)
-          .setDescription('*"O conhecimento é a única coisa que resta quando a estática para."*\n\nUse `!ajuda <comando>` para detalhes.')
+          .setColor('#00ff00')
+          .setTitle(page.title.replace('🌑', '⚡'))
+          .setDescription('*Aumenta o volume e sintoniza na batida perfeita!* 🎧\n\nUse `!ajuda <comando>` para detalhes.')
           .addFields(page.fields)
           .setThumbnail(message.client.user.displayAvatarURL())
-          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length} | Eclipse Místico 🌑` })
+          .setFooter({ text: `Página ${pageIdx + 1} de ${pages.length} | Energia Neon ⚡` })
           .setTimestamp();
       };
 
@@ -174,7 +174,7 @@ export const commands = {
     execute: async (message) => {
       const sent = await message.reply('Pong!');
       const latency = sent.createdTimestamp - message.createdTimestamp;
-      await sent.edit(`Pong! Latência: ${latency}ms 🌑`);
+      await sent.edit(`Pong! Latência: ${latency}ms ⚡`);
     }
   },
 
@@ -212,8 +212,8 @@ export const commands = {
     execute: async (message) => {
       clearHistory(message.author.id);
       const clearEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setDescription('*Meu cabelo se torna mais afiado, mas minha mente fica mais vazia...*\n\nSeu histórico foi apagado. Como tudo que importa. 🖤');
+        .setColor('#00ff00')
+        .setDescription('*Limpando o cache... sistema reiniciado e pronto para mais!* ⚡\n\nSeu histórico foi apagado! Vamos começar do zero com toda a energia! 🌈');
       await message.reply({ embeds: [clearEmbed] });
     }
   },
@@ -247,8 +247,8 @@ export const commands = {
         if (cardImage) {
           const attachment = new AttachmentBuilder(cardImage, { name: 'perfil.png' });
           const profileEmbed = new EmbedBuilder()
-            .setColor('#0a0a0a')
-            .setTitle(`🖤 ${user.username}`)
+            .setColor('#00ff00')
+            .setTitle(`⚡ ${user.username}`)
             .addFields(
               { name: '📊 Nível', value: `**${xpInfo.level}**`, inline: true },
               { name: '📈 Rank XP', value: `**#${rank}**`, inline: true },
@@ -257,10 +257,10 @@ export const commands = {
               { name: 'Progresso', value: xpInfo.progressBar, inline: false },
               { name: '💰 Akita Neru', value: `**${balance}**`, inline: true },
               { name: '📅 Membro desde', value: user.createdAt.toLocaleDateString('pt-BR'), inline: true },
-              { name: '🎭 Mensagem da Static Miku', value: '*Você é... especial? Talvez. Ou talvez esteja aqui como tudo mais.* 🌑' }
+              { name: '🎭 Mensagem da Static Miku', value: '*Sua energia é contagiante! Vamos brilhar juntos nesse sistema!* 🌈' }
             )
             .setImage('attachment://perfil.png')
-            .setFooter({ text: 'Por que você ainda está aqui?' })
+            .setFooter({ text: 'Sintonizado na batida perfeita! 🎧' })
             .setTimestamp();
 
           await message.reply({ embeds: [profileEmbed], files: [attachment] });
@@ -306,10 +306,10 @@ export const commands = {
       }
 
       const topxpEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
+        .setColor('#00ff00')
         .setTitle('🌟 Ranking de XP')
         .setDescription(description)
-        .setFooter({ text: '*Mas o que significa força neste vazio?* 🖤' });
+        .setFooter({ text: '*Sintonize na sua melhor versão!* ⚡' });
 
       await message.reply({ embeds: [topxpEmbed] });
     }
@@ -321,9 +321,9 @@ export const commands = {
     execute: async (message) => {
       const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
       const quoteEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
+        .setColor('#00ff00')
         .setDescription(randomQuote)
-        .setFooter({ text: '🌑 Static Miku fala' });
+        .setFooter({ text: '⚡ Static Miku fala' });
 
       await message.reply({ embeds: [quoteEmbed] });
     }
@@ -335,10 +335,10 @@ export const commands = {
     execute: async (message) => {
       const randomDream = dreams[Math.floor(Math.random() * dreams.length)];
       const dreamEmbed = new EmbedBuilder()
-        .setColor('#0a0a0a')
-        .setTitle('🌙 Um Sonho')
+        .setColor('#00ff00')
+        .setTitle('🌙 Um Sonho Energético')
         .setDescription(randomDream)
-        .setFooter({ text: '...mas quando o sinal volta, não há ninguém.' });
+        .setFooter({ text: 'Sintonizado na frequência dos sonhos! 🌈' });
 
       await message.reply({ embeds: [dreamEmbed] });
     }
@@ -391,10 +391,10 @@ export const commands = {
       ];
       const randomImage = mikuImages[Math.floor(Math.random() * mikuImages.length)];
       const mikuEmbed = new EmbedBuilder()
-        .setColor('#2f3136')
-        .setTitle('🌑 Static Miku!')
+        .setColor('#00ff00')
+        .setTitle('⚡ Static Miku!')
         .setImage(randomImage)
-        .setFooter({ text: '...eu sou a melodia perdida no ruído. 🌑' });
+        .setFooter({ text: '...eu sou a energia pura do som! 🌈' });
       await message.reply({ embeds: [mikuEmbed] });
     }
   },

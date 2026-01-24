@@ -143,9 +143,9 @@ export function startDashboard(client) {
                 <div class="mb-4">
                   <label class="form-label text-white-50 small fw-bold">ESTADO MENTAL (STATUS)</label>
                   <select class="form-select bg-black text-white border-secondary py-2" name="status">
-                    <option value="online">Conectada & Observando</option>
-                    <option value="idle">Ausente & No Vazio</option>
-                    <option value="dnd">Não Perturbe (Em Interferência)</option>
+                    <option value="online">Vibrante & Online</option>
+                    <option value="idle">Recarregando Baterias</option>
+                    <option value="dnd">Em Show (Não Perturbe)</option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">SALVAR ALTERAÇÕES</button>
@@ -339,10 +339,10 @@ export function startDashboard(client) {
         if (channel && channel.isTextBased()) {
           await channel.send({
             embeds: [{
-              title: title || 'Transmissão Importante',
+              title: title || 'Transmissão Eletrificante',
               description: message,
-              color: parseInt(color.replace('#', ''), 16) || 0x2f3136,
-              footer: { text: 'Mensagem Oficial da Static Miku' },
+              color: parseInt(color.replace('#', ''), 16) || 0x00ff00,
+              footer: { text: 'Mensagem Oficial da Static Miku ⚡' },
               timestamp: new Date()
             }]
           });
@@ -1447,10 +1447,10 @@ export function startDashboard(client) {
         if (channel && channel.isTextBased()) {
           await channel.send({
             embeds: [{
-              title: title || 'Transmissão Importante',
+              title: title || 'Transmissão Eletrificante',
               description: message,
-              color: parseInt(color.replace('#', ''), 16) || 0x2f3136,
-              footer: { text: 'Mensagem Oficial da Static Miku' },
+              color: parseInt(color.replace('#', ''), 16) || 0x00ff00,
+              footer: { text: 'Mensagem Oficial da Static Miku ⚡' },
               timestamp: new Date()
             }]
           });
